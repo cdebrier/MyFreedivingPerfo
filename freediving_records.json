@@ -1,13 +1,5 @@
 [
     {
-        "id": "88c00f9b04d9488ca926023e89f3381d",
-        "user": "Charles D.B.",
-        "date": "2025-06-03",
-        "discipline": "Depth (CWT/FIM)",
-        "original_performance_str": "33",
-        "parsed_value": 33
-    },
-    {
         "id": "4d439d3732a947a09baa27db2cfa4285",
         "user": "Charles D.B.",
         "date": "2025-05-17",
@@ -38,14 +30,6 @@
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "8:34",
         "parsed_value": 514.0
-    },
-    {
-        "id": "07df99b3308e4ccf891ee47e6cb67400",
-        "user": "Charles D.B.",
-        "date": "2025-05-15",
-        "discipline": "Depth (CWT/FIM)",
-        "original_performance_str": "40",
-        "parsed_value": 40
     },
     {
         "id": "fc82f69aea8f4d50bd4a33c567901e97",
@@ -108,7 +92,7 @@
         "user": "Charles D.B.",
         "date": "2024-10-22",
         "discipline": "Static Apnea (STA)",
-        "original_performance_str": "5:0",
+        "original_performance_str": "05:00",
         "parsed_value": 300.0
     },
     {
@@ -286,5 +270,117 @@
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "47",
         "parsed_value": 47
+    },
+    {
+        "id": "f385f3514dd74c429f89e07a96587102",
+        "user": "Grégoire L.",
+        "date": "2025-03-25",
+        "discipline": "Dynamic Bi-fins (DYN-BF)",
+        "original_performance_str": "100",
+        "parsed_value": 100
+    },
+    {
+        "id": "9e0a8e62985e4df484a2b3d95060298f",
+        "user": "Charles D.B.",
+        "date": "2025-01-02",
+        "discipline": "Depth (CWT/FIM)",
+        "original_performance_str": "30",
+        "parsed_value": 30
+    },
+    {
+        "id": "a05803431f094cd0bd64c32de1145ea6",
+        "user": "Charles D.B.",
+        "date": "2024-11-09",
+        "discipline": "Depth (CWT/FIM)",
+        "original_performance_str": "23",
+        "parsed_value": 23
+    },
+    {
+        "id": "b7fd14f4ce574acb8deae0bda9ded646",
+        "user": "Charles D.B.",
+        "date": "2024-11-02",
+        "discipline": "Depth (CWT/FIM)",
+        "original_performance_str": "27",
+        "parsed_value": 27
+    },
+    {
+        "id": "36f357df0363491e8d6594b12f281370",
+        "user": "Charles D.B.",
+        "date": "2024-10-22",
+        "discipline": "Static Apnea (STA)",
+        "original_performance_str": "05:04",
+        "parsed_value": 304.0
+    },
+    {
+        "id": "0e8f1da74b1d4fb7af6db1eceb12d9f5",
+        "user": "Charles D.B.",
+        "date": "2024-10-15",
+        "discipline": "Static Apnea (STA)",
+        "original_performance_str": "04:04",
+        "parsed_value": 244.0
+    },
+    {
+        "id": "a2cb9f2418764e61925ccda1781dea63",
+        "user": "Charles D.B.",
+        "date": "2024-08-27",
+        "discipline": "Depth (CWT/FIM)",
+        "original_performance_str": "32",
+        "parsed_value": 32
+    },
+    {
+        "id": "fad5de99d82b4f72a3b21d0f80697560",
+        "user": "Charles D.B.",
+        "date": "2024-08-15",
+        "discipline": "Depth (CWT/FIM)",
+        "original_performance_str": "26",
+        "parsed_value": 26
+    },
+    {
+        "id": "97b4b8c0782d49e6a03b77d6e3af3dbb",
+        "user": "Charles D.B.",
+        "date": "2024-08-06",
+        "discipline": "Depth (CWT/FIM)",
+        "original_performance_str": "32",
+        "parsed_value": 32
+    },
+    {
+        "id": "0d5e82bc25bd42239f4bf9354211469e",
+        "user": "Charles D.B.",
+        "date": "2024-07-30",
+        "discipline": "Depth (CWT/FIM)",
+        "original_performance_str": "32",
+        "parsed_value": 32
+    },
+    {
+        "id": "668a1c60228243ed8f9f16237fe09f0c",
+        "user": "Charles D.B.",
+        "date": "2024-07-27",
+        "discipline": "Static Apnea (STA)",
+        "original_performance_str": "04:46",
+        "parsed_value": 286.0
+    },
+    {
+        "id": "22551ed9a1054747b17f1597804c83b8",
+        "user": "Charles D.B.",
+        "date": "2025-04-15",
+        "discipline": "Static Apnea (STA)",
+        "original_performance_str": "03:43",
+        "parsed_value": 223.0
+    },
+    {
+        "id": "bba38cf1d801444aaf9b85c5fc15dcf8",
+        "user": "Charles D.B.",
+        "date": "2025-04-04",
+        "discipline": "Static Apnea (STA)",
+        "original_performance_str": "04:04",
+        "parsed_value": 244.0
+    },
+    {
+        "id": "e477f99f364a43f39acf551dd874e6c9",
+        "user": "Charles D.B.",
+        "date": "2025-05-15",
+        "discipline": "Profondeur (VWT/NLT)",
+        "original_performance_str": "40",
+        "parsed_value": 40
     }
 ]

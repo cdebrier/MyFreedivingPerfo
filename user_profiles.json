@@ -103,5 +103,10 @@
         "certification": "S4",
         "certification_date": "2024-05-13",
         "lifras_id": "54041"
+    },
+    "Grégoire L.": {
+        "certification": "Non Spécifié",
+        "certification_date": null,
+        "lifras_id": ""
     }
 }
