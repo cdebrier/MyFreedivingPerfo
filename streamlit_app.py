@@ -71,11 +71,12 @@ TRANSLATIONS = {
             "Static Apnea (STA)": "Static Apnea (STA)",
             "Dynamic Bi-fins (DYN-BF)": "Dynamic Bi-fins (DYN-BF)",
             "Depth (CWT/FIM)": "Depth (CWT/FIM)",
+            "Profondeur (VWT/NLT)": "Depth (VWT/NLT)", # New discipline - English translation
             "16x25m Speed Endurance": "16x25m Speed Endurance" 
         },
         "ranking_tab_title": "🏆 General Rankings",
         "select_discipline_for_ranking": "Select discipline for ranking:",
-        "podium_header": "🥇🥈🥉 Podium",
+        "podium_header": "🏆 Podium", 
         "full_ranking_header": "📋 Full Ranking",
         "rank_col": "Rank",
         "user_col": "User",
@@ -91,7 +92,7 @@ TRANSLATIONS = {
         "select_user_to_edit_profile": "Select a user from the sidebar to view or edit their profile.", 
         "no_certification_option": "Not Specified",
         "certification_levels": { 
-            "A1": "A1", "A2": "A2", "A3": "A3", 
+            "A1": "A1", "A2": "A2", "A3": "A3", "S4": "S4",
             "I1": "I1", "I2": "I2", "I3": "I3"
         },
         "certification_stats_header": "📊 Certification Level Statistics",
@@ -125,6 +126,7 @@ TRANSLATIONS = {
         "pb_sta_col_editor": "PB STA",
         "pb_dynbf_col_editor": "PB DYN-BF",
         "pb_depth_col_editor": "PB Depth",
+        "pb_vwt_nlt_col_editor": "PB Depth (VWT/NLT)", # New PB column
         "pb_16x25_col_editor": "PB 16x25m",
         "save_divers_changes_button": "💾 Save Diver Changes",
         "divers_updated_success": "Diver data updated successfully.",
@@ -204,11 +206,12 @@ TRANSLATIONS = {
             "Static Apnea (STA)": "Apnée Statique (STA)",
             "Dynamic Bi-fins (DYN-BF)": "Dynamique Bi-palmes (DYN-BF)",
             "Depth (CWT/FIM)": "Profondeur (CWT/FIM)",
+            "Profondeur (VWT/NLT)": "Profondeur (VWT/NLT)", # Nouvelle discipline
             "16x25m Speed Endurance": "16x25m Vitesse Endurance" 
         },
         "ranking_tab_title": "🏆 Classement Général",
         "select_discipline_for_ranking": "Sélectionnez la discipline pour le classement :",
-        "podium_header": "🥇🥈🥉 Podium",
+        "podium_header": "🏆 Podium", 
         "full_ranking_header": "📋 Classement Complet",
         "rank_col": "Rang",
         "user_col": "Utilisateur",
@@ -224,7 +227,7 @@ TRANSLATIONS = {
         "select_user_to_edit_profile": "Sélectionnez un utilisateur dans la barre latérale pour voir ou modifier son profil.",
         "no_certification_option": "Non Spécifié",
         "certification_levels": { 
-            "A1": "A1", "A2": "A2", "A3": "A3", 
+            "A1": "A1", "A2": "A2", "A3": "A3", "S4": "S4",
             "I1": "I1", "I2": "I2", "I3": "I3"
         },
         "certification_stats_header": "📊 Statistiques par Niveau de Brevet",
@@ -258,6 +261,7 @@ TRANSLATIONS = {
         "pb_sta_col_editor": "RP STA",
         "pb_dynbf_col_editor": "RP DYN-BF",
         "pb_depth_col_editor": "RP Profondeur",
+        "pb_vwt_nlt_col_editor": "RP Prof. (VWT/NLT)", # Nouveau
         "pb_16x25_col_editor": "RP 16x25m",
         "save_divers_changes_button": "💾 Sauvegarder les Apnéistes",
         "divers_updated_success": "Données des apnéistes mises à jour avec succès.",
@@ -337,11 +341,12 @@ TRANSLATIONS = {
             "Static Apnea (STA)": "Statische Apneu (STA)",
             "Dynamic Bi-fins (DYN-BF)": "Dynamisch Bi-vinnen (DYN-BF)",
             "Depth (CWT/FIM)": "Diepte (CWT/FIM)",
+            "Profondeur (VWT/NLT)": "Diepte (VWT/NLT)", # Nieuwe discipline - NL vertaling
             "16x25m Speed Endurance": "16x25m Snelheid Uithouding" 
         },
         "ranking_tab_title": "🏆 Algemeen Klassement",
         "select_discipline_for_ranking": "Selecteer discipline voor klassement:",
-        "podium_header": "🥇🥈🥉 Podium",
+        "podium_header": "🏆 Podium", 
         "full_ranking_header": "📋 Volledig Klassement",
         "rank_col": "Rang",
         "user_col": "Gebruiker",
@@ -357,7 +362,7 @@ TRANSLATIONS = {
         "select_user_to_edit_profile": "Selecteer een gebruiker in de zijbalk om hun profiel te bekijken of te bewerken.",
         "no_certification_option": "Niet Gespecificeerd",
         "certification_levels": { 
-            "A1": "A1", "A2": "A2", "A3": "A3", 
+            "A1": "A1", "A2": "A2", "A3": "A3", "S4": "S4",
             "I1": "I1", "I2": "I2", "I3": "I3"
         },
         "certification_stats_header": "📊 Certificatieniveau Statistieken",
@@ -391,6 +396,7 @@ TRANSLATIONS = {
         "pb_sta_col_editor": "PR STA",
         "pb_dynbf_col_editor": "PR DYN-BF",
         "pb_depth_col_editor": "PR Diepte",
+        "pb_vwt_nlt_col_editor": "PR Diepte (VWT/NLT)", # Nieuw
         "pb_16x25_col_editor": "PR 16x25m",
         "save_divers_changes_button": "💾 Duikers Opslaan",
         "divers_updated_success": "Duikergegevens succesvol bijgewerkt.",
@@ -609,7 +615,7 @@ def main():
     user_profiles = load_user_profiles() 
     training_log_loaded = load_training_log() 
 
-    discipline_keys = ["Static Apnea (STA)", "Dynamic Bi-fins (DYN-BF)", "Depth (CWT/FIM)", "16x25m Speed Endurance"] 
+    discipline_keys = ["Static Apnea (STA)", "Dynamic Bi-fins (DYN-BF)", "Depth (CWT/FIM)", "Profondeur (VWT/NLT)", "16x25m Speed Endurance"] 
     translated_disciplines_for_display = [_("disciplines." + key, lang) for key in discipline_keys]
 
     st.sidebar.header(_("user_management_header", lang))
@@ -678,7 +684,7 @@ def main():
         performance_help_text = ""
         if is_time_based_discipline(log_discipline_original_key):
             performance_help_text = _("sta_help", lang)
-        elif log_discipline_original_key in ["Dynamic Bi-fins (DYN-BF)", "Depth (CWT/FIM)"]: 
+        elif log_discipline_original_key in ["Dynamic Bi-fins (DYN-BF)", "Depth (CWT/FIM)", "Profondeur (VWT/NLT)"]: 
             performance_help_text = _("dyn_depth_help", lang)
         
         log_performance_str = st.sidebar.text_input(_("performance_value", lang), help=performance_help_text, key="log_performance_input").strip()
@@ -822,8 +828,7 @@ def main():
                 if not user_records_for_tab:
                     st.info(_("no_performances_yet", lang))
                 else:
-                    with st.container(border=True): # Added border
-                        # st.markdown("<div style='background-color: #ffffe0; padding: 10px; border-radius: 5px; margin-bottom:10px;'>", unsafe_allow_html=True) # Removed
+                    with st.container(border=True): 
                         st.subheader(_("personal_bests_subheader", lang))
                         pbs_tab = {} 
                         for disc_key_pb_tab in discipline_keys:
@@ -854,7 +859,6 @@ def main():
                                 st.metric(label=_( "pb_label", lang, discipline_short_name=short_disc_name_tab), value=val_tab)
                                 if dt_tab: st.caption(_("achieved_on_caption", lang, date=dt_tab))
                                 elif val_tab == "N/A": st.caption(_("no_record_yet_caption", lang))
-                        # st.markdown("</div>", unsafe_allow_html=True) # Removed
                     st.markdown("") 
                     
                     sub_tab_titles_user = [_("disciplines." + key, lang) for key in discipline_keys]
@@ -1015,7 +1019,6 @@ def main():
                  st.info(_("no_ranking_data", lang)) 
             else:
                 with st.container(border=True): # Added border
-                    # st.markdown("<div style='background-color: #ffffe0; padding: 10px; border-radius: 5px; margin-bottom:15px;'>", unsafe_allow_html=True) # Removed
                     st.subheader(_("club_bests_subheader", lang))
                     club_pbs = {}
                     for disc_key_club_pb in discipline_keys:
@@ -1052,7 +1055,6 @@ def main():
                                 st.caption(_("achieved_by_on_caption", lang, user=user_club, date=date_club))
                             elif val_club == "N/A":
                                 st.caption(_("no_record_yet_caption", lang))
-                    # st.markdown("</div>", unsafe_allow_html=True) # Removed
                 st.markdown("") 
 
                 ranking_sub_tab_titles = [_("disciplines." + key, lang) for key in discipline_keys]
@@ -1236,7 +1238,7 @@ def main():
         with tab_divers:
             # st.header(_("divers_tab_title", lang)) # Removed header
             
-            cert_order = ["I3", "I2", "I1", "A3", "A2", "A1", _("no_certification_option", lang)]
+            cert_order = ["I3", "I2", "I1", "S4", "A3", "A2", "A1", _("no_certification_option", lang)] # Added S4
             cert_order_map = {level: i for i, level in enumerate(cert_order)}
 
             if not all_known_users_list:
@@ -1284,6 +1286,7 @@ def main():
                         _("pb_sta_col_editor", lang): user_pbs_display.get("Static Apnea (STA)", "N/A"),
                         _("pb_dynbf_col_editor", lang): user_pbs_display.get("Dynamic Bi-fins (DYN-BF)", "N/A"),
                         _("pb_depth_col_editor", lang): user_pbs_display.get("Depth (CWT/FIM)", "N/A"),
+                        _("pb_vwt_nlt_col_editor", lang): user_pbs_display.get("Profondeur (VWT/NLT)", "N/A"), # New PB
                         _("pb_16x25_col_editor", lang): user_pbs_display.get("16x25m Speed Endurance", "N/A"),
                     })
                 
@@ -1320,6 +1323,7 @@ def main():
                     _("pb_sta_col_editor", lang): st.column_config.TextColumn(label=_("pb_sta_col_editor", lang), disabled=True),
                     _("pb_dynbf_col_editor", lang): st.column_config.TextColumn(label=_("pb_dynbf_col_editor", lang), disabled=True),
                     _("pb_depth_col_editor", lang): st.column_config.TextColumn(label=_("pb_depth_col_editor", lang), disabled=True),
+                    _("pb_vwt_nlt_col_editor", lang): st.column_config.TextColumn(label=_("pb_vwt_nlt_col_editor", lang), disabled=True), # New PB Column
                     _("pb_16x25_col_editor", lang): st.column_config.TextColumn(label=_("pb_16x25_col_editor", lang), disabled=True),
                 }
 

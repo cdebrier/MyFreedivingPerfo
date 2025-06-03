@@ -1,0 +1,152 @@
+[
+    {
+        "id": "train_001_abc",
+        "date": "2024-01-08",
+        "place": "Blocry",
+        "description": "STA: CO2 tables. DYN: Technique drills, focus on turns."
+    },
+    {
+        "id": "train_002_def",
+        "date": "2024-01-22",
+        "place": "Piscine de Rixensart",
+        "description": "Dynamic session, endurance sets with bi-fins. 4x100m."
+    },
+    {
+        "id": "train_003_ghi",
+        "date": "2024-02-05",
+        "place": "Blocry",
+        "description": "16x25m speed endurance simulation. Pacing strategy."
+    },
+    {
+        "id": "train_004_jkl",
+        "date": "2024-02-19",
+        "place": "NEMO33",
+        "description": "Depth: FIM warm-ups, CWT target dives (max 40m). Equalization focus."
+    },
+    {
+        "id": "train_005_mno",
+        "date": "2024-03-04",
+        "place": "Blocry",
+        "description": "Recovery session. Light STA holds and easy DYN laps."
+    },
+    {
+        "id": "train_006_pqr",
+        "date": "2024-03-18",
+        "place": "Piscine de Louvain-la-Neuve",
+        "description": "DNF technique workshop. Body position and propulsion."
+    },
+    {
+        "id": "train_007_stu",
+        "date": "2024-04-01",
+        "place": "Blocry",
+        "description": "STA: Max attempts after pyramid warm-up."
+    },
+    {
+        "id": "train_008_vwx",
+        "date": "2024-04-15",
+        "place": "Carrière de Rochefontaine",
+        "description": "Open water depth training. Safety diver practice and line management."
+    },
+    {
+        "id": "train_009_yza",
+        "date": "2024-04-29",
+        "place": "Blocry",
+        "description": "DYN: Variable weight sprints. Focus on speed and efficiency."
+    },
+    {
+        "id": "train_010_bcd",
+        "date": "2024-05-13",
+        "place": "Piscine de Wavre",
+        "description": "General pool training, mixed disciplines. Fun session with rescue scenarios."
+    },
+    {
+        "id": "train_011_efg",
+        "date": "2024-06-10",
+        "place": "Blocry",
+        "description": "STA: Apnea walks and dry statics. Mental preparation."
+    },
+    {
+        "id": "train_012_hij",
+        "date": "2024-07-08",
+        "place": "Piscine de Rixensart",
+        "description": "DYN-BF: Long distance sets, focus on consistent pacing."
+    },
+    {
+        "id": "train_013_klm",
+        "date": "2024-08-12",
+        "place": "Blocry",
+        "description": "16x25m: Interval training, short recovery."
+    },
+    {
+        "id": "train_014_nop",
+        "date": "2024-09-09",
+        "place": "NEMO33",
+        "description": "Depth: CWT constant weight dives, working on freefall."
+    },
+    {
+        "id": "train_015_qrs",
+        "date": "2024-10-14",
+        "place": "Blocry",
+        "description": "STA: Hypoxic tables. DYN: No fins technique."
+    },
+    {
+        "id": "train_016_tuv",
+        "date": "2024-11-11",
+        "place": "Piscine de Louvain-la-Neuve",
+        "description": "Dynamic with monofin. Technique and power."
+    },
+    {
+        "id": "train_017_wxy",
+        "date": "2024-12-09",
+        "place": "Blocry",
+        "description": "Pre-holiday fun session. Team games and relays."
+    },
+    {
+        "id": "train_018_zab",
+        "date": "2025-01-13",
+        "place": "Carrière de Rochefontaine",
+        "description": "Winter depth session. Cold water adaptation and safety."
+    },
+    {
+        "id": "train_019_cde",
+        "date": "2025-02-10",
+        "place": "Blocry",
+        "description": "STA: Max breath-hold attempts. DYN: Sprints."
+    },
+    {
+        "id": "train_020_fgh",
+        "date": "2025-03-10",
+        "place": "Piscine de Wavre",
+        "description": "16x25m time trials. Competition simulation."
+    },
+    {
+        "id": "train_021_ijk",
+        "date": "2025-04-14",
+        "place": "NEMO33",
+        "description": "Depth: Focus on deep equalization and relaxation."
+    },
+    {
+        "id": "train_022_lmn",
+        "date": "2025-05-12",
+        "place": "Blocry",
+        "description": "DYN-BF: Pyramid sets. STA: CO2 tolerance."
+    },
+    {
+        "id": "train_023_opq",
+        "date": "2025-05-26",
+        "place": "Piscine de Rixensart",
+        "description": "Technique refinement for all pool disciplines."
+    },
+    {
+        "id": "train_024_rst",
+        "date": "2025-06-02",
+        "place": "Blocry",
+        "description": "Final prep for potential PBs. Light session, mental focus."
+    },
+    {
+        "id": "train_025_uvw",
+        "date": "2025-06-03",
+        "place": "Lac de l'Eau d'Heure",
+        "description": "Open water leisure dive and exploration."
+    }
+]

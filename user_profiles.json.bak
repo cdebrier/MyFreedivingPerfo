@@ -1,107 +1,132 @@
 {
     "Charles D.": {
         "certification": "A1",
-        "certification_date": "2025-03-27",
+        "certification_date": "2023-03-15",
         "lifras_id": "56430"
     },
     "Déborah L.": {
         "certification": "A1",
-        "certification_date": "2025-03-27",
+        "certification_date": "2023-04-20",
         "lifras_id": "24606"
     },
     "Lauranne P.": {
         "certification": "A1",
-        "certification_date": "2025-03-27",
+        "certification_date": "2023-05-10",
         "lifras_id": "56374"
     },
     "Martin V.": {
         "certification": "A1",
-        "certification_date": "2025-02-14",
+        "certification_date": "2023-06-22",
         "lifras_id": "56405"
     },
     "Arnaud B.": {
         "certification": "A2",
-        "certification_date": "2025-03-27",
+        "certification_date": "2022-11-05",
         "lifras_id": "56003"
     },
     "Eric M.": {
         "certification": "A2",
-        "certification_date": "2024-06-13",
+        "certification_date": "2022-10-15",
         "lifras_id": "56144"
     },
     "Florence S.": {
         "certification": "A2",
-        "certification_date": "2025-06-30",
+        "certification_date": "2022-09-01",
         "lifras_id": "55986"
     },
     "Philippe K.": {
         "certification": "I1",
-        "certification_date": "2023-12-01",
+        "certification_date": "2021-07-10",
         "lifras_id": "10194"
     },
     "Aurélie B.": {
         "certification": "A1",
-        "certification_date": "2022-04-08",
+        "certification_date": "2023-07-01",
         "lifras_id": "741"
     },
     "François B.": {
         "certification": "A1",
-        "certification_date": "2015-07-23",
+        "certification_date": "2023-08-15",
         "lifras_id": "43568"
     },
     "Luc D.": {
         "certification": "A1",
-        "certification_date": "2021-09-14",
+        "certification_date": "2023-09-20",
         "lifras_id": "53721"
     },
     "Michel F.": {
         "certification": "A1",
-        "certification_date": "2022-12-05",
+        "certification_date": "2023-10-05",
         "lifras_id": "7485"
+    },
+    "Daniele G.": {
+        "certification": "A1",
+        "certification_date": "2023-11-12",
+        "lifras_id": "8246"
     },
     "Alain K.": {
         "certification": "A1",
-        "certification_date": "2025-03-27",
+        "certification_date": "2023-12-01",
         "lifras_id": "55949"
     },
     "Xavier M.": {
         "certification": "A1",
-        "certification_date": "2024-06-13",
+        "certification_date": "2024-01-10",
         "lifras_id": "49743"
     },
     "Perrine M.": {
         "certification": "A1",
-        "certification_date": "2024-06-13",
+        "certification_date": "2024-02-15",
         "lifras_id": "56145"
     },
     "Philippe D.": {
         "certification": "A2",
-        "certification_date": "2022-04-08",
+        "certification_date": "2022-07-20",
         "lifras_id": "30689"
     },
     "Yves G.": {
         "certification": "A2",
-        "certification_date": "2022-03-04",
+        "certification_date": "2022-08-25",
         "lifras_id": "29525"
     },
     "Gregory D.": {
         "certification": "A3",
-        "certification_date": "2024-07-02",
+        "certification_date": "2021-05-10",
         "lifras_id": "54925"
     },
     "Rémy L.": {
         "certification": "A3",
-        "certification_date": "2022-02-21",
+        "certification_date": "2021-06-18",
         "lifras_id": "43187"
     },
     "Vincent C.": {
-        "certification": "S4",
-        "certification_date": "2023-12-01",
+        "certification": "I1",
+        "certification_date": "2020-09-01",
         "lifras_id": "38397"
     },
     "Charles D.B.": {
-        "certification": "S4",
-        "certification_date": "2024-05-13",
+        "certification": "I1",
+        "certification_date": "2020-10-15",
         "lifras_id": "54041"
+    },
+    "Cédric W.": {
+        "certification": "A1",
+        "certification_date": "2024-03-01",
+        "lifras_id": "19565"
+    },
+    "Giuseppina L.": {
+        "certification": "A2",
+        "certification_date": "2022-05-20",
+        "lifras_id": "39388"
+    },
+    "Julien D.": {
+        "certification": "A1",
+        "certification_date": "2024-04-10",
+        "lifras_id": "23526"
+    },
+    "Timothy D.": {
+        "certification": "A1",
+        "certification_date": "2024-05-01",
+        "lifras_id": "39190"
     }
 }
