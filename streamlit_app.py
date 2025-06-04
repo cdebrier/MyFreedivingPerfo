@@ -10,6 +10,14 @@ USER_PROFILES_FILE = "user_profiles.json"
 TRAINING_LOG_FILE = "training_log.json" 
 INSTRUCTOR_FEEDBACK_FILE = "instructor_feedback.json" 
 
+# --- Privileged User Configuration ---
+PRIVILEGED_USERS = ["Philippe K.", "Vincent C.", "Charles D.B.", "Rémy L.", "Gregory D."]
+CORRECT_PASSWORD = "M@c@apnée" 
+
+# Instructor certification levels for different functionalities
+INSTRUCTOR_CERT_LEVELS_FOR_LOGGING_FEEDBACK_SIDEBAR = ["S4", "I1", "I2", "I3"] 
+INSTRUCTOR_CERT_LEVELS_FOR_ADMIN_TABS_AND_DROPDOWNS = ["A3", "S4", "I1", "I2", "I3"] 
+
 # --- Language Translations ---
 TRANSLATIONS = {
     "en": {
@@ -152,9 +160,9 @@ TRANSLATIONS = {
         "performance_log_tab_label": "📜 Performance Log", 
         "save_all_performances_button": "💾 Save Performance Log Changes", 
         "all_performances_updated_success": "Performance log updated successfully.",
-        "feedback_log_tab_label": "💬 Feedback Log", # Editable log for instructors
-        "feedbacks_overview_tab_label": "💬 Feedbacks", # Overview tab for instructors
-        "my_feedbacks_tab_label": "📬 My Feedbacks", # For non-instructors to see their own
+        "feedback_log_tab_label": "💬 Feedback Log", 
+        "feedbacks_overview_tab_label": "💬 Feedbacks", 
+        "my_feedbacks_tab_label": "📬 My Feedbacks", 
         "log_feedback_header_sidebar": "📝 Log Instructor Feedback",
         "feedback_for_diver_label": "Feedback for Diver:",
         "training_session_label": "Linked Training Session:",
@@ -177,11 +185,15 @@ TRANSLATIONS = {
         "no_training_sessions_logged": "No training sessions logged yet.",
         "filter_by_diver_label": "Filter by Diver:", 
         "filter_by_training_session_label": "Filter by Training Session:", 
-        "filter_by_instructor_label": "Filter by Instructor:", # New
+        "filter_by_instructor_label": "Filter by Instructor:", 
         "all_divers_option": "All Divers", 
         "all_sessions_option": "All Sessions", 
-        "all_instructors_option": "All Instructors", # New
-        "no_feedbacks_match_filters": "No feedbacks match the current filters." 
+        "all_instructors_option": "All Instructors", 
+        "no_feedbacks_match_filters": "No feedbacks match the current filters.",
+        "enter_access_code_prompt": "Enter access code:", 
+        "unlock_button_label": "Unlock Privileged Access", 
+        "access_unlocked_success": "Privileged access unlocked!", 
+        "incorrect_access_code_error": "Incorrect access code." 
     },
     "fr": {
         "page_title": "Carnet d'Apnée",
@@ -325,6 +337,7 @@ TRANSLATIONS = {
         "all_performances_updated_success": "Journal des performances mis à jour avec succès.",
         "feedback_log_tab_label": "💬 Journal des Feedbacks",
         "feedbacks_overview_tab_label": "💬 Feedbacks", 
+        "my_feedbacks_tab_label": "📬 Mes Feedbacks", 
         "log_feedback_header_sidebar": "📝 Enregistrer Feedback Instructeur",
         "feedback_for_diver_label": "Feedback pour l'Apnéiste :",
         "training_session_label": "Session d'Entraînement Liée :",
@@ -347,11 +360,15 @@ TRANSLATIONS = {
         "no_training_sessions_logged": "Aucune session d'entraînement enregistrée pour le moment.",
         "filter_by_diver_label": "Filtrer par Apnéiste :", 
         "filter_by_training_session_label": "Filtrer par Session d'Entraînement :", 
-        "filter_by_instructor_label": "Filtrer par Instructeur :", # Nouveau
+        "filter_by_instructor_label": "Filtrer par Instructeur :", 
         "all_divers_option": "Tous les Apnéistes", 
         "all_sessions_option": "Toutes les Sessions", 
-        "all_instructors_option": "Tous les Instructeurs", # Nouveau
-        "no_feedbacks_match_filters": "Aucun feedback ne correspond aux filtres actuels." 
+        "all_instructors_option": "Tous les Instructeurs", 
+        "no_feedbacks_match_filters": "Aucun feedback ne correspond aux filtres actuels.",
+        "enter_access_code_prompt": "Entrez le code d'accès :", 
+        "unlock_button_label": "Déverrouiller Accès Privilégié", 
+        "access_unlocked_success": "Accès privilégié déverrouillé !", 
+        "incorrect_access_code_error": "Code d'accès incorrect." 
     },
     "nl": {
         "page_title": "Vrijduik Logboek",
@@ -517,11 +534,15 @@ TRANSLATIONS = {
         "no_training_sessions_logged": "Nog geen trainingssessies gelogd.",
         "filter_by_diver_label": "Filter op Duiker:", 
         "filter_by_training_session_label": "Filter op Trainingssessie:", 
-        "filter_by_instructor_label": "Filter op Instructeur:", # Nieuw
+        "filter_by_instructor_label": "Filter op Instructeur:", 
         "all_divers_option": "Alle Duikers", 
         "all_sessions_option": "Alle Sessies", 
-        "all_instructors_option": "Alle Instructeurs", # Nieuw
-        "no_feedbacks_match_filters": "Geen feedbacks komen overeen met de huidige filters." 
+        "all_instructors_option": "Alle Instructeurs", 
+        "no_feedbacks_match_filters": "Geen feedbacks komen overeen met de huidige filters.",
+        "enter_access_code_prompt": "Voer toegangscode in:", 
+        "unlock_button_label": "Ontgrendel Bevoorrechte Toegang", 
+        "access_unlocked_success": "Bevoorrechte toegang ontgrendeld!", 
+        "incorrect_access_code_error": "Incorrecte toegangscode." 
     }
 }
 
@@ -728,8 +749,16 @@ def main():
         st.session_state.initiate_clear_training_inputs = False
     if 'initiate_clear_feedback_inputs' not in st.session_state: 
         st.session_state.initiate_clear_feedback_inputs = False
-
     
+    # Initialize session state for privileged access
+    if 'privileged_user_authenticated' not in st.session_state:
+        st.session_state.privileged_user_authenticated = False
+    if 'authenticated_privileged_user' not in st.session_state:
+        st.session_state.authenticated_privileged_user = None
+    if "password_input_value_holder" not in st.session_state: # Using a more descriptive name for the password value
+        st.session_state.password_input_value_holder = ""
+
+
     lang = st.session_state.language
 
     if st.session_state.initiate_clear_training_inputs:
@@ -775,14 +804,20 @@ def main():
         all_known_users_set = users_from_records.union(users_from_profiles)
         all_known_users_list = sorted(list(all_known_users_set)) if all_known_users_set else []
         
-        current_user = None
+        current_user = None # Will be set by selectbox or text input
+        
+        previous_selected_user = st.session_state.get("current_user_sidebar_selection")
+
         if all_known_users_list:
             user_options_sidebar = [_("add_new_user_option", lang)] + all_known_users_list
-            default_user_for_selectbox = st.session_state.get("current_user_sidebar_selection", user_options_sidebar[1] if len(user_options_sidebar) > 1 else user_options_sidebar[0])
+            
+            default_selection_value = previous_selected_user if previous_selected_user in user_options_sidebar else (user_options_sidebar[1] if len(user_options_sidebar) > 1 else user_options_sidebar[0])
+            
             try:
-                default_selection_index_sidebar = user_options_sidebar.index(default_user_for_selectbox)
+                default_selection_index_sidebar = user_options_sidebar.index(default_selection_value)
             except ValueError: 
                 default_selection_index_sidebar = 1 if all_known_users_list else 0
+
 
             selected_option_sidebar = st.selectbox(
                 _("select_user_or_add", lang), 
@@ -790,7 +825,13 @@ def main():
                 index=default_selection_index_sidebar, 
                 key="user_selection_dropdown_widget" 
             )
-            st.session_state.current_user_sidebar_selection = selected_option_sidebar 
+            
+            if previous_selected_user != selected_option_sidebar:
+                st.session_state.privileged_user_authenticated = False
+                st.session_state.authenticated_privileged_user = None
+                st.session_state.password_input_value_holder = "" 
+                st.session_state.current_user_sidebar_selection = selected_option_sidebar
+                # No rerun here, let the rest of the script execute with the new user.
 
             if selected_option_sidebar == _("add_new_user_option", lang):
                 new_user_name_input_sidebar = st.text_input(_("enter_new_user_name", lang), key="new_user_existing_list_input").strip()
@@ -812,8 +853,60 @@ def main():
                 st.success(_("new_user_success", lang, user=current_user).split('.')[0] + ". Log a performance or save profile.")
                 if current_user not in user_profiles: 
                     user_profiles[current_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": "", "anonymize_results": False}
+        
+        st.session_state.current_user = current_user # Update global current_user based on selection/input
 
-        st.session_state.current_user = current_user
+
+        # Password protection for privileged users
+        if current_user in PRIVILEGED_USERS:
+            # If the authenticated user is not the current privileged user, force re-auth
+            if st.session_state.get('authenticated_privileged_user') != current_user:
+                st.session_state.privileged_user_authenticated = False 
+                st.session_state.password_input_value_holder = "" # Clear password for new privileged user
+
+            if not st.session_state.get('privileged_user_authenticated', False):
+                # Use the session state variable for the value of the text input
+                password_typed_now = st.text_input(
+                    _("enter_access_code_prompt", lang), 
+                    type="password",
+                    key="password_input_value_holder" # Use the session state variable as the key
+                )
+                # The value is already in st.session_state.password_input_value_holder due to the key
+
+                if st.button(_("unlock_button_label", lang), key="unlock_button_privileges_final"):
+                    # Check against the value stored in session state
+                    if st.session_state.password_input_value_holder == CORRECT_PASSWORD:
+                        st.session_state.privileged_user_authenticated = True
+                        st.session_state.authenticated_privileged_user = current_user
+                        st.session_state.password_input_value_holder = "" # Clear after successful login
+                        st.success(_("access_unlocked_success", lang))
+                        st.rerun() 
+                    else:
+                        st.error(_("incorrect_access_code_error", lang))
+                        st.session_state.privileged_user_authenticated = False
+                        st.session_state.authenticated_privileged_user = None
+                        # Don't clear password_input_value_holder on error, so user can see it
+                        # No rerun on error, let the message display.
+        # If current_user is not privileged, ensure authentication flags are reset
+        elif st.session_state.get('privileged_user_authenticated', False): 
+            st.session_state.privileged_user_authenticated = False
+            st.session_state.authenticated_privileged_user = None
+            st.session_state.password_input_value_holder = ""
+
+
+    # Determine admin view authorization AFTER sidebar logic
+    is_admin_view_authorized = False 
+    if current_user in PRIVILEGED_USERS and \
+       st.session_state.get('authenticated_privileged_user') == current_user and \
+       st.session_state.get('privileged_user_authenticated', False):
+        is_admin_view_authorized = True
+    
+    is_sidebar_instructor_section_visible = False
+    if is_admin_view_authorized and current_user in user_profiles: 
+        user_cert_sidebar = user_profiles[current_user].get("certification")
+        if user_cert_sidebar in INSTRUCTOR_CERT_LEVELS_FOR_LOGGING_FEEDBACK_SIDEBAR:
+            is_sidebar_instructor_section_visible = True
+
 
     with st.sidebar.container(border=True): 
         st.header(_("log_performance_header", lang))
@@ -874,15 +967,7 @@ def main():
                     elif not log_performance_str: 
                         pass
     
-    # Determine if current user is an instructor for conditional display of sidebar sections
-    is_instructor_sidebar_view = False
-    instructor_cert_levels_sidebar = ["S4", "I1", "I2", "I3"] 
-    if current_user and current_user in user_profiles:
-        user_cert_sidebar = user_profiles[current_user].get("certification")
-        if user_cert_sidebar in instructor_cert_levels_sidebar:
-            is_instructor_sidebar_view = True
-
-    if is_instructor_sidebar_view:
+    if is_sidebar_instructor_section_visible:
         with st.sidebar.container(border=True): 
             st.header(_("log_training_header_sidebar", lang))
             training_date_log_val = st.date_input(_("training_date_label", lang), date.today(), key="training_date_input_widget") 
@@ -1044,49 +1129,42 @@ def main():
     if not all_records_loaded and not all_known_users_list and not current_user and not training_log_loaded and not instructor_feedback_loaded: 
         st.info(_("welcome_message", lang))
     else:
-        # Determine if current user is an instructor for main tabs
-        is_instructor_main_view = False
-        instructor_cert_levels_main = ["A3", "S4", "I1", "I2", "I3"] 
-        if current_user and current_user in user_profiles:
-            user_cert_main = user_profiles[current_user].get("certification")
-            if user_cert_main in instructor_cert_levels_main:
-                is_instructor_main_view = True
-
-        # Define tabs based on instructor status
-        tabs_to_display_names_main = [tab_label_personal, tab_label_club_performances] 
+        # is_admin_view_authorized is already defined based on sidebar authentication
         
-        if is_instructor_main_view:
-            tabs_to_display_names_main.insert(1, tab_label_feedbacks_overview) 
+        tabs_to_display_names_main = [tab_label_personal]
+        if is_admin_view_authorized:
+            tabs_to_display_names_main.append(tab_label_feedbacks_overview)
+            tabs_to_display_names_main.append(tab_label_club_performances) 
             tabs_to_display_names_main.extend([tab_label_divers, tab_label_training_log, tab_label_performance_log, tab_label_feedback_log_editable])
         else:
-             tabs_to_display_names_main.insert(1, _("my_feedbacks_tab_label", lang))
+             tabs_to_display_names_main.insert(1, _("my_feedbacks_tab_label", lang)) 
+             tabs_to_display_names_main.append(tab_label_club_performances) 
         
         tab_objects_main = st.tabs(tabs_to_display_names_main)
 
+        # Assign tab objects carefully based on is_admin_view_authorized
         tab_personal = tab_objects_main[0]
-        current_tab_index = 1
+        current_tab_idx = 1
 
-        tab_feedbacks_overview_for_instructor = None
+        tab_feedbacks_overview = None 
         tab_my_feedbacks_for_user = None
         
-        if is_instructor_main_view:
-            tab_feedbacks_overview_for_instructor = tab_objects_main[current_tab_index] 
-            current_tab_index += 1
-            tab_club_performances_view = tab_objects_main[current_tab_index] 
-            current_tab_index += 1
-            tab_divers = tab_objects_main[current_tab_index]
-            current_tab_index +=1
-            tab_training = tab_objects_main[current_tab_index]
-            current_tab_index += 1
-            tab_performance_log = tab_objects_main[current_tab_index]
-            current_tab_index += 1
-            tab_feedback_log = tab_objects_main[current_tab_index] 
+        if is_admin_view_authorized:
+            tab_feedbacks_overview = tab_objects_main[current_tab_idx]
+            current_tab_idx += 1
+            tab_club_performances_view = tab_objects_main[current_tab_idx] 
+            current_tab_idx += 1
+            tab_divers = tab_objects_main[current_tab_idx]
+            current_tab_idx +=1
+            tab_training = tab_objects_main[current_tab_idx]
+            current_tab_idx += 1
+            tab_performance_log = tab_objects_main[current_tab_idx]
+            current_tab_idx += 1
+            tab_feedback_log = tab_objects_main[current_tab_idx] 
         else: 
-            tab_my_feedbacks_for_user = tab_objects_main[current_tab_index] 
-            current_tab_index += 1
-            tab_club_performances_view = tab_objects_main[current_tab_index] 
-            # Set other instructor-only tabs to None
-            # tab_feedbacks_overview = None  # This was a typo, should be tab_feedbacks_overview_for_instructor
+            tab_my_feedbacks_for_user = tab_objects_main[current_tab_idx] 
+            current_tab_idx += 1
+            tab_club_performances_view = tab_objects_main[current_tab_idx] 
             tab_divers = None
             tab_training = None
             tab_performance_log = None
@@ -1286,7 +1364,7 @@ def main():
             else: 
                 st.info(_("select_user_to_view_personal_records", lang))
         
-        if tab_my_feedbacks_for_user: # This tab is for non-instructors
+        if tab_my_feedbacks_for_user: 
              with tab_my_feedbacks_for_user:
                 if current_user:
                     st.subheader(f"{_('my_feedbacks_tab_label', lang)} ({current_user})") 
@@ -1310,12 +1388,12 @@ def main():
                 else:
                     st.info(_("select_user_to_view_personal_records", lang)) 
 
-        if is_instructor_main_view and tab_feedbacks_overview_for_instructor: 
-            with tab_feedbacks_overview_for_instructor:
+        if is_admin_view_authorized and tab_feedbacks_overview: 
+            with tab_feedbacks_overview:
                 st.subheader(_("feedbacks_overview_tab_label", lang))
 
                 # Filters
-                col1_fb_overview, col2_fb_overview, col3_fb_overview = st.columns(3) # Added a third column for instructor filter
+                col1_fb_overview, col2_fb_overview, col3_fb_overview = st.columns(3) 
                 with col1_fb_overview:
                     diver_options_filter = [_("all_divers_option", lang)] + all_known_users_list
                     selected_diver_filter = st.selectbox(_("filter_by_diver_label", lang), diver_options_filter, key="fb_overview_diver_filter")
@@ -1328,8 +1406,9 @@ def main():
                     training_options_editor_display_with_none_feedback_overview = [_("all_sessions_option", lang)] + list(training_options_editor_map_feedback_overview.values())
                     selected_training_display_filter = st.selectbox(_("filter_by_training_session_label", lang), training_options_editor_display_with_none_feedback_overview, key="fb_overview_session_filter")
                 
-                with col3_fb_overview: # New filter for instructor
-                    instructor_options_filter = [_("all_instructors_option", lang)] + sorted(list(set(fb['instructor_name'] for fb in instructor_feedback_loaded)))
+                with col3_fb_overview: 
+                    instructor_list_for_filter = sorted(list(set(fb['instructor_name'] for fb in instructor_feedback_loaded if fb.get('instructor_name'))))
+                    instructor_options_filter = [_("all_instructors_option", lang)] + instructor_list_for_filter
                     selected_instructor_filter = st.selectbox(_("filter_by_instructor_label", lang), instructor_options_filter, key="fb_overview_instructor_filter")
 
 
@@ -1346,7 +1425,7 @@ def main():
                     filtered_feedbacks = [fb for fb in filtered_feedbacks if fb.get("diver_name") == selected_diver_filter]
                 if selected_training_id_filter: 
                     filtered_feedbacks = [fb for fb in filtered_feedbacks if fb.get("training_session_id") == selected_training_id_filter]
-                if selected_instructor_filter != _("all_instructors_option", lang): # Apply new instructor filter
+                if selected_instructor_filter != _("all_instructors_option", lang): 
                     filtered_feedbacks = [fb for fb in filtered_feedbacks if fb.get("instructor_name") == selected_instructor_filter]
 
 
@@ -1477,7 +1556,7 @@ def main():
                                 podium_data[3] = sorted([p for p in sorted_rankings_tab if p['parsed_value'] == third_place_perf], key=lambda x: x['date'])
 
                             podium_cols = st.columns(3)
-                            medal_emojis = ["🥇", "🥈", "�"] 
+                            medal_emojis = ["🥇", "🥈", "🥉"] 
 
                             for i in range(3): 
                                 with podium_cols[i]:
@@ -1631,7 +1710,7 @@ def main():
                                 st.altair_chart(individual_lines_graph, use_container_width=True) 
                                 st.caption("Not enough data for quarterly average.")
         
-        if is_instructor_main_view and tab_divers: 
+        if is_admin_view_authorized and tab_divers: 
             with tab_divers:
                 # st.header(_("divers_tab_title", lang)) # Removed header
                 
@@ -1826,7 +1905,7 @@ def main():
                         summary_df = pd.DataFrame(summary_data)
                         st.dataframe(summary_df, use_container_width=True, hide_index=True)
         
-        if is_instructor_main_view and tab_training:
+        if is_admin_view_authorized and tab_training:
             with tab_training:
                 # st.header(_("training_log_tab_title", lang)) # Removed header
                 if not training_log_loaded:
@@ -1927,7 +2006,7 @@ def main():
                         with st.expander(expander_title):
                             st.markdown(entry.get('description', _("no_description_available", lang)))
         
-        if is_instructor_main_view and tab_performance_log:
+        if is_admin_view_authorized and tab_performance_log:
             with tab_performance_log: 
                 if not all_records_loaded:
                     st.info("No performances logged yet in the system.")
@@ -2074,7 +2153,7 @@ def main():
                         else:
                             st.info("No changes detected in all performances.")
         
-        if is_instructor_main_view and tab_feedback_log:
+        if is_admin_view_authorized and tab_feedback_log:
             with tab_feedback_log:
                 if not instructor_feedback_loaded:
                     st.info(_("no_feedback_in_log", lang))
@@ -2108,7 +2187,7 @@ def main():
                     diver_options_editor = all_known_users_list
                     instructor_options_editor_feedback = sorted([
                         user for user, profile in user_profiles.items() 
-                        if profile.get("certification") in instructor_cert_levels_main 
+                        if profile.get("certification") in INSTRUCTOR_CERT_LEVELS_FOR_ADMIN_TABS_AND_DROPDOWNS 
                     ])
                     if not instructor_options_editor_feedback: instructor_options_editor_feedback = [_("select_instructor_prompt", lang)] 
                     
@@ -2183,7 +2262,6 @@ def main():
                                         edited_training_id = log_id_map
                                         break
                             
-                            # Corrected condition to use edited_instructor_name_feedback
                             if not edited_diver or edited_diver == _("select_diver_prompt", lang) or \
                                not edited_instructor_name_feedback or edited_instructor_name_feedback == _("select_instructor_prompt", lang) or \
                                not edited_feedback_text: 

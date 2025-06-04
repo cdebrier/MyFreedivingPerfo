@@ -422,5 +422,13 @@
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "38",
         "parsed_value": 38
+    },
+    {
+        "id": "165a1f01688949fcb54637c51e0540f5",
+        "user": "Charles D.B.",
+        "date": "2025-06-04",
+        "discipline": "Static Apnea (STA)",
+        "original_performance_str": "4:00",
+        "parsed_value": 240.0
     }
 ]
