@@ -8,6 +8,7 @@ import altair as alt # Added for advanced charting
 RECORDS_FILE = "freediving_records.json"
 USER_PROFILES_FILE = "user_profiles.json" 
 TRAINING_LOG_FILE = "training_log.json" 
+INSTRUCTOR_FEEDBACK_FILE = "instructor_feedback.json" 
 
 # --- Language Translations ---
 TRANSLATIONS = {
@@ -87,6 +88,9 @@ TRANSLATIONS = {
         "certification_label": "Certification Level:",
         "certification_date_label": "Certification Date:", 
         "lifras_id_label": "LIFRAS ID:", 
+        "anonymize_results_label": "Anonymize my results", # New
+        "anonymize_results_col_editor": "Anonymize?", # New
+        "anonymous_diver_name": "Anonymous Diver", # New
         "save_profile_button": "💾 Save Profile",
         "profile_saved_success": "Profile saved successfully for {user}!",
         "select_user_to_edit_profile": "Select a user from the sidebar to view or edit their profile.", 
@@ -114,7 +118,7 @@ TRANSLATIONS = {
         "performance_updated_success": "Performance updated successfully.",
         "history_updated_success": "History updated successfully.",
         "critical_error_edit_id_not_found": "Critical error: Record ID '{record_id}' to edit not found in master list. Edit cancelled.",
-        "club_performances_tab_title": "📈 Club Performances",
+        "club_performances_tab_title": "📈 Club Performances", 
         "no_data_for_club_performance_display": "No performance data available for the club in this discipline.",
         "quarterly_average_label": "Quarterly Average",
         "divers_tab_title": "🫂 Divers",
@@ -145,9 +149,28 @@ TRANSLATIONS = {
         "training_log_table_header": "📋 Training Sessions (Editable)",
         "save_training_log_changes_button": "💾 Save Training Log Changes",
         "training_log_updated_success": "Training log updated successfully.",
-        "all_performances_tab_title": "📜 All Performances", 
-        "save_all_performances_button": "💾 Save All Performance Changes", 
-        "all_performances_updated_success": "All performances updated successfully." 
+        "all_performances_tab_title": "📜 Performance Log", 
+        "save_all_performances_button": "💾 Save Performance Log Changes", 
+        "all_performances_updated_success": "Performance log updated successfully.",
+        "feedback_log_tab_title": "💬 Feedback Log",
+        "my_feedbacks_tab_title": "📬 My Feedbacks",
+        "log_feedback_header_sidebar": "📝 Log Instructor Feedback",
+        "feedback_for_diver_label": "Feedback for Diver:",
+        "training_session_label": "Linked Training Session:",
+        "instructor_name_label": "Instructor Name:",
+        "feedback_text_label": "Feedback:",
+        "save_feedback_button": "💾 Save Feedback",
+        "feedback_saved_success": "Feedback saved successfully!",
+        "feedback_text_empty_error": "Feedback text cannot be empty.",
+        "feedback_log_table_header": "📋 Feedback Log (Editable)",
+        "save_feedback_log_changes_button": "💾 Save Feedback Log Changes",
+        "feedback_log_updated_success": "Feedback log updated successfully.",
+        "no_feedback_for_user": "No feedback received yet.",
+        "no_feedback_in_log": "No feedback logged in the system yet.",
+        "feedback_date_col": "Feedback Date",
+        "select_training_prompt": "Select a training session (optional)",
+        "select_diver_prompt": "Select Diver",
+        "select_instructor_prompt": "Select Instructor"
     },
     "fr": {
         "page_title": "Carnet d'Apnée",
@@ -225,6 +248,9 @@ TRANSLATIONS = {
         "certification_label": "Niveau de Brevet :",
         "certification_date_label": "Date du Brevet :", 
         "lifras_id_label": "ID LIFRAS :", 
+        "anonymize_results_label": "Anonymiser mes résultats", 
+        "anonymize_results_col_editor": "Anonymiser ?", 
+        "anonymous_diver_name": "Apnéiste Anonyme", 
         "save_profile_button": "💾 Enregistrer le Profil",
         "profile_saved_success": "Profil enregistré avec succès pour {user} !",
         "select_user_to_edit_profile": "Sélectionnez un utilisateur dans la barre latérale pour voir ou modifier son profil.",
@@ -252,7 +278,7 @@ TRANSLATIONS = {
         "performance_updated_success": "Performance mise à jour avec succès.",
         "history_updated_success": "Historique mis à jour avec succès.",
         "critical_error_edit_id_not_found": "Erreur critique : ID d'enregistrement '{record_id}' à modifier non trouvé dans la liste principale. Modification annulée.",
-        "club_performances_tab_title": "📈 Performances du Club",
+        "club_performances_tab_title": "📈 Performances du Club", 
         "no_data_for_club_performance_display": "Aucune donnée de performance disponible pour le club dans cette discipline.",
         "quarterly_average_label": "Moyenne Trimestrielle",
         "divers_tab_title": "🫂 Apnéistes",
@@ -283,9 +309,28 @@ TRANSLATIONS = {
         "training_log_table_header": "📋 Sessions d'Entraînement (Modifiable)",
         "save_training_log_changes_button": "💾 Sauvegarder le Journal d'Entraînement",
         "training_log_updated_success": "Journal d'entraînement mis à jour avec succès.",
-        "all_performances_tab_title": "📜 Toutes les Performances", 
-        "save_all_performances_button": "💾 Sauvegarder Toutes les Modifications", 
-        "all_performances_updated_success": "Toutes les performances ont été mises à jour." 
+        "all_performances_tab_title": "📜 Journal des Performances", 
+        "save_all_performances_button": "💾 Sauvegarder les Modifications du Journal", 
+        "all_performances_updated_success": "Journal des performances mis à jour avec succès.",
+        "feedback_log_tab_title": "💬 Journal des Feedbacks",
+        "my_feedbacks_tab_title": "📬 Mes Feedbacks",
+        "log_feedback_header_sidebar": "📝 Enregistrer Feedback Instructeur",
+        "feedback_for_diver_label": "Feedback pour l'Apnéiste :",
+        "training_session_label": "Session d'Entraînement Liée :",
+        "instructor_name_label": "Nom de l'Instructeur :",
+        "feedback_text_label": "Feedback :",
+        "save_feedback_button": "💾 Enregistrer Feedback",
+        "feedback_saved_success": "Feedback enregistré avec succès !",
+        "feedback_text_empty_error": "Le texte du feedback ne peut pas être vide.",
+        "feedback_log_table_header": "📋 Journal des Feedbacks (Modifiable)",
+        "save_feedback_log_changes_button": "💾 Sauvegarder Modifs. Journal Feedback",
+        "feedback_log_updated_success": "Journal des feedbacks mis à jour.",
+        "no_feedback_for_user": "Aucun feedback reçu pour l'instant.",
+        "no_feedback_in_log": "Aucun feedback enregistré dans le système.",
+        "feedback_date_col": "Date Feedback",
+        "select_training_prompt": "Sélectionnez une session (optionnel)",
+        "select_diver_prompt": "Sélectionnez l'Apnéiste",
+        "select_instructor_prompt": "Sélectionnez l'Instructeur"
     },
     "nl": {
         "page_title": "Vrijduik Logboek",
@@ -363,6 +408,9 @@ TRANSLATIONS = {
         "certification_label": "Certificeringsniveau:",
         "certification_date_label": "Certificatiedatum:", 
         "lifras_id_label": "LIFRAS ID:", 
+        "anonymize_results_label": "Mijn resultaten anonimiseren", 
+        "anonymize_results_col_editor": "Anonimiseren?", 
+        "anonymous_diver_name": "Anonieme Duiker", 
         "save_profile_button": "💾 Profiel Opslaan",
         "profile_saved_success": "Profiel succesvol opgeslagen voor {user}!",
         "select_user_to_edit_profile": "Selecteer een gebruiker in de zijbalk om hun profiel te bekijken of te bewerken.",
@@ -390,7 +438,7 @@ TRANSLATIONS = {
         "performance_updated_success": "Prestatie succesvol bijgewerkt.",
         "history_updated_success": "Geschiedenis succesvol bijgewerkt.",
         "critical_error_edit_id_not_found": "Kritieke fout: Record-ID '{record_id}' om te bewerken niet gevonden in hoofdlijst. Bewerken geannuleerd.",
-        "club_performances_tab_title": "📈 Clubprestaties",
+        "club_performances_tab_title": "📈 Clubprestaties", 
         "no_data_for_club_performance_display": "Geen prestatiegegevens beschikbaar voor de club in deze discipline.",
         "quarterly_average_label": "Kwartaalgemiddelde",
         "divers_tab_title": "🫂 Duikers",
@@ -421,9 +469,28 @@ TRANSLATIONS = {
         "training_log_table_header": "📋 Trainingssessies (Bewerkbaar)",
         "save_training_log_changes_button": "💾 Trainingslogboek Opslaan",
         "training_log_updated_success": "Trainingslogboek succesvol bijgewerkt.",
-        "all_performances_tab_title": "📜 Alle Prestaties", 
-        "save_all_performances_button": "💾 Alle Prestatiewijzigingen Opslaan", 
-        "all_performances_updated_success": "Alle prestaties succesvol bijgewerkt." 
+        "all_performances_tab_title": "📜 Prestatielogboek", 
+        "save_all_performances_button": "💾 Prestatielogboekwijzigingen Opslaan", 
+        "all_performances_updated_success": "Prestatielogboek succesvol bijgewerkt.",
+        "feedback_log_tab_title": "💬 Feedbacklogboek",
+        "my_feedbacks_tab_title": "📬 Mijn Feedbacks",
+        "log_feedback_header_sidebar": "📝 Instructeurfeedback Loggen",
+        "feedback_for_diver_label": "Feedback voor Duiker:",
+        "training_session_label": "Gekoppelde Trainingssessie:",
+        "instructor_name_label": "Naam Instructeur:",
+        "feedback_text_label": "Feedback:",
+        "save_feedback_button": "💾 Feedback Opslaan",
+        "feedback_saved_success": "Feedback succesvol opgeslagen!",
+        "feedback_text_empty_error": "Feedbacktekst mag niet leeg zijn.",
+        "feedback_log_table_header": "📋 Feedbacklogboek (Bewerkbaar)",
+        "save_feedback_log_changes_button": "💾 Feedbacklogboekwijzigingen Opslaan",
+        "feedback_log_updated_success": "Feedbacklogboek succesvol bijgewerkt.",
+        "no_feedback_for_user": "Nog geen feedback ontvangen.",
+        "no_feedback_in_log": "Nog geen feedback gelogd in het systeem.",
+        "feedback_date_col": "Feedbackdatum",
+        "select_training_prompt": "Selecteer een trainingssessie (optioneel)",
+        "select_diver_prompt": "Selecteer Duiker",
+        "select_instructor_prompt": "Selecteer Instructeur"
     }
 }
 
@@ -454,6 +521,14 @@ def _(key, lang=None, **kwargs):
         except KeyError: 
             print(f"Warning: Translation key '{key}' not found in '{lang}' or 'en'.")
             return key
+
+# --- Helper for anonymization ---
+def get_display_name(user_name, user_profiles, lang):
+    """Returns 'Anonymous Diver' if user chose to anonymize, else actual name."""
+    if user_name and user_name in user_profiles:
+        if user_profiles[user_name].get("anonymize_results", False):
+            return _("anonymous_diver_name", lang)
+    return user_name
 
 
 # --- Data Handling for Performance Records ---
@@ -523,6 +598,32 @@ def save_training_log(logs):
     """Saves training logs to the JSON file."""
     with open(TRAINING_LOG_FILE, 'w', encoding='utf-8') as f:
         json.dump(logs, f, indent=4, ensure_ascii=False)
+
+# --- Data Handling for Instructor Feedback ---
+def ensure_feedback_ids(feedback_list):
+    """Ensures all feedback entries have a unique ID."""
+    updated = False
+    for entry in feedback_list:
+        if entry.get('id') is None:
+            entry['id'] = uuid.uuid4().hex
+            updated = True
+    return updated
+
+def load_instructor_feedback():
+    """Loads instructor feedback from the JSON file and ensures IDs."""
+    try:
+        with open(INSTRUCTOR_FEEDBACK_FILE, 'r', encoding='utf-8') as f:
+            feedback_data = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        feedback_data = []
+    if ensure_feedback_ids(feedback_data):
+        save_instructor_feedback(feedback_data)
+    return feedback_data
+
+def save_instructor_feedback(feedback_data):
+    """Saves instructor feedback to the JSON file."""
+    with open(INSTRUCTOR_FEEDBACK_FILE, 'w', encoding='utf-8') as f:
+        json.dump(feedback_data, f, indent=4, ensure_ascii=False)
 
 
 # --- Performance Parsing and Formatting ---
@@ -594,6 +695,9 @@ def main():
         st.session_state.language = 'en'  
     if 'initiate_clear_training_inputs' not in st.session_state:
         st.session_state.initiate_clear_training_inputs = False
+    if 'initiate_clear_feedback_inputs' not in st.session_state: 
+        st.session_state.initiate_clear_feedback_inputs = False
+
     
     lang = st.session_state.language
 
@@ -601,6 +705,11 @@ def main():
         st.session_state.training_description = ""  
         st.session_state.training_place = "Blocry"    
         st.session_state.initiate_clear_training_inputs = False 
+    
+    if st.session_state.initiate_clear_feedback_inputs: 
+        st.session_state.feedback_text_input = ""
+        st.session_state.initiate_clear_feedback_inputs = False
+
 
     st.set_page_config(page_title=_("page_title", lang), layout="wide", initial_sidebar_state="expanded")
     st.title(_("app_title", lang))
@@ -623,194 +732,264 @@ def main():
     all_records_loaded = load_records() 
     user_profiles = load_user_profiles() 
     training_log_loaded = load_training_log() 
+    instructor_feedback_loaded = load_instructor_feedback() 
 
     discipline_keys = ["Static Apnea (STA)", "Dynamic Bi-fins (DYN-BF)", "Depth (CWT/FIM)", "Profondeur (VWT/NLT)", "16x25m Speed Endurance"] 
     translated_disciplines_for_display = [_("disciplines." + key, lang) for key in discipline_keys]
 
-    st.sidebar.header(_("user_management_header", lang))
-    users_from_records = set(r['user'] for r in all_records_loaded)
-    users_from_profiles = set(user_profiles.keys())
-    all_known_users_set = users_from_records.union(users_from_profiles)
-    all_known_users_list = sorted(list(all_known_users_set)) if all_known_users_set else []
-    
-    current_user = None
-    if all_known_users_list:
-        user_options_sidebar = [_("add_new_user_option", lang)] + all_known_users_list
-        default_user_for_selectbox = st.session_state.get("current_user_sidebar_selection", user_options_sidebar[1] if len(user_options_sidebar) > 1 else user_options_sidebar[0])
-        try:
-            default_selection_index_sidebar = user_options_sidebar.index(default_user_for_selectbox)
-        except ValueError: 
-            default_selection_index_sidebar = 1 if all_known_users_list else 0
+    with st.sidebar.container(border=True): 
+        st.header(_("user_management_header", lang))
+        users_from_records = set(r['user'] for r in all_records_loaded)
+        users_from_profiles = set(user_profiles.keys())
+        all_known_users_set = users_from_records.union(users_from_profiles)
+        all_known_users_list = sorted(list(all_known_users_set)) if all_known_users_set else []
+        
+        current_user = None
+        if all_known_users_list:
+            user_options_sidebar = [_("add_new_user_option", lang)] + all_known_users_list
+            default_user_for_selectbox = st.session_state.get("current_user_sidebar_selection", user_options_sidebar[1] if len(user_options_sidebar) > 1 else user_options_sidebar[0])
+            try:
+                default_selection_index_sidebar = user_options_sidebar.index(default_user_for_selectbox)
+            except ValueError: 
+                default_selection_index_sidebar = 1 if all_known_users_list else 0
 
-        selected_option_sidebar = st.sidebar.selectbox(
-            _("select_user_or_add", lang), 
-            user_options_sidebar, 
-            index=default_selection_index_sidebar, 
-            key="user_selection_dropdown_widget" 
-        )
-        st.session_state.current_user_sidebar_selection = selected_option_sidebar 
+            selected_option_sidebar = st.selectbox(
+                _("select_user_or_add", lang), 
+                user_options_sidebar, 
+                index=default_selection_index_sidebar, 
+                key="user_selection_dropdown_widget" 
+            )
+            st.session_state.current_user_sidebar_selection = selected_option_sidebar 
 
-        if selected_option_sidebar == _("add_new_user_option", lang):
-            new_user_name_input_sidebar = st.sidebar.text_input(_("enter_new_user_name", lang), key="new_user_existing_list_input").strip()
+            if selected_option_sidebar == _("add_new_user_option", lang):
+                new_user_name_input_sidebar = st.text_input(_("enter_new_user_name", lang), key="new_user_existing_list_input").strip()
+                if new_user_name_input_sidebar:
+                    current_user = new_user_name_input_sidebar
+                    if current_user in all_known_users_list:
+                         st.info(_("existing_user_selected", lang, user=current_user))
+                    else: 
+                         st.success(_("new_user_success", lang, user=current_user).split('.')[0] + ". Log a performance or save profile to confirm.")
+                         if current_user not in user_profiles:
+                             user_profiles[current_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": "", "anonymize_results": False} 
+            else:
+                current_user = selected_option_sidebar
+        else: 
+            st.info(_("no_users_yet", lang))
+            new_user_name_input_sidebar = st.text_input(_("enter_new_user_name", lang), key="new_user_empty_list_input").strip()
             if new_user_name_input_sidebar:
                 current_user = new_user_name_input_sidebar
-                if current_user in all_known_users_list:
-                     st.sidebar.info(_("existing_user_selected", lang, user=current_user))
-                else: 
-                     st.sidebar.success(_("new_user_success", lang, user=current_user).split('.')[0] + ". Log a performance or save profile to confirm.")
-                     if current_user not in user_profiles:
-                         user_profiles[current_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": ""} 
+                st.success(_("new_user_success", lang, user=current_user).split('.')[0] + ". Log a performance or save profile.")
+                if current_user not in user_profiles: 
+                    user_profiles[current_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": "", "anonymize_results": False}
+
+        st.session_state.current_user = current_user
+
+    with st.sidebar.container(border=True): 
+        st.header(_("log_performance_header", lang))
+        if not current_user:
+            st.warning(_("select_user_first_warning", lang))
         else:
-            current_user = selected_option_sidebar
-    else: 
-        st.sidebar.info(_("no_users_yet", lang))
-        new_user_name_input_sidebar = st.sidebar.text_input(_("enter_new_user_name", lang), key="new_user_empty_list_input").strip()
-        if new_user_name_input_sidebar:
-            current_user = new_user_name_input_sidebar
-            st.sidebar.success(_("new_user_success", lang, user=current_user).split('.')[0] + ". Log a performance or save profile.")
-            if current_user not in user_profiles: 
-                user_profiles[current_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": ""}
+            st.write(_("logging_for", lang, user=current_user))
+            log_date_input_val = st.date_input(_("date_of_performance", lang), date.today(), key="log_date_input_perf") 
+            selected_translated_discipline = st.selectbox(
+                _("discipline", lang), 
+                translated_disciplines_for_display, 
+                key="log_discipline_select"
+            )
+            log_discipline_original_key = None 
+            for key_iter in discipline_keys: 
+                if _("disciplines." + key_iter, lang) == selected_translated_discipline:
+                    log_discipline_original_key = key_iter
+                    break
+            
+            performance_help_text = ""
+            if is_time_based_discipline(log_discipline_original_key):
+                performance_help_text = _("sta_help", lang)
+            elif log_discipline_original_key in ["Dynamic Bi-fins (DYN-BF)", "Depth (CWT/FIM)", "Profondeur (VWT/NLT)"]: 
+                performance_help_text = _("dyn_depth_help", lang)
+            
+            log_performance_str = st.text_input(_("performance_value", lang), help=performance_help_text, key="log_performance_input").strip()
 
-    st.session_state.current_user = current_user
-
-    st.sidebar.header(_("log_performance_header", lang))
-    if not current_user:
-        st.sidebar.warning(_("select_user_first_warning", lang))
-    else:
-        st.sidebar.write(_("logging_for", lang, user=current_user))
-        log_date_input_val = st.sidebar.date_input(_("date_of_performance", lang), date.today(), key="log_date_input_perf") 
-        selected_translated_discipline = st.sidebar.selectbox(
-            _("discipline", lang), 
-            translated_disciplines_for_display, 
-            key="log_discipline_select"
-        )
-        log_discipline_original_key = None 
-        for key_iter in discipline_keys: 
-            if _("disciplines." + key_iter, lang) == selected_translated_discipline:
-                log_discipline_original_key = key_iter
-                break
+            if st.button(_("save_performance_button", lang), key="save_performance_button"):
+                if not log_performance_str: st.error(_("performance_value_empty_error", lang))
+                elif not log_discipline_original_key: st.error("Internal error: Discipline key not found.") 
+                else:
+                    valid_input = True
+                    parsed_value_for_storage = None
+                    if is_time_based_discipline(log_discipline_original_key):
+                        parsed_value_for_storage = parse_static_time_to_seconds(log_performance_str, lang)
+                    else: 
+                        parsed_value_for_storage = parse_distance_to_meters(log_performance_str, lang)
+                    
+                    if parsed_value_for_storage is None: 
+                         valid_input = False
+                    
+                    if valid_input:
+                        new_record = {
+                            "id": uuid.uuid4().hex, 
+                            "user": current_user, "date": log_date_input_val.isoformat(),
+                            "discipline": log_discipline_original_key, 
+                            "original_performance_str": log_performance_str,
+                            "parsed_value": parsed_value_for_storage}
+                        all_records_loaded.append(new_record) 
+                        save_records(all_records_loaded)    
+                        if current_user not in user_profiles: 
+                            user_profiles[current_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": "", "anonymize_results": False}
+                            save_user_profiles(user_profiles)
+                        st.success(_("performance_saved_success", lang, user=current_user))
+                        st.rerun() 
+                    elif parsed_value_for_storage is None and log_performance_str: 
+                        pass 
+                    elif not log_performance_str: 
+                        pass
+    
+    with st.sidebar.container(border=True): 
+        st.header(_("log_training_header_sidebar", lang))
+        training_date_log_val = st.date_input(_("training_date_label", lang), date.today(), key="training_date_input_widget") 
         
-        performance_help_text = ""
-        if is_time_based_discipline(log_discipline_original_key):
-            performance_help_text = _("sta_help", lang)
-        elif log_discipline_original_key in ["Dynamic Bi-fins (DYN-BF)", "Depth (CWT/FIM)", "Profondeur (VWT/NLT)"]: 
-            performance_help_text = _("dyn_depth_help", lang)
+        if "training_place" not in st.session_state:
+            st.session_state.training_place = "Blocry" 
+        st.text_input(_("training_place_label", lang), key="training_place")
         
-        log_performance_str = st.sidebar.text_input(_("performance_value", lang), help=performance_help_text, key="log_performance_input").strip()
+        if "training_description" not in st.session_state:
+            st.session_state.training_description = ""
+        st.text_area(_("training_description_label", lang), key="training_description")
 
-        if st.sidebar.button(_("save_performance_button", lang), key="save_performance_button"):
-            if not log_performance_str: st.sidebar.error(_("performance_value_empty_error", lang))
-            elif not log_discipline_original_key: st.sidebar.error("Internal error: Discipline key not found.") 
+        if st.button(_("save_training_button", lang), key="save_training_actual_button"): 
+            desc_to_save = st.session_state.training_description
+            place_to_save = st.session_state.training_place
+
+            if not desc_to_save.strip():
+                st.error(_("training_description_empty_error", lang))
             else:
-                valid_input = True
-                parsed_value_for_storage = None
-                if is_time_based_discipline(log_discipline_original_key):
-                    parsed_value_for_storage = parse_static_time_to_seconds(log_performance_str, lang)
-                else: 
-                    parsed_value_for_storage = parse_distance_to_meters(log_performance_str, lang)
-                
-                if parsed_value_for_storage is None: 
-                     valid_input = False
-                
-                if valid_input:
-                    new_record = {
-                        "id": uuid.uuid4().hex, 
-                        "user": current_user, "date": log_date_input_val.isoformat(),
-                        "discipline": log_discipline_original_key, 
-                        "original_performance_str": log_performance_str,
-                        "parsed_value": parsed_value_for_storage}
-                    all_records_loaded.append(new_record) 
-                    save_records(all_records_loaded)    
-                    if current_user not in user_profiles: 
-                        user_profiles[current_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": ""}
-                        save_user_profiles(user_profiles)
-                    st.sidebar.success(_("performance_saved_success", lang, user=current_user))
-                    st.rerun() 
-                elif parsed_value_for_storage is None and log_performance_str: 
-                    pass 
-                elif not log_performance_str: 
-                    pass
-    
-    # --- Log New Training Session ---
-    st.sidebar.markdown("---")
-    st.sidebar.header(_("log_training_header_sidebar", lang))
-    training_date_log_val = st.sidebar.date_input(_("training_date_label", lang), date.today(), key="training_date_input_widget") 
-    
-    if "training_place" not in st.session_state:
-        st.session_state.training_place = "Blocry" 
-    st.sidebar.text_input(_("training_place_label", lang), key="training_place")
-    
-    if "training_description" not in st.session_state:
-        st.session_state.training_description = ""
-    st.sidebar.text_area(_("training_description_label", lang), key="training_description")
+                new_training_entry = {
+                    "id": uuid.uuid4().hex,
+                    "date": training_date_log_val.isoformat(), 
+                    "place": place_to_save.strip(),
+                    "description": desc_to_save.strip()
+                }
+                training_log_loaded.append(new_training_entry)
+                save_training_log(training_log_loaded)
+                st.success(_("training_session_saved_success", lang))
+                st.session_state.initiate_clear_training_inputs = True
+                st.rerun()
 
-    if st.sidebar.button(_("save_training_button", lang), key="save_training_actual_button"): 
-        desc_to_save = st.session_state.training_description
-        place_to_save = st.session_state.training_place
-
-        if not desc_to_save.strip():
-            st.sidebar.error(_("training_description_empty_error", lang))
+    with st.sidebar.container(border=True): 
+        st.header(_("log_feedback_header_sidebar", lang))
+        if not all_known_users_list:
+            st.warning("Please add users before logging feedback.")
+        elif not current_user: 
+            st.warning("Please select your user profile (as instructor) before logging feedback for another diver.")
         else:
-            new_training_entry = {
-                "id": uuid.uuid4().hex,
-                "date": training_date_log_val.isoformat(), 
-                "place": place_to_save.strip(),
-                "description": desc_to_save.strip()
+            feedback_for_user = st.selectbox(
+                _("feedback_for_diver_label", lang), 
+                options=[_("select_diver_prompt", lang)] + [u for u in all_known_users_list if u != current_user], 
+                key="feedback_for_user_select"
+            )
+            
+            training_session_options = {
+                log['id']: f"{log['date']} - {log['place']}" for log in sorted(training_log_loaded, key=lambda x: x['date'], reverse=True)
             }
-            training_log_loaded.append(new_training_entry)
-            save_training_log(training_log_loaded)
-            st.sidebar.success(_("training_session_saved_success", lang))
-            st.session_state.initiate_clear_training_inputs = True
-            st.rerun()
+            training_session_options_display = [_("select_training_prompt", lang)] + list(training_session_options.values())
+            selected_training_display = st.selectbox(
+                _("training_session_label", lang),
+                options=training_session_options_display,
+                key="feedback_training_session_select"
+            )
+            selected_training_id = None
+            for log_id, display_str in training_session_options.items():
+                if display_str == selected_training_display:
+                    selected_training_id = log_id
+                    break
+
+            instructor_name_for_feedback = current_user 
+            st.write(f"{_('instructor_name_label', lang)} {instructor_name_for_feedback}")
+
+
+            if "feedback_text_input" not in st.session_state: 
+                st.session_state.feedback_text_input = ""
+            st.text_area(_("feedback_text_label", lang), key="feedback_text_input")
+
+            if st.button(_("save_feedback_button", lang), key="save_feedback"):
+                feedback_text_to_save = st.session_state.feedback_text_input
+                if feedback_for_user == _("select_diver_prompt", lang):
+                    st.error("Please select a diver for the feedback.")
+                elif not instructor_name_for_feedback: 
+                     st.error("Instructor not identified.")
+                elif not feedback_text_to_save.strip():
+                    st.error(_("feedback_text_empty_error", lang))
+                else:
+                    new_feedback = {
+                        "id": uuid.uuid4().hex,
+                        "feedback_date": date.today().isoformat(), 
+                        "diver_name": feedback_for_user,
+                        "training_session_id": selected_training_id, 
+                        "instructor_name": instructor_name_for_feedback,
+                        "feedback_text": feedback_text_to_save.strip()
+                    }
+                    instructor_feedback_loaded.append(new_feedback)
+                    save_instructor_feedback(instructor_feedback_loaded)
+                    st.success(_("feedback_saved_success", lang))
+                    st.session_state.initiate_clear_feedback_inputs = True
+                    st.rerun()
 
 
     # --- Profile Section in Sidebar ---
     if current_user:
-        st.sidebar.markdown("---") 
-        st.sidebar.header(_("profile_header_sidebar", lang))
-        user_profile_data_sidebar = user_profiles.get(current_user, {})
-        
-        current_certification_sidebar = user_profile_data_sidebar.get("certification", _("no_certification_option", lang))
-        cert_level_keys_from_dict_sidebar = list(TRANSLATIONS[lang]["certification_levels"].keys()) 
-        actual_selectbox_options_sidebar = [_("no_certification_option", lang)] + cert_level_keys_from_dict_sidebar
-        try:
-            current_cert_index_sidebar = actual_selectbox_options_sidebar.index(current_certification_sidebar)
-        except ValueError: 
-            current_cert_index_sidebar = 0 
-        new_certification_sidebar = st.sidebar.selectbox(
-            _("certification_label", lang),
-            options=actual_selectbox_options_sidebar,
-            index=current_cert_index_sidebar,
-            key="certification_select_sidebar" 
-        )
-
-        current_cert_date_str_sidebar = user_profile_data_sidebar.get("certification_date")
-        current_cert_date_obj_sidebar = None
-        if current_cert_date_str_sidebar:
+        with st.sidebar.container(border=True): 
+            st.header(_("profile_header_sidebar", lang))
+            user_profile_data_sidebar = user_profiles.get(current_user, {})
+            
+            current_certification_sidebar = user_profile_data_sidebar.get("certification", _("no_certification_option", lang))
+            cert_level_keys_from_dict_sidebar = list(TRANSLATIONS[lang]["certification_levels"].keys()) 
+            actual_selectbox_options_sidebar = [_("no_certification_option", lang)] + cert_level_keys_from_dict_sidebar
             try:
-                current_cert_date_obj_sidebar = date.fromisoformat(current_cert_date_str_sidebar)
-            except ValueError:
-                current_cert_date_obj_sidebar = None 
-        
-        new_cert_date_sidebar = st.sidebar.date_input(
-            _("certification_date_label", lang), 
-            value=current_cert_date_obj_sidebar, 
-            key="cert_date_sidebar"
-        )
-        
-        current_lifras_id_sidebar = user_profile_data_sidebar.get("lifras_id", "")
-        new_lifras_id_sidebar = st.sidebar.text_input(
-            _("lifras_id_label", lang), 
-            value=current_lifras_id_sidebar, 
-            key="lifras_id_sidebar"
-        )
+                current_cert_index_sidebar = actual_selectbox_options_sidebar.index(current_certification_sidebar)
+            except ValueError: 
+                current_cert_index_sidebar = 0 
+            new_certification_sidebar = st.selectbox(
+                _("certification_label", lang),
+                options=actual_selectbox_options_sidebar,
+                index=current_cert_index_sidebar,
+                key="certification_select_sidebar" 
+            )
 
-        if st.sidebar.button(_("save_profile_button", lang), key="save_profile_btn_sidebar"):
-            user_profiles.setdefault(current_user, {})["certification"] = new_certification_sidebar
-            user_profiles[current_user]["certification_date"] = new_cert_date_sidebar.isoformat() if new_cert_date_sidebar else None
-            user_profiles[current_user]["lifras_id"] = new_lifras_id_sidebar.strip()
-            save_user_profiles(user_profiles)
-            st.sidebar.success(_("profile_saved_success", lang, user=current_user))
+            current_cert_date_str_sidebar = user_profile_data_sidebar.get("certification_date")
+            current_cert_date_obj_sidebar = None
+            if current_cert_date_str_sidebar:
+                try:
+                    current_cert_date_obj_sidebar = date.fromisoformat(current_cert_date_str_sidebar)
+                except ValueError:
+                    current_cert_date_obj_sidebar = None 
+            
+            new_cert_date_sidebar = st.date_input(
+                _("certification_date_label", lang), 
+                value=current_cert_date_obj_sidebar, 
+                key="cert_date_sidebar"
+            )
+            
+            current_lifras_id_sidebar = user_profile_data_sidebar.get("lifras_id", "")
+            new_lifras_id_sidebar = st.text_input(
+                _("lifras_id_label", lang), 
+                value=current_lifras_id_sidebar, 
+                key="lifras_id_sidebar"
+            )
+            
+            current_anonymize_sidebar = user_profile_data_sidebar.get("anonymize_results", False)
+            new_anonymize_sidebar = st.checkbox(
+                _("anonymize_results_label", lang), 
+                value=current_anonymize_sidebar, 
+                key="anonymize_sidebar"
+            )
+
+
+            if st.button(_("save_profile_button", lang), key="save_profile_btn_sidebar"):
+                user_profiles.setdefault(current_user, {})["certification"] = new_certification_sidebar
+                user_profiles[current_user]["certification_date"] = new_cert_date_sidebar.isoformat() if new_cert_date_sidebar else None
+                user_profiles[current_user]["lifras_id"] = new_lifras_id_sidebar.strip()
+                user_profiles[current_user]["anonymize_results"] = new_anonymize_sidebar 
+                save_user_profiles(user_profiles)
+                st.success(_("profile_saved_success", lang, user=current_user))
     
 
     # --- Main Display Area with Top-Level Tabs ---
@@ -818,18 +997,20 @@ def main():
     if current_user: 
         personal_records_tab_name = _("records_for_header", lang, user=current_user)
     
-    all_performances_tab_name = _("all_performances_tab_title", lang) 
     ranking_tab_name = _("ranking_tab_title", lang)
-    club_perf_tab_name = _("club_performances_tab_title", lang) 
+    # club_perf_tab_name = _("club_performances_tab_title", lang) # Removed
     divers_tab_name = _("divers_tab_title", lang) 
+    my_feedbacks_tab_name = _("my_feedbacks_tab_title", lang) 
     training_log_main_tab_name = _("training_log_tab_title", lang) 
+    performance_log_tab_name = _("all_performances_tab_title", lang) 
+    feedback_log_main_tab_name = _("feedback_log_tab_title", lang) 
 
-    if not all_records_loaded and not all_known_users_list and not current_user and not training_log_loaded: 
+    if not all_records_loaded and not all_known_users_list and not current_user and not training_log_loaded and not instructor_feedback_loaded: 
         st.info(_("welcome_message", lang))
     else:
-        # The Profile tab is removed from here as it's in the sidebar
-        tab_personal, tab_all_perf, tab_ranking, tab_club_perf, tab_divers, tab_training = st.tabs(
-            [personal_records_tab_name, all_performances_tab_name, ranking_tab_name, club_perf_tab_name, divers_tab_name, training_log_main_tab_name]
+        # Updated tab order
+        tab_personal, tab_my_feedbacks, tab_ranking, tab_divers, tab_training, tab_performance_log, tab_feedback_log = st.tabs(
+            [personal_records_tab_name, my_feedbacks_tab_name, ranking_tab_name, divers_tab_name, training_log_main_tab_name, performance_log_tab_name, feedback_log_main_tab_name]
         )
 
         with tab_personal:
@@ -1024,154 +1205,28 @@ def main():
             else: 
                 st.info(_("select_user_to_view_personal_records", lang))
         
-        with tab_all_perf:
-            # st.header(_("all_performances_tab_title", lang)) # Removed header
-            if not all_records_loaded:
-                st.info("No performances logged yet in the system.")
+        with tab_my_feedbacks:
+            if current_user:
+                st.subheader(f"{_('my_feedbacks_tab_title', lang)} ({current_user})")
+                user_feedbacks = [
+                    fb for fb in instructor_feedback_loaded 
+                    if fb.get("diver_name") == current_user
+                ]
+                if not user_feedbacks:
+                    st.info(_("no_feedback_for_user", lang))
+                else:
+                    for fb in sorted(user_feedbacks, key=lambda x: x['feedback_date'], reverse=True):
+                        with st.expander(f"{_('feedback_date_col', lang)}: {fb['feedback_date']} - {_('instructor_name_label', lang)} {fb['instructor_name']}"):
+                            training_session_info = "N/A"
+                            if fb.get("training_session_id"):
+                                linked_training = next((ts for ts in training_log_loaded if ts.get("id") == fb["training_session_id"]), None)
+                                if linked_training:
+                                    training_session_info = f"{linked_training['date']} - {linked_training['place']}"
+                            st.markdown(f"**{_('training_session_label', lang)}** {training_session_info}")
+                            st.markdown(f"**{_('feedback_text_label', lang)}**")
+                            st.markdown(fb['feedback_text'])
             else:
-                all_perf_display_list = []
-                for rec in sorted(all_records_loaded, key=lambda x: x['date'], reverse=True):
-                    all_perf_display_list.append({
-                        "id": rec.get("id"),
-                        _("history_date_col", lang): rec.get("date"),
-                        _("user_col", lang): rec.get("user"),
-                        _("history_discipline_col", lang): rec.get("discipline"), # Store original key
-                        _("history_performance_col", lang): rec.get("original_performance_str", ""),
-                        _("history_delete_col_editor", lang): False
-                    })
-                
-                all_perf_df_for_editor = pd.DataFrame(all_perf_display_list)
-
-                if not all_perf_df_for_editor.empty:
-                    date_col_all_perf = _("history_date_col", lang)
-                    all_perf_df_for_editor[date_col_all_perf] = pd.to_datetime(
-                        all_perf_df_for_editor[date_col_all_perf],
-                        errors='coerce'
-                    ).dt.date
-                
-                discipline_options_editor = discipline_keys 
-                
-                edited_all_perf_df = st.data_editor(
-                    all_perf_df_for_editor,
-                    column_config={
-                        "id": None,
-                        _("history_date_col", lang): st.column_config.DateColumn(
-                            label=_("history_date_col", lang), format="YYYY-MM-DD", required=True
-                        ),
-                        _("user_col", lang): st.column_config.TextColumn(
-                            label=_("user_col", lang), required=True
-                        ),
-                        _("history_discipline_col", lang): st.column_config.SelectboxColumn(
-                            label=_("history_discipline_col", lang),
-                            options=discipline_options_editor, 
-                            # format_func removed as it's not a valid argument here
-                            required=True
-                        ),
-                        _("history_performance_col", lang): st.column_config.TextColumn(
-                            label=_("history_performance_col", lang), required=True
-                        ),
-                        _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(
-                            label=_("history_delete_col_editor", lang), default=False
-                        )
-                    },
-                    hide_index=True,
-                    key="all_performances_data_editor",
-                    num_rows="dynamic" 
-                )
-
-                if st.button(_("save_all_performances_button", lang), key="save_all_perf_changes"):
-                    changes_made_all_perf = False
-                    temp_master_records = [r.copy() for r in all_records_loaded] 
-                    newly_added_records_from_editor = []
-
-
-                    for index, edited_row_data in edited_all_perf_df.to_dict(orient="records"):
-                        record_id = edited_row_data.get("id")
-                        
-                        is_new_row = record_id is None 
-
-                        if is_new_row:
-                            record_id = uuid.uuid4().hex 
-                            edited_row_data["id"] = record_id 
-                        
-                        if edited_row_data[_("history_delete_col_editor", lang)] and not is_new_row:
-                            temp_master_records = [r for r in temp_master_records if r.get("id") != record_id]
-                            changes_made_all_perf = True
-                            continue 
-
-                        edited_user = edited_row_data[_("user_col", lang)].strip()
-                        edited_discipline_key = edited_row_data[_("history_discipline_col", lang)] 
-                        edited_perf_str = str(edited_row_data[_("history_performance_col", lang)]).strip()
-                        
-                        edited_date_obj = edited_row_data[_("history_date_col", lang)]
-                        edited_date_str = None
-                        if isinstance(edited_date_obj, date):
-                            edited_date_str = edited_date_obj.isoformat()
-                        elif isinstance(edited_date_obj, str): 
-                             try:
-                                 edited_date_str = date.fromisoformat(edited_date_obj).isoformat()
-                             except ValueError:
-                                 st.error(f"Invalid date format '{edited_date_obj}' for user {edited_user}. Skipping row.")
-                                 continue
-                        else: 
-                            st.error(f"Invalid date provided for user {edited_user}. Skipping row.")
-                            continue
-
-
-                        if not edited_user or not edited_discipline_key or not edited_perf_str or not edited_date_str:
-                            st.error(f"Missing data for one of the records (User: {edited_user}, Discipline: {edited_discipline_key}, Performance: {edited_perf_str}, Date: {edited_date_str}). Skipping.")
-                            continue
-                        
-                        parsed_value = None
-                        if is_time_based_discipline(edited_discipline_key):
-                            parsed_value = parse_static_time_to_seconds(edited_perf_str, lang)
-                        else:
-                            parsed_value = parse_distance_to_meters(edited_perf_str, lang)
-                        
-                        if parsed_value is None:
-                            st.error(f"Invalid performance format '{edited_perf_str}' for {edited_discipline_key} (User: {edited_user}). Skipping row.")
-                            continue
-
-                        if is_new_row:
-                             newly_added_records_from_editor.append({
-                                "id": record_id,
-                                "user": edited_user,
-                                "date": edited_date_str,
-                                "discipline": edited_discipline_key,
-                                "original_performance_str": edited_perf_str,
-                                "parsed_value": parsed_value
-                            })
-                             changes_made_all_perf = True
-                             if edited_user not in user_profiles:
-                                 user_profiles[edited_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": ""}
-                        else: 
-                            original_record_index = next((i for i, r_item in enumerate(temp_master_records) if r_item.get("id") == record_id), -1)
-                            if original_record_index != -1:
-                                original_rec_data = temp_master_records[original_record_index]
-                                if (original_rec_data.get('date') != edited_date_str or
-                                    original_rec_data.get('user') != edited_user or
-                                    original_rec_data.get('discipline') != edited_discipline_key or
-                                    original_rec_data.get('original_performance_str') != edited_perf_str):
-                                    
-                                    temp_master_records[original_record_index]['date'] = edited_date_str
-                                    temp_master_records[original_record_index]['user'] = edited_user
-                                    temp_master_records[original_record_index]['discipline'] = edited_discipline_key
-                                    temp_master_records[original_record_index]['original_performance_str'] = edited_perf_str
-                                    temp_master_records[original_record_index]['parsed_value'] = parsed_value
-                                    changes_made_all_perf = True
-                                    if edited_user not in user_profiles:
-                                        user_profiles[edited_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": ""}
-
-
-                    if changes_made_all_perf:
-                        all_records_loaded[:] = temp_master_records + newly_added_records_from_editor
-                        save_records(all_records_loaded)
-                        save_user_profiles(user_profiles) 
-                        st.success(_("all_performances_updated_success", lang))
-                        st.rerun()
-                    else:
-                        st.info("No changes detected in all performances.")
-
+                st.info(_("select_user_to_view_personal_records", lang)) 
 
         with tab_ranking:
             if not all_records_loaded:
@@ -1209,9 +1264,12 @@ def main():
                             short_disc_name_club = translated_full_disc_name_club.split('(')[0].strip()
                             if not short_disc_name_club: short_disc_name_club = translated_full_disc_name_club
                             
+                            # Use get_display_name for club bests
+                            display_user_club = get_display_name(user_club, user_profiles, lang) if user_club else _("anonymous_diver_name", lang)
+
                             st.metric(label=_("club_best_label", lang, discipline_short_name=short_disc_name_club), value=val_club)
                             if user_club and date_club:
-                                st.caption(_("achieved_by_on_caption", lang, user=user_club, date=date_club))
+                                st.caption(_("achieved_by_on_caption", lang, user=display_user_club, date=date_club))
                             elif val_club == "N/A":
                                 st.caption(_("no_record_yet_caption", lang))
                 st.markdown("") 
@@ -1242,8 +1300,8 @@ def main():
                                     "original_performance_str": best_record_for_user_ranking.get('original_performance_str')
                                 })
                         
-                        sort_reverse_ranking = True
-                        if selected_discipline_ranking_key == "16x25m Speed Endurance":
+                        sort_reverse_ranking = True 
+                        if selected_discipline_ranking_key == "16x25m Speed Endurance": 
                             sort_reverse_ranking = False 
                         
                         sorted_rankings_tab = sorted(user_pbs_for_discipline_ranking, key=lambda x_sort_tab: x_sort_tab['parsed_value'], reverse=sort_reverse_ranking)
@@ -1253,21 +1311,59 @@ def main():
                             st.info(_("no_ranking_data", lang))
                         else:
                             st.subheader(_("podium_header", lang))
-                            podium_cols_tab = st.columns(3)
-                            medal_emojis_tab = ["🥇", "🥈", "🥉"]
-                            for i_podium_tab, rank_entry_tab in enumerate(sorted_rankings_tab[:3]):
-                                with podium_cols_tab[i_podium_tab]:
-                                    perf_display_podium_tab = ""
-                                    if is_time_based_discipline(selected_discipline_ranking_key):
-                                        perf_display_podium_tab = format_seconds_to_static_time(rank_entry_tab['parsed_value'])
-                                    else:
-                                        perf_display_podium_tab = f"{rank_entry_tab['parsed_value']}m"
-                                    st.markdown(f"<div style='text-align: center; border: 2px solid #ddd; border-radius: 10px; padding: 10px; margin: 5px; background-color: #f9f9f9;'><h3>{medal_emojis_tab[i_podium_tab]} {rank_entry_tab['user']}</h3><h4>{perf_display_podium_tab}</h4><p style='font-size: 0.9em;'>{_('achieved_on_caption', lang, date=rank_entry_tab['date'])}</p></div>", unsafe_allow_html=True)
                             
-                            if len(sorted_rankings_tab) < 3: 
-                                for i_empty_podium_tab in range(len(sorted_rankings_tab), 3):
-                                     with podium_cols_tab[i_empty_podium_tab]:
-                                        st.markdown(f"<div style='text-align: center; border: 2px solid #eee; border-radius: 10px; padding: 10px; margin: 5px; opacity: 0.5;'><h3>{medal_emojis_tab[i_empty_podium_tab]}</h3><h4>-</h4><p style='font-size: 0.9em;'>&nbsp;</p></div>", unsafe_allow_html=True)
+                            podium_data = {1: [], 2: [], 3: []}
+                            distinct_podium_performances = []
+                            
+                            temp_distinct_perfs = []
+                            if sorted_rankings_tab:
+                                temp_distinct_perfs.append(sorted_rankings_tab[0]['parsed_value'])
+                                for p_entry in sorted_rankings_tab:
+                                    if p_entry['parsed_value'] != temp_distinct_perfs[-1] and len(temp_distinct_perfs) < 3:
+                                        temp_distinct_perfs.append(p_entry['parsed_value'])
+                                    elif len(temp_distinct_perfs) >=3:
+                                        break
+                            distinct_podium_performances = temp_distinct_perfs
+
+                            if len(distinct_podium_performances) > 0:
+                                first_place_perf = distinct_podium_performances[0]
+                                podium_data[1] = sorted([p for p in sorted_rankings_tab if p['parsed_value'] == first_place_perf], key=lambda x: x['date'])
+                            
+                            if len(distinct_podium_performances) > 1:
+                                second_place_perf = distinct_podium_performances[1]
+                                podium_data[2] = sorted([p for p in sorted_rankings_tab if p['parsed_value'] == second_place_perf], key=lambda x: x['date'])
+
+                            if len(distinct_podium_performances) > 2:
+                                third_place_perf = distinct_podium_performances[2]
+                                podium_data[3] = sorted([p for p in sorted_rankings_tab if p['parsed_value'] == third_place_perf], key=lambda x: x['date'])
+
+                            podium_cols = st.columns(3)
+                            medal_emojis = ["🥇", "🥈", "🥉"] 
+
+                            for i in range(3): 
+                                with podium_cols[i]:
+                                    place = i + 1
+                                    if podium_data[place]:
+                                        st.markdown(f"<h3 style='text-align: center;'>{medal_emojis[i]}</h3>", unsafe_allow_html=True)
+                                        for rank_entry in podium_data[place]:
+                                            perf_display = ""
+                                            if is_time_based_discipline(selected_discipline_ranking_key):
+                                                perf_display = format_seconds_to_static_time(rank_entry['parsed_value'])
+                                            else:
+                                                perf_display = f"{rank_entry['parsed_value']}m"
+                                            
+                                            display_name_podium = get_display_name(rank_entry['user'], user_profiles, lang)
+                                            st.markdown(
+                                                f"<div style='text-align: center; border: 1px solid #eee; border-radius: 8px; padding: 8px; margin-bottom: 8px; background-color: #f9f9f9;'>"
+                                                f"<h5>{display_name_podium}</h5>"
+                                                f"<h6>{perf_display}</h6>"
+                                                f"<p style='font-size: 0.8em;'>{_('achieved_on_caption', lang, date=rank_entry['date'])}</p>"
+                                                f"</div>", 
+                                                unsafe_allow_html=True
+                                            )
+                                    else: 
+                                        st.markdown(f"<div style='text-align: center; opacity: 0.5;'><h3>{medal_emojis[i]}</h3><h4>-</h4><p style='font-size: 0.8em;'>&nbsp;</p></div>", unsafe_allow_html=True)
+
 
                             st.markdown("") 
                             st.subheader(_("full_ranking_header", lang))
@@ -1280,7 +1376,7 @@ def main():
                                     perf_display_table_tab = f"{rank_item_tab['parsed_value']}m"
                                 ranking_table_data_tab.append({
                                     _("rank_col", lang): rank_idx_tab + 1,
-                                    _("user_col", lang): rank_item_tab['user'],
+                                    _("user_col", lang): get_display_name(rank_item_tab['user'], user_profiles, lang), # Anonymize here
                                     _("best_performance_col", lang): perf_display_table_tab,
                                     _("date_achieved_col", lang): rank_item_tab['date']
                                 })
@@ -1339,65 +1435,67 @@ def main():
                                     st.info(_("no_stats_data", lang))
                                 else:
                                     st.dataframe(display_stats_df, use_container_width=True, hide_index=True)
-        
-        with tab_club_perf:
-            # st.header(_("club_performances_tab_title", lang)) # Removed header
-            if not all_records_loaded:
-                st.info(_("no_data_for_club_performance_display", lang))
-            else:
-                for disc_key_club in discipline_keys:
-                    st.subheader(_("disciplines." + disc_key_club, lang))
-                    
-                    club_discipline_records = [
-                        r for r in all_records_loaded 
-                        if r['discipline'] == disc_key_club and r.get('parsed_value') is not None
-                    ]
-
-                    if not club_discipline_records:
-                        st.caption(_("no_data_for_club_performance_display", lang))
-                        continue
-
-                    df_club_discipline = pd.DataFrame(club_discipline_records)
-                    df_club_discipline['date'] = pd.to_datetime(df_club_discipline['date'])
-                    
-                    individual_lines = alt.Chart(df_club_discipline).mark_line(point=True).encode(
-                        x=alt.X('date:T', title=_("history_date_col", lang)),
-                        y=alt.Y('parsed_value:Q', title=_("performance_value", lang) + (f" ({_('seconds_unit', lang)})" if is_time_based_discipline(disc_key_club) else f" ({_('meters_unit', lang)})") ),
-                        color='user:N',
-                        tooltip=[
-                            alt.Tooltip('user:N', title=_("user_col", lang)),
-                            alt.Tooltip('date:T', title=_("history_date_col", lang)),
-                            alt.Tooltip('original_performance_str:N', title=_("history_performance_col", lang))
+                        
+                        # --- Club Performance Graph for this discipline (moved here) ---
+                        st.markdown("---") 
+                        st.subheader(_("club_performances_tab_title", lang)) 
+                        
+                        club_discipline_records_graph = [
+                            r for r in all_records_loaded 
+                            if r['discipline'] == selected_discipline_ranking_key and r.get('parsed_value') is not None
                         ]
-                    ).interactive()
 
-                    df_club_discipline_for_avg = df_club_discipline.set_index('date')
-                    quarterly_avg_df = df_club_discipline_for_avg['parsed_value'].resample('QE').mean().reset_index() 
-                    quarterly_avg_df.columns = ['date', 'average_performance'] 
+                        if not club_discipline_records_graph:
+                            st.caption(_("no_data_for_club_performance_display", lang))
+                        else:
+                            df_club_discipline_graph_data = []
+                            for r_club in club_discipline_records_graph:
+                                df_club_discipline_graph_data.append({
+                                    'date': pd.to_datetime(r_club['date']),
+                                    'parsed_value': r_club['parsed_value'],
+                                    'user': get_display_name(r_club['user'], user_profiles, lang), # Anonymize for graph
+                                    'original_performance_str': r_club['original_performance_str']
+                                })
+                            df_club_discipline_graph = pd.DataFrame(df_club_discipline_graph_data)
+                            
+                            individual_lines_graph = alt.Chart(df_club_discipline_graph).mark_line(point=True).encode(
+                                x=alt.X('date:T', title=_("history_date_col", lang)),
+                                y=alt.Y('parsed_value:Q', title=_("performance_value", lang) + (f" ({_('seconds_unit', lang)})" if is_time_based_discipline(selected_discipline_ranking_key) else f" ({_('meters_unit', lang)})") ),
+                                color='user:N', # Uses the (potentially anonymized) display_user
+                                tooltip=[
+                                    alt.Tooltip('user:N', title=_("user_col", lang)),
+                                    alt.Tooltip('date:T', title=_("history_date_col", lang)),
+                                    alt.Tooltip('original_performance_str:N', title=_("history_performance_col", lang))
+                                ]
+                            ).interactive()
 
-                    if not quarterly_avg_df.empty:
-                        average_line = alt.Chart(quarterly_avg_df).mark_line(
-                            color='black', 
-                            strokeDash=[5,5],
-                            size=2 
-                        ).encode(
-                            x=alt.X('date:T', title=_("history_date_col", lang)),
-                            y=alt.Y('average_performance:Q', title=_("performance_value", lang)), 
-                            tooltip=[
-                                alt.Tooltip('date:T', title=_("history_date_col", lang), format='%Y-%m'), 
-                                alt.Tooltip('average_performance:Q', title=_("quarterly_average_label", lang), format=".2f" if not is_time_based_discipline(disc_key_club) else "") 
-                            ]
-                        )
-                        combined_chart = alt.layer(individual_lines, average_line).resolve_scale(y='shared')
-                        st.altair_chart(combined_chart, use_container_width=True)
-                    else:
-                        st.altair_chart(individual_lines, use_container_width=True) 
-                        st.caption("Not enough data for quarterly average.")
+                            df_club_discipline_for_avg_graph = df_club_discipline_graph.set_index('date')
+                            quarterly_avg_df_graph = df_club_discipline_for_avg_graph['parsed_value'].resample('QE').mean().reset_index() 
+                            quarterly_avg_df_graph.columns = ['date', 'average_performance'] 
+
+                            if not quarterly_avg_df_graph.empty:
+                                average_line_graph = alt.Chart(quarterly_avg_df_graph).mark_line(
+                                    color='black', 
+                                    strokeDash=[5,5],
+                                    size=2 
+                                ).encode(
+                                    x=alt.X('date:T', title=_("history_date_col", lang)),
+                                    y=alt.Y('average_performance:Q', title=_("performance_value", lang)), 
+                                    tooltip=[
+                                        alt.Tooltip('date:T', title=_("history_date_col", lang), format='%Y-%m'), 
+                                        alt.Tooltip('average_performance:Q', title=_("quarterly_average_label", lang), format=".2f" if not is_time_based_discipline(selected_discipline_ranking_key) else "") 
+                                    ]
+                                )
+                                combined_chart_graph = alt.layer(individual_lines_graph, average_line_graph).resolve_scale(y='shared')
+                                st.altair_chart(combined_chart_graph, use_container_width=True)
+                            else:
+                                st.altair_chart(individual_lines_graph, use_container_width=True) 
+                                st.caption("Not enough data for quarterly average.")
         
         with tab_divers:
             # st.header(_("divers_tab_title", lang)) # Removed header
             
-            cert_order = ["I3", "I2", "I1", "S4", "A3", "A2", "A1", _("no_certification_option", lang)] # Added S4
+            cert_order = ["I3", "I2", "I1", "S4", "A3", "A2", "A1", _("no_certification_option", lang)] 
             cert_order_map = {level: i for i, level in enumerate(cert_order)}
 
             if not all_known_users_list:
@@ -1416,6 +1514,7 @@ def main():
                             pass 
                     
                     lifras_id = profile.get("lifras_id", "")
+                    anonymize = profile.get("anonymize_results", False) 
                     
                     user_pbs_display = {}
                     for disc_key in discipline_keys:
@@ -1442,10 +1541,11 @@ def main():
                         _("certification_col_editor", lang): certification,
                         _("certification_date_col_editor", lang): cert_date_obj, 
                         _("lifras_id_col_editor", lang): lifras_id,
+                        _("anonymize_results_col_editor", lang): anonymize, 
                         _("pb_sta_col_editor", lang): user_pbs_display.get("Static Apnea (STA)", "N/A"),
                         _("pb_dynbf_col_editor", lang): user_pbs_display.get("Dynamic Bi-fins (DYN-BF)", "N/A"),
                         _("pb_depth_col_editor", lang): user_pbs_display.get("Depth (CWT/FIM)", "N/A"),
-                        _("pb_vwt_nlt_col_editor", lang): user_pbs_display.get("Profondeur (VWT/NLT)", "N/A"), # New PB
+                        _("pb_vwt_nlt_col_editor", lang): user_pbs_display.get("Profondeur (VWT/NLT)", "N/A"), 
                         _("pb_16x25_col_editor", lang): user_pbs_display.get("16x25m Speed Endurance", "N/A"),
                     })
                 
@@ -1479,10 +1579,14 @@ def main():
                     _("lifras_id_col_editor", lang): st.column_config.TextColumn(
                         label=_("lifras_id_col_editor", lang),
                     ),
+                     _("anonymize_results_col_editor", lang): st.column_config.CheckboxColumn( 
+                        label=_("anonymize_results_col_editor", lang),
+                        default=False
+                    ),
                     _("pb_sta_col_editor", lang): st.column_config.TextColumn(label=_("pb_sta_col_editor", lang), disabled=True),
                     _("pb_dynbf_col_editor", lang): st.column_config.TextColumn(label=_("pb_dynbf_col_editor", lang), disabled=True),
                     _("pb_depth_col_editor", lang): st.column_config.TextColumn(label=_("pb_depth_col_editor", lang), disabled=True),
-                    _("pb_vwt_nlt_col_editor", lang): st.column_config.TextColumn(label=_("pb_vwt_nlt_col_editor", lang), disabled=True), # New PB Column
+                    _("pb_vwt_nlt_col_editor", lang): st.column_config.TextColumn(label=_("pb_vwt_nlt_col_editor", lang), disabled=True), 
                     _("pb_16x25_col_editor", lang): st.column_config.TextColumn(label=_("pb_16x25_col_editor", lang), disabled=True),
                 }
 
@@ -1507,6 +1611,7 @@ def main():
                         new_cert_date_obj = edited_row[_("certification_date_col_editor", lang)]
                         new_cert_date_str = new_cert_date_obj.isoformat() if isinstance(new_cert_date_obj, date) else None
                         new_lifras_id = edited_row[_("lifras_id_col_editor", lang)].strip()
+                        new_anonymize_status = edited_row[_("anonymize_results_col_editor", lang)]
 
 
                         if not new_name:
@@ -1526,14 +1631,17 @@ def main():
                         cert_changed = profile_data_to_update.get("certification") != new_certification
                         cert_date_changed = profile_data_to_update.get("certification_date") != new_cert_date_str
                         lifras_id_changed = profile_data_to_update.get("lifras_id", "") != new_lifras_id
+                        anonymize_changed = profile_data_to_update.get("anonymize_results", False) != new_anonymize_status
 
-                        if name_changed or cert_changed or cert_date_changed or lifras_id_changed:
+
+                        if name_changed or cert_changed or cert_date_changed or lifras_id_changed or anonymize_changed:
                             changes_made_divers = True
                             if name_changed:
-                                old_profile_data = temp_user_profiles.pop(original_name, {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": ""})
+                                old_profile_data = temp_user_profiles.pop(original_name, {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": "", "anonymize_results": False})
                                 old_profile_data['certification'] = new_certification 
                                 old_profile_data['certification_date'] = new_cert_date_str
                                 old_profile_data['lifras_id'] = new_lifras_id
+                                old_profile_data['anonymize_results'] = new_anonymize_status # Add new field
                                 temp_user_profiles[new_name] = old_profile_data
                                 
                                 for record in temp_all_records:
@@ -1548,6 +1656,7 @@ def main():
                                 temp_user_profiles[original_name]['certification'] = new_certification
                                 temp_user_profiles[original_name]['certification_date'] = new_cert_date_str
                                 temp_user_profiles[original_name]['lifras_id'] = new_lifras_id
+                                temp_user_profiles[original_name]['anonymize_results'] = new_anonymize_status # Add new field
                         
 
                     if changes_made_divers:
@@ -1626,7 +1735,7 @@ def main():
                     training_changes_made = False
                     temp_training_log_loaded = [log.copy() for log in training_log_loaded]
 
-                    for index, edited_row_series in edited_training_df.iterrows():
+                    for index, edited_row_series in edited_training_df.iterrows(): # Corrected iteration
                         edited_row = edited_row_series.to_dict()
                         log_id = edited_row.get("id")
                         if log_id is None: continue
@@ -1663,6 +1772,300 @@ def main():
                         st.rerun()
                     else:
                         st.info("No changes detected in the training log.")
+        
+        with tab_performance_log: 
+            if not all_records_loaded:
+                st.info("No performances logged yet in the system.")
+            else:
+                all_perf_display_list = []
+                for rec in sorted(all_records_loaded, key=lambda x: x['date'], reverse=True):
+                    all_perf_display_list.append({
+                        "id": rec.get("id"),
+                        _("history_date_col", lang): rec.get("date"),
+                        _("user_col", lang): rec.get("user"), # Keep real name for editing
+                        _("history_discipline_col", lang): rec.get("discipline"), 
+                        _("history_performance_col", lang): rec.get("original_performance_str", ""),
+                        _("history_delete_col_editor", lang): False
+                    })
+                
+                all_perf_df_for_editor = pd.DataFrame(all_perf_display_list)
+
+                if not all_perf_df_for_editor.empty:
+                    date_col_all_perf = _("history_date_col", lang)
+                    all_perf_df_for_editor[date_col_all_perf] = pd.to_datetime(
+                        all_perf_df_for_editor[date_col_all_perf],
+                        errors='coerce'
+                    ).dt.date
+                
+                discipline_options_editor = discipline_keys 
+                
+                edited_all_perf_df = st.data_editor(
+                    all_perf_df_for_editor,
+                    column_config={
+                        "id": None,
+                        _("history_date_col", lang): st.column_config.DateColumn(
+                            label=_("history_date_col", lang), format="YYYY-MM-DD", required=True
+                        ),
+                        _("user_col", lang): st.column_config.TextColumn(
+                            label=_("user_col", lang), required=True
+                        ),
+                        _("history_discipline_col", lang): st.column_config.SelectboxColumn(
+                            label=_("history_discipline_col", lang),
+                            options=discipline_options_editor, 
+                            required=True
+                        ),
+                        _("history_performance_col", lang): st.column_config.TextColumn(
+                            label=_("history_performance_col", lang), required=True
+                        ),
+                        _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(
+                            label=_("history_delete_col_editor", lang), default=False
+                        )
+                    },
+                    hide_index=True,
+                    key="all_performances_data_editor",
+                    num_rows="dynamic" 
+                )
+
+                if st.button(_("save_all_performances_button", lang), key="save_all_perf_changes"):
+                    changes_made_all_perf = False
+                    temp_master_records = [r.copy() for r in all_records_loaded] 
+                    newly_added_records_from_editor = []
+
+
+                    for edited_row_data in edited_all_perf_df.to_dict(orient="records"): # Corrected loop
+                        record_id = edited_row_data.get("id")
+                        
+                        is_new_row = record_id is None 
+
+                        if is_new_row:
+                            record_id = uuid.uuid4().hex 
+                            edited_row_data["id"] = record_id 
+                        
+                        if edited_row_data[_("history_delete_col_editor", lang)] and not is_new_row:
+                            temp_master_records = [r for r in temp_master_records if r.get("id") != record_id]
+                            changes_made_all_perf = True
+                            continue 
+
+                        edited_user = edited_row_data[_("user_col", lang)].strip()
+                        edited_discipline_key = edited_row_data[_("history_discipline_col", lang)] 
+                        edited_perf_str = str(edited_row_data[_("history_performance_col", lang)]).strip()
+                        
+                        edited_date_obj = edited_row_data[_("history_date_col", lang)]
+                        edited_date_str = None
+                        if isinstance(edited_date_obj, date):
+                            edited_date_str = edited_date_obj.isoformat()
+                        elif isinstance(edited_date_obj, str): 
+                             try:
+                                 edited_date_str = date.fromisoformat(edited_date_obj).isoformat()
+                             except ValueError:
+                                 st.error(f"Invalid date format '{edited_date_obj}' for user {edited_user}. Skipping row.")
+                                 continue
+                        else: 
+                            st.error(f"Invalid date provided for user {edited_user}. Skipping row.")
+                            continue
+
+
+                        if not edited_user or not edited_discipline_key or not edited_perf_str or not edited_date_str:
+                            st.error(f"Missing data for one of the records (User: {edited_user}, Discipline: {edited_discipline_key}, Performance: {edited_perf_str}, Date: {edited_date_str}). Skipping.")
+                            continue
+                        
+                        parsed_value = None
+                        if is_time_based_discipline(edited_discipline_key):
+                            parsed_value = parse_static_time_to_seconds(edited_perf_str, lang)
+                        else:
+                            parsed_value = parse_distance_to_meters(edited_perf_str, lang)
+                        
+                        if parsed_value is None:
+                            st.error(f"Invalid performance format '{edited_perf_str}' for {edited_discipline_key} (User: {edited_user}). Skipping row.")
+                            continue
+
+                        if is_new_row:
+                             newly_added_records_from_editor.append({
+                                "id": record_id,
+                                "user": edited_user,
+                                "date": edited_date_str,
+                                "discipline": edited_discipline_key,
+                                "original_performance_str": edited_perf_str,
+                                "parsed_value": parsed_value
+                            })
+                             changes_made_all_perf = True
+                             if edited_user not in user_profiles:
+                                 user_profiles[edited_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": "", "anonymize_results": False}
+                        else: 
+                            original_record_index = next((i for i, r_item in enumerate(temp_master_records) if r_item.get("id") == record_id), -1)
+                            if original_record_index != -1:
+                                original_rec_data = temp_master_records[original_record_index]
+                                if (original_rec_data.get('date') != edited_date_str or
+                                    original_rec_data.get('user') != edited_user or
+                                    original_rec_data.get('discipline') != edited_discipline_key or
+                                    original_rec_data.get('original_performance_str') != edited_perf_str):
+                                    
+                                    temp_master_records[original_record_index]['date'] = edited_date_str
+                                    temp_master_records[original_record_index]['user'] = edited_user
+                                    temp_master_records[original_record_index]['discipline'] = edited_discipline_key
+                                    temp_master_records[original_record_index]['original_performance_str'] = edited_perf_str
+                                    temp_master_records[original_record_index]['parsed_value'] = parsed_value
+                                    changes_made_all_perf = True
+                                    if edited_user not in user_profiles:
+                                        user_profiles[edited_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": "", "anonymize_results": False}
+
+
+                    if changes_made_all_perf:
+                        all_records_loaded[:] = temp_master_records + newly_added_records_from_editor
+                        save_records(all_records_loaded)
+                        save_user_profiles(user_profiles) 
+                        st.success(_("all_performances_updated_success", lang))
+                        st.rerun()
+                    else:
+                        st.info("No changes detected in all performances.")
+        
+        with tab_feedback_log:
+            if not instructor_feedback_loaded:
+                st.info(_("no_feedback_in_log", lang))
+            else:
+                feedback_log_display_list = []
+                for fb in sorted(instructor_feedback_loaded, key=lambda x: x['feedback_date'], reverse=True):
+                    training_info = _("select_training_prompt", lang) # Default if not linked
+                    if fb.get("training_session_id"):
+                        linked_training = next((ts for ts in training_log_loaded if ts.get("id") == fb["training_session_id"]), None)
+                        if linked_training:
+                            training_info = f"{linked_training['date']} - {linked_training['place']}"
+                    
+                    feedback_log_display_list.append({
+                        "id": fb.get("id"),
+                        _("feedback_date_col", lang): fb.get("feedback_date"),
+                        _("feedback_for_diver_label", lang): fb.get("diver_name"),
+                        _("instructor_name_label", lang): fb.get("instructor_name"),
+                        _("training_session_label", lang): training_info, 
+                        "training_session_id_hidden": fb.get("training_session_id"), 
+                        _("feedback_text_label", lang): fb.get("feedback_text"),
+                        _("history_delete_col_editor", lang): False
+                    })
+                feedback_log_df = pd.DataFrame(feedback_log_display_list)
+
+                if not feedback_log_df.empty:
+                    feedback_date_col_name = _("feedback_date_col", lang)
+                    feedback_log_df[feedback_date_col_name] = pd.to_datetime(
+                        feedback_log_df[feedback_date_col_name], errors='coerce'
+                    ).dt.date
+                
+                diver_options_editor = all_known_users_list
+                instructor_options_editor = sorted([
+                    user for user, profile in user_profiles.items() 
+                    if profile.get("certification") in ["A3", "S4", "I1", "I2", "I3"]
+                ])
+                
+                training_options_editor_map_feedback = {
+                    log['id']: f"{log['date']} - {log['place']}" 
+                    for log in sorted(training_log_loaded, key=lambda x: x['date'], reverse=True)
+                }
+                training_options_editor_display_with_none_feedback = [_("select_training_prompt", lang)] + list(training_options_editor_map_feedback.values())
+
+
+                edited_feedback_log_df = st.data_editor(
+                    feedback_log_df,
+                    column_config={
+                        "id": None,
+                        "training_session_id_hidden": None, 
+                        _("feedback_date_col", lang): st.column_config.DateColumn(
+                            label=_("feedback_date_col", lang), format="YYYY-MM-DD", required=True
+                        ),
+                        _("feedback_for_diver_label", lang): st.column_config.SelectboxColumn(
+                            label=_("feedback_for_diver_label", lang), options=diver_options_editor, required=True
+                        ),
+                        _("instructor_name_label", lang): st.column_config.SelectboxColumn(
+                            label=_("instructor_name_label", lang), options=instructor_options_editor, required=True
+                        ),
+                         _("training_session_label", lang): st.column_config.SelectboxColumn(
+                            label=_("training_session_label", lang), 
+                            options=training_options_editor_display_with_none_feedback, 
+                            required=False 
+                        ),
+                        _("feedback_text_label", lang): st.column_config.TextColumn(
+                            label=_("feedback_text_label", lang), required=True
+                        ),
+                        _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(
+                            label=_("history_delete_col_editor", lang), default=False
+                        )
+                    },
+                    hide_index=True,
+                    key="feedback_log_data_editor",
+                    num_rows="dynamic"
+                )
+
+                if st.button(_("save_feedback_log_changes_button", lang), key="save_feedback_log_changes"):
+                    feedback_log_changes_made = False
+                    temp_feedback_log = [fb.copy() for fb in instructor_feedback_loaded]
+                    newly_added_feedbacks = []
+
+                    for edited_row_data in edited_feedback_log_df.to_dict(orient="records"): # Corrected loop
+                        feedback_id = edited_row_data.get("id")
+                        is_new_feedback_row = feedback_id is None
+
+                        if is_new_feedback_row:
+                            feedback_id = uuid.uuid4().hex
+                            edited_row_data["id"] = feedback_id
+                        
+                        if edited_row_data[_("history_delete_col_editor", lang)] and not is_new_feedback_row:
+                            temp_feedback_log = [fb for fb in temp_feedback_log if fb.get("id") != feedback_id]
+                            feedback_log_changes_made = True
+                            continue
+                        
+                        edited_fb_date_obj = edited_row_data[_("feedback_date_col", lang)]
+                        edited_fb_date_str = edited_fb_date_obj.isoformat() if isinstance(edited_fb_date_obj, date) else str(edited_fb_date_obj)
+                        
+                        edited_diver = edited_row_data[_("feedback_for_diver_label", lang)]
+                        edited_instructor = edited_row_data[_("instructor_name_label", lang)] # Corrected variable
+                        edited_training_session_display = edited_row_data[_("training_session_label", lang)]
+                        edited_feedback_text = edited_row_data[_("feedback_text_label", lang)].strip()
+
+                        edited_training_id = None
+                        if edited_training_session_display != _("select_training_prompt", lang):
+                            for log_id_map, display_str_map in training_options_editor_map_feedback.items(): 
+                                if display_str_map == edited_training_session_display:
+                                    edited_training_id = log_id_map
+                                    break
+                        
+                        if not edited_diver or edited_diver == _("select_diver_prompt", lang) or \
+                           not edited_instructor or edited_instructor == _("select_instructor_prompt", lang) or \
+                           not edited_feedback_text:
+                            st.error(f"Missing required fields for feedback (ID: {feedback_id if feedback_id else 'New'}). Skipping.")
+                            continue
+
+                        if is_new_feedback_row:
+                            newly_added_feedbacks.append({
+                                "id": feedback_id,
+                                "feedback_date": edited_fb_date_str,
+                                "diver_name": edited_diver,
+                                "training_session_id": edited_training_id,
+                                "instructor_name": edited_instructor,
+                                "feedback_text": edited_feedback_text
+                            })
+                            feedback_log_changes_made = True
+                        else: 
+                            original_fb_index = next((i for i, fb_item in enumerate(temp_feedback_log) if fb_item.get("id") == feedback_id), -1)
+                            if original_fb_index != -1:
+                                original_fb_data = temp_feedback_log[original_fb_index]
+                                if (original_fb_data.get('feedback_date') != edited_fb_date_str or
+                                    original_fb_data.get('diver_name') != edited_diver or
+                                    original_fb_data.get('instructor_name') != edited_instructor or
+                                    original_fb_data.get('training_session_id') != edited_training_id or
+                                    original_fb_data.get('feedback_text') != edited_feedback_text):
+                                    
+                                    temp_feedback_log[original_fb_index]['feedback_date'] = edited_fb_date_str
+                                    temp_feedback_log[original_fb_index]['diver_name'] = edited_diver
+                                    temp_feedback_log[original_fb_index]['instructor_name'] = edited_instructor
+                                    temp_feedback_log[original_fb_index]['training_session_id'] = edited_training_id
+                                    temp_feedback_log[original_fb_index]['feedback_text'] = edited_feedback_text
+                                    feedback_log_changes_made = True
+                    
+                    if feedback_log_changes_made:
+                        instructor_feedback_loaded[:] = temp_feedback_log + newly_added_feedbacks
+                        save_instructor_feedback(instructor_feedback_loaded)
+                        st.success(_("feedback_log_updated_success", lang))
+                        st.rerun()
+                    else:
+                        st.info("No changes detected in the feedback log.")
 
 
 if __name__ == "__main__":

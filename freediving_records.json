@@ -382,5 +382,21 @@
         "discipline": "Profondeur (VWT/NLT)",
         "original_performance_str": "40",
         "parsed_value": 40
+    },
+    {
+        "id": "33967c4a3ca542b999fca1f5aca21c93",
+        "user": "Donald S.",
+        "date": "2025-01-01",
+        "discipline": "Dynamic Bi-fins (DYN-BF)",
+        "original_performance_str": "100",
+        "parsed_value": 100
+    },
+    {
+        "id": "b5fbaf2edea04e0a92a7465eb3dce6fc",
+        "user": "François B.",
+        "date": "2025-01-01",
+        "discipline": "Static Apnea (STA)",
+        "original_performance_str": "05:40",
+        "parsed_value": 340.0
     }
 ]
