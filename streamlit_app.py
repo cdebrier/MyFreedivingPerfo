@@ -71,7 +71,7 @@ TRANSLATIONS = {
             "Static Apnea (STA)": "Static Apnea (STA)",
             "Dynamic Bi-fins (DYN-BF)": "Dynamic Bi-fins (DYN-BF)",
             "Depth (CWT/FIM)": "Depth (CWT/FIM)",
-            "Profondeur (VWT/NLT)": "Depth (VWT/NLT)", # New discipline - English translation
+            "Profondeur (VWT/NLT)": "Depth (VWT/NLT)", 
             "16x25m Speed Endurance": "16x25m Speed Endurance" 
         },
         "ranking_tab_title": "🏆 General Rankings",
@@ -126,7 +126,7 @@ TRANSLATIONS = {
         "pb_sta_col_editor": "PB STA",
         "pb_dynbf_col_editor": "PB DYN-BF",
         "pb_depth_col_editor": "PB Depth",
-        "pb_vwt_nlt_col_editor": "PB Depth (VWT/NLT)", # New PB column
+        "pb_vwt_nlt_col_editor": "PB Depth (VWT/NLT)", 
         "pb_16x25_col_editor": "PB 16x25m",
         "save_divers_changes_button": "💾 Save Diver Changes",
         "divers_updated_success": "Diver data updated successfully.",
@@ -144,7 +144,10 @@ TRANSLATIONS = {
         "training_description_empty_error": "Training description cannot be empty.",
         "training_log_table_header": "📋 Training Sessions (Editable)",
         "save_training_log_changes_button": "💾 Save Training Log Changes",
-        "training_log_updated_success": "Training log updated successfully."
+        "training_log_updated_success": "Training log updated successfully.",
+        "all_performances_tab_title": "📜 All Performances", 
+        "save_all_performances_button": "💾 Save All Performance Changes", 
+        "all_performances_updated_success": "All performances updated successfully." 
     },
     "fr": {
         "page_title": "Carnet d'Apnée",
@@ -206,7 +209,7 @@ TRANSLATIONS = {
             "Static Apnea (STA)": "Apnée Statique (STA)",
             "Dynamic Bi-fins (DYN-BF)": "Dynamique Bi-palmes (DYN-BF)",
             "Depth (CWT/FIM)": "Profondeur (CWT/FIM)",
-            "Profondeur (VWT/NLT)": "Profondeur (VWT/NLT)", # Nouvelle discipline
+            "Profondeur (VWT/NLT)": "Profondeur (VWT/NLT)", 
             "16x25m Speed Endurance": "16x25m Vitesse Endurance" 
         },
         "ranking_tab_title": "🏆 Classement Général",
@@ -261,7 +264,7 @@ TRANSLATIONS = {
         "pb_sta_col_editor": "RP STA",
         "pb_dynbf_col_editor": "RP DYN-BF",
         "pb_depth_col_editor": "RP Profondeur",
-        "pb_vwt_nlt_col_editor": "RP Prof. (VWT/NLT)", # Nouveau
+        "pb_vwt_nlt_col_editor": "RP Prof. (VWT/NLT)", 
         "pb_16x25_col_editor": "RP 16x25m",
         "save_divers_changes_button": "💾 Sauvegarder les Apnéistes",
         "divers_updated_success": "Données des apnéistes mises à jour avec succès.",
@@ -279,7 +282,10 @@ TRANSLATIONS = {
         "training_description_empty_error": "La description de l'entraînement ne peut pas être vide.",
         "training_log_table_header": "📋 Sessions d'Entraînement (Modifiable)",
         "save_training_log_changes_button": "💾 Sauvegarder le Journal d'Entraînement",
-        "training_log_updated_success": "Journal d'entraînement mis à jour avec succès."
+        "training_log_updated_success": "Journal d'entraînement mis à jour avec succès.",
+        "all_performances_tab_title": "📜 Toutes les Performances", 
+        "save_all_performances_button": "💾 Sauvegarder Toutes les Modifications", 
+        "all_performances_updated_success": "Toutes les performances ont été mises à jour." 
     },
     "nl": {
         "page_title": "Vrijduik Logboek",
@@ -341,7 +347,7 @@ TRANSLATIONS = {
             "Static Apnea (STA)": "Statische Apneu (STA)",
             "Dynamic Bi-fins (DYN-BF)": "Dynamisch Bi-vinnen (DYN-BF)",
             "Depth (CWT/FIM)": "Diepte (CWT/FIM)",
-            "Profondeur (VWT/NLT)": "Diepte (VWT/NLT)", # Nieuwe discipline - NL vertaling
+            "Profondeur (VWT/NLT)": "Diepte (VWT/NLT)", 
             "16x25m Speed Endurance": "16x25m Snelheid Uithouding" 
         },
         "ranking_tab_title": "🏆 Algemeen Klassement",
@@ -396,7 +402,7 @@ TRANSLATIONS = {
         "pb_sta_col_editor": "PR STA",
         "pb_dynbf_col_editor": "PR DYN-BF",
         "pb_depth_col_editor": "PR Diepte",
-        "pb_vwt_nlt_col_editor": "PR Diepte (VWT/NLT)", # Nieuw
+        "pb_vwt_nlt_col_editor": "PR Diepte (VWT/NLT)", 
         "pb_16x25_col_editor": "PR 16x25m",
         "save_divers_changes_button": "💾 Duikers Opslaan",
         "divers_updated_success": "Duikergegevens succesvol bijgewerkt.",
@@ -414,7 +420,10 @@ TRANSLATIONS = {
         "training_description_empty_error": "Trainingsbeschrijving mag niet leeg zijn.",
         "training_log_table_header": "📋 Trainingssessies (Bewerkbaar)",
         "save_training_log_changes_button": "💾 Trainingslogboek Opslaan",
-        "training_log_updated_success": "Trainingslogboek succesvol bijgewerkt."
+        "training_log_updated_success": "Trainingslogboek succesvol bijgewerkt.",
+        "all_performances_tab_title": "📜 Alle Prestaties", 
+        "save_all_performances_button": "💾 Alle Prestatiewijzigingen Opslaan", 
+        "all_performances_updated_success": "Alle prestaties succesvol bijgewerkt." 
     }
 }
 
@@ -809,6 +818,7 @@ def main():
     if current_user: 
         personal_records_tab_name = _("records_for_header", lang, user=current_user)
     
+    all_performances_tab_name = _("all_performances_tab_title", lang) 
     ranking_tab_name = _("ranking_tab_title", lang)
     club_perf_tab_name = _("club_performances_tab_title", lang) 
     divers_tab_name = _("divers_tab_title", lang) 
@@ -818,8 +828,8 @@ def main():
         st.info(_("welcome_message", lang))
     else:
         # The Profile tab is removed from here as it's in the sidebar
-        tab_personal, tab_ranking, tab_club_perf, tab_divers, tab_training = st.tabs(
-            [personal_records_tab_name, ranking_tab_name, club_perf_tab_name, divers_tab_name, training_log_main_tab_name]
+        tab_personal, tab_all_perf, tab_ranking, tab_club_perf, tab_divers, tab_training = st.tabs(
+            [personal_records_tab_name, all_performances_tab_name, ranking_tab_name, club_perf_tab_name, divers_tab_name, training_log_main_tab_name]
         )
 
         with tab_personal:
@@ -1013,12 +1023,161 @@ def main():
                                         st.info("No changes detected in the history.")
             else: 
                 st.info(_("select_user_to_view_personal_records", lang))
+        
+        with tab_all_perf:
+            # st.header(_("all_performances_tab_title", lang)) # Removed header
+            if not all_records_loaded:
+                st.info("No performances logged yet in the system.")
+            else:
+                all_perf_display_list = []
+                for rec in sorted(all_records_loaded, key=lambda x: x['date'], reverse=True):
+                    all_perf_display_list.append({
+                        "id": rec.get("id"),
+                        _("history_date_col", lang): rec.get("date"),
+                        _("user_col", lang): rec.get("user"),
+                        _("history_discipline_col", lang): rec.get("discipline"), # Store original key
+                        _("history_performance_col", lang): rec.get("original_performance_str", ""),
+                        _("history_delete_col_editor", lang): False
+                    })
+                
+                all_perf_df_for_editor = pd.DataFrame(all_perf_display_list)
+
+                if not all_perf_df_for_editor.empty:
+                    date_col_all_perf = _("history_date_col", lang)
+                    all_perf_df_for_editor[date_col_all_perf] = pd.to_datetime(
+                        all_perf_df_for_editor[date_col_all_perf],
+                        errors='coerce'
+                    ).dt.date
+                
+                discipline_options_editor = discipline_keys 
+                
+                edited_all_perf_df = st.data_editor(
+                    all_perf_df_for_editor,
+                    column_config={
+                        "id": None,
+                        _("history_date_col", lang): st.column_config.DateColumn(
+                            label=_("history_date_col", lang), format="YYYY-MM-DD", required=True
+                        ),
+                        _("user_col", lang): st.column_config.TextColumn(
+                            label=_("user_col", lang), required=True
+                        ),
+                        _("history_discipline_col", lang): st.column_config.SelectboxColumn(
+                            label=_("history_discipline_col", lang),
+                            options=discipline_options_editor, 
+                            # format_func removed as it's not a valid argument here
+                            required=True
+                        ),
+                        _("history_performance_col", lang): st.column_config.TextColumn(
+                            label=_("history_performance_col", lang), required=True
+                        ),
+                        _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(
+                            label=_("history_delete_col_editor", lang), default=False
+                        )
+                    },
+                    hide_index=True,
+                    key="all_performances_data_editor",
+                    num_rows="dynamic" 
+                )
+
+                if st.button(_("save_all_performances_button", lang), key="save_all_perf_changes"):
+                    changes_made_all_perf = False
+                    temp_master_records = [r.copy() for r in all_records_loaded] 
+                    newly_added_records_from_editor = []
+
+
+                    for index, edited_row_data in edited_all_perf_df.to_dict(orient="records"):
+                        record_id = edited_row_data.get("id")
+                        
+                        is_new_row = record_id is None 
+
+                        if is_new_row:
+                            record_id = uuid.uuid4().hex 
+                            edited_row_data["id"] = record_id 
+                        
+                        if edited_row_data[_("history_delete_col_editor", lang)] and not is_new_row:
+                            temp_master_records = [r for r in temp_master_records if r.get("id") != record_id]
+                            changes_made_all_perf = True
+                            continue 
+
+                        edited_user = edited_row_data[_("user_col", lang)].strip()
+                        edited_discipline_key = edited_row_data[_("history_discipline_col", lang)] 
+                        edited_perf_str = str(edited_row_data[_("history_performance_col", lang)]).strip()
+                        
+                        edited_date_obj = edited_row_data[_("history_date_col", lang)]
+                        edited_date_str = None
+                        if isinstance(edited_date_obj, date):
+                            edited_date_str = edited_date_obj.isoformat()
+                        elif isinstance(edited_date_obj, str): 
+                             try:
+                                 edited_date_str = date.fromisoformat(edited_date_obj).isoformat()
+                             except ValueError:
+                                 st.error(f"Invalid date format '{edited_date_obj}' for user {edited_user}. Skipping row.")
+                                 continue
+                        else: 
+                            st.error(f"Invalid date provided for user {edited_user}. Skipping row.")
+                            continue
+
+
+                        if not edited_user or not edited_discipline_key or not edited_perf_str or not edited_date_str:
+                            st.error(f"Missing data for one of the records (User: {edited_user}, Discipline: {edited_discipline_key}, Performance: {edited_perf_str}, Date: {edited_date_str}). Skipping.")
+                            continue
+                        
+                        parsed_value = None
+                        if is_time_based_discipline(edited_discipline_key):
+                            parsed_value = parse_static_time_to_seconds(edited_perf_str, lang)
+                        else:
+                            parsed_value = parse_distance_to_meters(edited_perf_str, lang)
+                        
+                        if parsed_value is None:
+                            st.error(f"Invalid performance format '{edited_perf_str}' for {edited_discipline_key} (User: {edited_user}). Skipping row.")
+                            continue
+
+                        if is_new_row:
+                             newly_added_records_from_editor.append({
+                                "id": record_id,
+                                "user": edited_user,
+                                "date": edited_date_str,
+                                "discipline": edited_discipline_key,
+                                "original_performance_str": edited_perf_str,
+                                "parsed_value": parsed_value
+                            })
+                             changes_made_all_perf = True
+                             if edited_user not in user_profiles:
+                                 user_profiles[edited_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": ""}
+                        else: 
+                            original_record_index = next((i for i, r_item in enumerate(temp_master_records) if r_item.get("id") == record_id), -1)
+                            if original_record_index != -1:
+                                original_rec_data = temp_master_records[original_record_index]
+                                if (original_rec_data.get('date') != edited_date_str or
+                                    original_rec_data.get('user') != edited_user or
+                                    original_rec_data.get('discipline') != edited_discipline_key or
+                                    original_rec_data.get('original_performance_str') != edited_perf_str):
+                                    
+                                    temp_master_records[original_record_index]['date'] = edited_date_str
+                                    temp_master_records[original_record_index]['user'] = edited_user
+                                    temp_master_records[original_record_index]['discipline'] = edited_discipline_key
+                                    temp_master_records[original_record_index]['original_performance_str'] = edited_perf_str
+                                    temp_master_records[original_record_index]['parsed_value'] = parsed_value
+                                    changes_made_all_perf = True
+                                    if edited_user not in user_profiles:
+                                        user_profiles[edited_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": ""}
+
+
+                    if changes_made_all_perf:
+                        all_records_loaded[:] = temp_master_records + newly_added_records_from_editor
+                        save_records(all_records_loaded)
+                        save_user_profiles(user_profiles) 
+                        st.success(_("all_performances_updated_success", lang))
+                        st.rerun()
+                    else:
+                        st.info("No changes detected in all performances.")
+
 
         with tab_ranking:
             if not all_records_loaded:
                  st.info(_("no_ranking_data", lang)) 
             else:
-                with st.container(border=True): # Added border
+                with st.container(border=True): 
                     st.subheader(_("club_bests_subheader", lang))
                     club_pbs = {}
                     for disc_key_club_pb in discipline_keys:
