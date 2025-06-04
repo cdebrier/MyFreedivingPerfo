@@ -398,5 +398,29 @@
         "discipline": "Static Apnea (STA)",
         "original_performance_str": "05:40",
         "parsed_value": 340.0
+    },
+    {
+        "id": "2d1e1d596f934c889581b12a2e679263",
+        "user": "Florence S.",
+        "date": "2025-01-03",
+        "discipline": "Depth (CWT/FIM)",
+        "original_performance_str": "22",
+        "parsed_value": 22
+    },
+    {
+        "id": "677572d7454d41ada787400ceb407cf5",
+        "user": "Perrine M.",
+        "date": "2025-01-03",
+        "discipline": "Depth (CWT/FIM)",
+        "original_performance_str": "20",
+        "parsed_value": 20
+    },
+    {
+        "id": "b55c61c0189e400d8471258b052a012f",
+        "user": "Gregory D.",
+        "date": "2023-10-24",
+        "discipline": "Depth (CWT/FIM)",
+        "original_performance_str": "38",
+        "parsed_value": 38
     }
 ]
