@@ -35,8 +35,8 @@ TRANSLATIONS = {
         "performance_value_empty_error": "Performance value cannot be empty.",
         "performance_saved_success": "Performance saved for {user}!",
         "process_performance_error": "Failed to process performance value. Please check format.",
-        "my_performances_header": "📬 My Performances ({user})", # For content header
-        "personal_records_tab_label": "📊 My Performances", # For tab label
+        "my_performances_header": "📬 My Performances ({user})", 
+        "personal_records_tab_label": "📊 My Performances", 
         "select_user_to_view_personal_records": "Please select a user from the sidebar to view their personal records.",
         "no_performances_yet": "No performances logged yet for this user. Add some using the sidebar!",
         "personal_bests_subheader": "🏆 Personal Bests",
@@ -75,7 +75,7 @@ TRANSLATIONS = {
             "Profondeur (VWT/NLT)": "Depth (VWT/NLT)", 
             "16x25m Speed Endurance": "16x25m Speed Endurance" 
         },
-        "club_performances_overview_tab_label": "🏆 Club Performances", # New tab label
+        "club_performances_overview_tab_label": "🏆 Club Performances", 
         "select_discipline_for_ranking": "Select discipline for ranking:",
         "podium_header": "🏆 Podium", 
         "full_ranking_header": "📋 Full Ranking",
@@ -152,8 +152,9 @@ TRANSLATIONS = {
         "performance_log_tab_label": "📜 Performance Log", 
         "save_all_performances_button": "💾 Save Performance Log Changes", 
         "all_performances_updated_success": "Performance log updated successfully.",
-        "feedback_log_tab_label": "💬 Feedback Log",
-        "my_feedbacks_tab_label": "📬 My Feedbacks",
+        "feedback_log_tab_label": "💬 Feedback Log", # Editable log for instructors
+        "feedbacks_overview_tab_label": "💬 Feedbacks", # Overview tab for instructors
+        "my_feedbacks_tab_label": "📬 My Feedbacks", # For non-instructors to see their own
         "log_feedback_header_sidebar": "📝 Log Instructor Feedback",
         "feedback_for_diver_label": "Feedback for Diver:",
         "training_session_label": "Linked Training Session:",
@@ -170,7 +171,17 @@ TRANSLATIONS = {
         "feedback_date_col": "Feedback Date",
         "select_training_prompt": "Select a training session (optional)",
         "select_diver_prompt": "Select Diver",
-        "select_instructor_prompt": "Select Instructor"
+        "select_instructor_prompt": "Select Instructor",
+        "detailed_training_sessions_subheader": "Detailed Training Sessions", 
+        "no_description_available": "No description available.", 
+        "no_training_sessions_logged": "No training sessions logged yet.",
+        "filter_by_diver_label": "Filter by Diver:", 
+        "filter_by_training_session_label": "Filter by Training Session:", 
+        "filter_by_instructor_label": "Filter by Instructor:", # New
+        "all_divers_option": "All Divers", 
+        "all_sessions_option": "All Sessions", 
+        "all_instructors_option": "All Instructors", # New
+        "no_feedbacks_match_filters": "No feedbacks match the current filters." 
     },
     "fr": {
         "page_title": "Carnet d'Apnée",
@@ -195,8 +206,8 @@ TRANSLATIONS = {
         "performance_value_empty_error": "La valeur de la performance ne peut pas être vide.",
         "performance_saved_success": "Performance enregistrée pour {user} !",
         "process_performance_error": "Échec du traitement de la valeur de performance. Veuillez vérifier le format.",
-        "my_performances_header": "📬 Mes Performances ({user})", # Pour l'en-tête du contenu
-        "personal_records_tab_label": "📊 Mes Performances", # Pour l'étiquette de l'onglet
+        "my_performances_header": "📬 Mes Performances ({user})", 
+        "personal_records_tab_label": "📊 Mes Performances", 
         "select_user_to_view_personal_records": "Veuillez sélectionner un utilisateur dans la barre latérale pour voir ses records personnels.",
         "no_performances_yet": "Aucune performance enregistrée pour cet utilisateur. Ajoutez-en via la barre latérale !",
         "personal_bests_subheader": "🏆 Records Personnels",
@@ -235,7 +246,7 @@ TRANSLATIONS = {
             "Profondeur (VWT/NLT)": "Profondeur (VWT/NLT)", 
             "16x25m Speed Endurance": "16x25m Vitesse Endurance" 
         },
-        "club_performances_overview_tab_label": "🏆 Performances du Club", # Nouvelle étiquette d'onglet
+        "club_performances_overview_tab_label": "🏆 Performances du Club", 
         "select_discipline_for_ranking": "Sélectionnez la discipline pour le classement :",
         "podium_header": "🏆 Podium", 
         "full_ranking_header": "📋 Classement Complet",
@@ -313,7 +324,7 @@ TRANSLATIONS = {
         "save_all_performances_button": "💾 Sauvegarder les Modifications du Journal", 
         "all_performances_updated_success": "Journal des performances mis à jour avec succès.",
         "feedback_log_tab_label": "💬 Journal des Feedbacks",
-        "my_feedbacks_tab_label": "📬 Mes Feedbacks",
+        "feedbacks_overview_tab_label": "💬 Feedbacks", 
         "log_feedback_header_sidebar": "📝 Enregistrer Feedback Instructeur",
         "feedback_for_diver_label": "Feedback pour l'Apnéiste :",
         "training_session_label": "Session d'Entraînement Liée :",
@@ -330,7 +341,17 @@ TRANSLATIONS = {
         "feedback_date_col": "Date Feedback",
         "select_training_prompt": "Sélectionnez une session (optionnel)",
         "select_diver_prompt": "Sélectionnez l'Apnéiste",
-        "select_instructor_prompt": "Sélectionnez l'Instructeur"
+        "select_instructor_prompt": "Sélectionnez l'Instructeur",
+        "detailed_training_sessions_subheader": "Détail des Sessions d'Entraînement", 
+        "no_description_available": "Aucune description disponible.", 
+        "no_training_sessions_logged": "Aucune session d'entraînement enregistrée pour le moment.",
+        "filter_by_diver_label": "Filtrer par Apnéiste :", 
+        "filter_by_training_session_label": "Filtrer par Session d'Entraînement :", 
+        "filter_by_instructor_label": "Filtrer par Instructeur :", # Nouveau
+        "all_divers_option": "Tous les Apnéistes", 
+        "all_sessions_option": "Toutes les Sessions", 
+        "all_instructors_option": "Tous les Instructeurs", # Nouveau
+        "no_feedbacks_match_filters": "Aucun feedback ne correspond aux filtres actuels." 
     },
     "nl": {
         "page_title": "Vrijduik Logboek",
@@ -355,8 +376,8 @@ TRANSLATIONS = {
         "performance_value_empty_error": "Prestatiewaarde mag niet leeg zijn.",
         "performance_saved_success": "Prestatie opgeslagen voor {user}!",
         "process_performance_error": "Kon prestatiewaarde niet verwerken. Controleer het formaat.",
-        "my_performances_header": "📬 Mijn Prestaties ({user})", # Voor content header
-        "personal_records_tab_label": "📊 Mijn Prestaties", # Voor tab label
+        "my_performances_header": "📬 Mijn Prestaties ({user})", 
+        "personal_records_tab_label": "📊 Mijn Prestaties", 
         "select_user_to_view_personal_records": "Selecteer een gebruiker in de zijbalk om persoonlijke records te bekijken.",
         "no_performances_yet": "Nog geen prestaties gelogd voor deze gebruiker. Voeg er enkele toe via de zijbalk!",
         "personal_bests_subheader": "🏆 Persoonlijke Records",
@@ -395,7 +416,7 @@ TRANSLATIONS = {
             "Profondeur (VWT/NLT)": "Diepte (VWT/NLT)", 
             "16x25m Speed Endurance": "16x25m Snelheid Uithouding" 
         },
-        "club_performances_overview_tab_label": "🏆 Clubprestaties", # Nieuwe tab label
+        "club_performances_overview_tab_label": "🏆 Clubprestaties", 
         "select_discipline_for_ranking": "Selecteer discipline voor klassement:",
         "podium_header": "🏆 Podium", 
         "full_ranking_header": "📋 Volledig Klassement",
@@ -473,7 +494,7 @@ TRANSLATIONS = {
         "save_all_performances_button": "💾 Prestatielogboekwijzigingen Opslaan", 
         "all_performances_updated_success": "Prestatielogboek succesvol bijgewerkt.",
         "feedback_log_tab_label": "💬 Feedbacklogboek",
-        "my_feedbacks_tab_label": "📬 Mijn Feedbacks",
+        "feedbacks_overview_tab_label": "💬 Feedbacks", 
         "log_feedback_header_sidebar": "📝 Instructeurfeedback Loggen",
         "feedback_for_diver_label": "Feedback voor Duiker:",
         "training_session_label": "Gekoppelde Trainingssessie:",
@@ -490,7 +511,17 @@ TRANSLATIONS = {
         "feedback_date_col": "Feedbackdatum",
         "select_training_prompt": "Selecteer een trainingssessie (optioneel)",
         "select_diver_prompt": "Selecteer Duiker",
-        "select_instructor_prompt": "Selecteer Instructeur"
+        "select_instructor_prompt": "Selecteer Instructeur",
+        "detailed_training_sessions_subheader": "Gedetailleerde Trainingssessies", 
+        "no_description_available": "Geen beschrijving beschikbaar.", 
+        "no_training_sessions_logged": "Nog geen trainingssessies gelogd.",
+        "filter_by_diver_label": "Filter op Duiker:", 
+        "filter_by_training_session_label": "Filter op Trainingssessie:", 
+        "filter_by_instructor_label": "Filter op Instructeur:", # Nieuw
+        "all_divers_option": "Alle Duikers", 
+        "all_sessions_option": "Alle Sessies", 
+        "all_instructors_option": "Alle Instructeurs", # Nieuw
+        "no_feedbacks_match_filters": "Geen feedbacks komen overeen met de huidige filters." 
     }
 }
 
@@ -845,7 +876,7 @@ def main():
     
     # Determine if current user is an instructor for conditional display of sidebar sections
     is_instructor_sidebar_view = False
-    instructor_cert_levels_sidebar = ["S4", "I1", "I2", "I3"] # Updated instructor levels
+    instructor_cert_levels_sidebar = ["S4", "I1", "I2", "I3"] 
     if current_user and current_user in user_profiles:
         user_cert_sidebar = user_profiles[current_user].get("certification")
         if user_cert_sidebar in instructor_cert_levels_sidebar:
@@ -887,7 +918,6 @@ def main():
             st.header(_("log_feedback_header_sidebar", lang))
             if not all_known_users_list:
                 st.warning("Please add users before logging feedback.")
-            # No need to check current_user here as this container is already conditional on is_instructor_sidebar_view
             else:
                 feedback_for_user = st.selectbox(
                     _("feedback_for_diver_label", lang), 
@@ -1003,12 +1033,12 @@ def main():
     # --- Main Display Area with Top-Level Tabs ---
     # Tab Labels
     tab_label_personal = _("personal_records_tab_label", lang)
-    tab_label_my_feedbacks = _("my_feedbacks_tab_label", lang)
+    tab_label_feedbacks_overview = _("feedbacks_overview_tab_label", lang) 
     tab_label_club_performances = _("club_performances_overview_tab_label", lang) 
     tab_label_divers = _("divers_tab_title", lang)
     tab_label_training_log = _("training_log_tab_title", lang)
     tab_label_performance_log = _("performance_log_tab_label", lang) 
-    tab_label_feedback_log = _("feedback_log_tab_label", lang)
+    tab_label_feedback_log_editable = _("feedback_log_tab_label", lang) 
 
 
     if not all_records_loaded and not all_known_users_list and not current_user and not training_log_loaded and not instructor_feedback_loaded: 
@@ -1016,33 +1046,51 @@ def main():
     else:
         # Determine if current user is an instructor for main tabs
         is_instructor_main_view = False
-        instructor_cert_levels_main = ["S4", "I1", "I2", "I3"] # Levels that grant instructor views
+        instructor_cert_levels_main = ["A3", "S4", "I1", "I2", "I3"] 
         if current_user and current_user in user_profiles:
             user_cert_main = user_profiles[current_user].get("certification")
             if user_cert_main in instructor_cert_levels_main:
                 is_instructor_main_view = True
 
         # Define tabs based on instructor status
-        tabs_to_display_names_main = [tab_label_personal, tab_label_my_feedbacks, tab_label_club_performances]
+        tabs_to_display_names_main = [tab_label_personal, tab_label_club_performances] 
+        
         if is_instructor_main_view:
-            tabs_to_display_names_main.extend([tab_label_divers, tab_label_training_log, tab_label_performance_log, tab_label_feedback_log])
+            tabs_to_display_names_main.insert(1, tab_label_feedbacks_overview) 
+            tabs_to_display_names_main.extend([tab_label_divers, tab_label_training_log, tab_label_performance_log, tab_label_feedback_log_editable])
+        else:
+             tabs_to_display_names_main.insert(1, _("my_feedbacks_tab_label", lang))
         
         tab_objects_main = st.tabs(tabs_to_display_names_main)
 
         tab_personal = tab_objects_main[0]
-        tab_my_feedbacks = tab_objects_main[1]
-        tab_ranking = tab_objects_main[2] # This is now the "Club Performances" tab
-        
-        tab_divers = None
-        tab_training = None
-        tab_performance_log = None
-        tab_feedback_log = None
+        current_tab_index = 1
 
+        tab_feedbacks_overview_for_instructor = None
+        tab_my_feedbacks_for_user = None
+        
         if is_instructor_main_view:
-            tab_divers = tab_objects_main[3]
-            tab_training = tab_objects_main[4]
-            tab_performance_log = tab_objects_main[5]
-            tab_feedback_log = tab_objects_main[6]
+            tab_feedbacks_overview_for_instructor = tab_objects_main[current_tab_index] 
+            current_tab_index += 1
+            tab_club_performances_view = tab_objects_main[current_tab_index] 
+            current_tab_index += 1
+            tab_divers = tab_objects_main[current_tab_index]
+            current_tab_index +=1
+            tab_training = tab_objects_main[current_tab_index]
+            current_tab_index += 1
+            tab_performance_log = tab_objects_main[current_tab_index]
+            current_tab_index += 1
+            tab_feedback_log = tab_objects_main[current_tab_index] 
+        else: 
+            tab_my_feedbacks_for_user = tab_objects_main[current_tab_index] 
+            current_tab_index += 1
+            tab_club_performances_view = tab_objects_main[current_tab_index] 
+            # Set other instructor-only tabs to None
+            # tab_feedbacks_overview = None  # This was a typo, should be tab_feedbacks_overview_for_instructor
+            tab_divers = None
+            tab_training = None
+            tab_performance_log = None
+            tab_feedback_log = None
 
 
         with tab_personal:
@@ -1238,30 +1286,89 @@ def main():
             else: 
                 st.info(_("select_user_to_view_personal_records", lang))
         
-        with tab_my_feedbacks:
-            if current_user:
-                st.subheader(f"{_('my_feedbacks_tab_label', lang)} ({current_user})") # Use _label for consistency
-                user_feedbacks = [
-                    fb for fb in instructor_feedback_loaded 
-                    if fb.get("diver_name") == current_user
-                ]
-                if not user_feedbacks:
-                    st.info(_("no_feedback_for_user", lang))
+        if tab_my_feedbacks_for_user: # This tab is for non-instructors
+             with tab_my_feedbacks_for_user:
+                if current_user:
+                    st.subheader(f"{_('my_feedbacks_tab_label', lang)} ({current_user})") 
+                    user_feedbacks = [
+                        fb for fb in instructor_feedback_loaded 
+                        if fb.get("diver_name") == current_user
+                    ]
+                    if not user_feedbacks:
+                        st.info(_("no_feedback_for_user", lang))
+                    else:
+                        for fb in sorted(user_feedbacks, key=lambda x: x['feedback_date'], reverse=True):
+                            with st.expander(f"{_('feedback_date_col', lang)}: {fb['feedback_date']} - {_('instructor_name_label', lang)} {fb['instructor_name']}"):
+                                training_session_info = "N/A"
+                                if fb.get("training_session_id"):
+                                    linked_training = next((ts for ts in training_log_loaded if ts.get("id") == fb["training_session_id"]), None)
+                                    if linked_training:
+                                        training_session_info = f"{linked_training['date']} - {linked_training['place']}"
+                                st.markdown(f"**{_('training_session_label', lang)}** {training_session_info}")
+                                st.markdown(f"**{_('feedback_text_label', lang)}**")
+                                st.markdown(fb['feedback_text'])
                 else:
-                    for fb in sorted(user_feedbacks, key=lambda x: x['feedback_date'], reverse=True):
-                        with st.expander(f"{_('feedback_date_col', lang)}: {fb['feedback_date']} - {_('instructor_name_label', lang)} {fb['instructor_name']}"):
-                            training_session_info = "N/A"
-                            if fb.get("training_session_id"):
-                                linked_training = next((ts for ts in training_log_loaded if ts.get("id") == fb["training_session_id"]), None)
-                                if linked_training:
-                                    training_session_info = f"{linked_training['date']} - {linked_training['place']}"
-                            st.markdown(f"**{_('training_session_label', lang)}** {training_session_info}")
-                            st.markdown(f"**{_('feedback_text_label', lang)}**")
-                            st.markdown(fb['feedback_text'])
-            else:
-                st.info(_("select_user_to_view_personal_records", lang)) 
+                    st.info(_("select_user_to_view_personal_records", lang)) 
 
-        with tab_ranking: # This is now the "Club Performances" tab
+        if is_instructor_main_view and tab_feedbacks_overview_for_instructor: 
+            with tab_feedbacks_overview_for_instructor:
+                st.subheader(_("feedbacks_overview_tab_label", lang))
+
+                # Filters
+                col1_fb_overview, col2_fb_overview, col3_fb_overview = st.columns(3) # Added a third column for instructor filter
+                with col1_fb_overview:
+                    diver_options_filter = [_("all_divers_option", lang)] + all_known_users_list
+                    selected_diver_filter = st.selectbox(_("filter_by_diver_label", lang), diver_options_filter, key="fb_overview_diver_filter")
+                
+                with col2_fb_overview:
+                    training_options_editor_map_feedback_overview = {
+                        log['id']: f"{log['date']} - {log['place']}" 
+                        for log in sorted(training_log_loaded, key=lambda x: x['date'], reverse=True)
+                    }
+                    training_options_editor_display_with_none_feedback_overview = [_("all_sessions_option", lang)] + list(training_options_editor_map_feedback_overview.values())
+                    selected_training_display_filter = st.selectbox(_("filter_by_training_session_label", lang), training_options_editor_display_with_none_feedback_overview, key="fb_overview_session_filter")
+                
+                with col3_fb_overview: # New filter for instructor
+                    instructor_options_filter = [_("all_instructors_option", lang)] + sorted(list(set(fb['instructor_name'] for fb in instructor_feedback_loaded)))
+                    selected_instructor_filter = st.selectbox(_("filter_by_instructor_label", lang), instructor_options_filter, key="fb_overview_instructor_filter")
+
+
+                selected_training_id_filter = None
+                if selected_training_display_filter != _("all_sessions_option", lang):
+                    for log_id, display_str in training_options_editor_map_feedback_overview.items(): 
+                        if display_str == selected_training_display_filter:
+                            selected_training_id_filter = log_id
+                            break
+                
+                # Filter feedbacks
+                filtered_feedbacks = instructor_feedback_loaded 
+                if selected_diver_filter != _("all_divers_option", lang):
+                    filtered_feedbacks = [fb for fb in filtered_feedbacks if fb.get("diver_name") == selected_diver_filter]
+                if selected_training_id_filter: 
+                    filtered_feedbacks = [fb for fb in filtered_feedbacks if fb.get("training_session_id") == selected_training_id_filter]
+                if selected_instructor_filter != _("all_instructors_option", lang): # Apply new instructor filter
+                    filtered_feedbacks = [fb for fb in filtered_feedbacks if fb.get("instructor_name") == selected_instructor_filter]
+
+
+                if not filtered_feedbacks:
+                    st.info(_("no_feedbacks_match_filters", lang))
+                else:
+                    for fb_entry in sorted(filtered_feedbacks, key=lambda x: x['feedback_date'], reverse=True):
+                        with st.container(border=True):
+                            training_session_info_display = "N/A"
+                            if fb_entry.get("training_session_id"):
+                                linked_training_fb = next((ts for ts in training_log_loaded if ts.get("id") == fb_entry["training_session_id"]), None)
+                                if linked_training_fb:
+                                    training_session_info_display = f"{linked_training_fb['date']} - {linked_training_fb['place']}"
+                            
+                            header_line = f"**{fb_entry['diver_name']}** par **{fb_entry['instructor_name']}** le {fb_entry['feedback_date']}"
+                            if training_session_info_display != "N/A":
+                                 header_line += f" | Session: {training_session_info_display}"
+                            
+                            st.markdown(header_line)
+                            st.markdown(fb_entry['feedback_text'])
+
+        with tab_club_performances_view: 
             if not all_records_loaded:
                  st.info(_("no_ranking_data", lang)) 
             else:
@@ -1370,7 +1477,7 @@ def main():
                                 podium_data[3] = sorted([p for p in sorted_rankings_tab if p['parsed_value'] == third_place_perf], key=lambda x: x['date'])
 
                             podium_cols = st.columns(3)
-                            medal_emojis = ["🥇", "🥈", "🥉"] 
+                            medal_emojis = ["🥇", "🥈", "�"] 
 
                             for i in range(3): 
                                 with podium_cols[i]:
@@ -1723,8 +1830,9 @@ def main():
             with tab_training:
                 # st.header(_("training_log_tab_title", lang)) # Removed header
                 if not training_log_loaded:
-                    st.info("No training sessions logged yet.") 
+                    st.info(_("no_training_sessions_logged", lang)) 
                 else:
+                    st.subheader(_("training_log_table_header", lang))
                     training_log_display = []
                     for entry in sorted(training_log_loaded, key=lambda x: x['date'], reverse=True):
                         training_log_display.append({
@@ -1806,6 +1914,18 @@ def main():
                             st.rerun()
                         else:
                             st.info("No changes detected in the training log.")
+                    
+                    # --- Detailed Training Session List with Expanders (below the table) ---
+                    st.markdown("---") 
+                    st.subheader(_("detailed_training_sessions_subheader", lang)) 
+
+                    for entry in sorted(training_log_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True):
+                        training_date_display = entry.get('date', 'N/A')
+                        training_place_display = entry.get('place', 'N/A')
+                        expander_title = f"{training_date_display} - {training_place_display}"
+                        
+                        with st.expander(expander_title):
+                            st.markdown(entry.get('description', _("no_description_available", lang)))
         
         if is_instructor_main_view and tab_performance_log:
             with tab_performance_log: 
@@ -1961,7 +2081,7 @@ def main():
                 else:
                     feedback_log_display_list = []
                     for fb in sorted(instructor_feedback_loaded, key=lambda x: x['feedback_date'], reverse=True):
-                        training_info = _("select_training_prompt", lang) # Default if not linked
+                        training_info = _("select_training_prompt", lang) 
                         if fb.get("training_session_id"):
                             linked_training = next((ts for ts in training_log_loaded if ts.get("id") == fb["training_session_id"]), None)
                             if linked_training:
@@ -1988,9 +2108,9 @@ def main():
                     diver_options_editor = all_known_users_list
                     instructor_options_editor_feedback = sorted([
                         user for user, profile in user_profiles.items() 
-                        if profile.get("certification") in instructor_cert_levels_main # Use main instructor levels
+                        if profile.get("certification") in instructor_cert_levels_main 
                     ])
-                    if not instructor_options_editor_feedback: instructor_options_editor_feedback = [_("select_instructor_prompt", lang)] # Ensure it's not empty
+                    if not instructor_options_editor_feedback: instructor_options_editor_feedback = [_("select_instructor_prompt", lang)] 
                     
                     training_options_editor_map_feedback = {
                         log['id']: f"{log['date']} - {log['place']}" 
@@ -2063,6 +2183,7 @@ def main():
                                         edited_training_id = log_id_map
                                         break
                             
+                            # Corrected condition to use edited_instructor_name_feedback
                             if not edited_diver or edited_diver == _("select_diver_prompt", lang) or \
                                not edited_instructor_name_feedback or edited_instructor_name_feedback == _("select_instructor_prompt", lang) or \
                                not edited_feedback_text: 

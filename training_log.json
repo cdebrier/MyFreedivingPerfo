@@ -4,5 +4,23 @@
         "date": "2025-06-03",
         "place": "Nemo",
         "description": "Sortie entre apnéistes du club."
+    },
+    {
+        "id": "28461bb4ed2f4152897efe6a84179eb3",
+        "date": "2025-06-04",
+        "place": "Blocry",
+        "description": "Séance statique et dynamique au Blocry."
+    },
+    {
+        "id": "8606d5520a094b358bca1f41e06f2f6d",
+        "date": "2025-05-28",
+        "place": "Blocry",
+        "description": "#apnée/stretching par Rémy à la nouvelle piscine du Blocry. Lui comme moi n'y étions pas encore allé, c'est la deuxième soirée. Stretching classique.\n\n#apnée/statique par Greg dans la partie rabaissée de la piscine. On fait des apnées à temps qui augmente avec environ une grosse minute de récup à chaque fois. On reste dans sa bulle. \n\n#apnée/dynamique par Charles dans la grande piscine. Bien rempli, on est trois par couloir sauf dans un couloir où on est quatre. On travaille tout en douceur, on essayant de relâcher le bas ventre. On commence par des 25 m plaisir en prenant son temps. On rajoute ensuite du temps de statique avant. Puis une statique avant avec consigne de longueur en min 30s (sauf si c'est chaud, mais l'idée c'est quand même de ressentir quelques contractions). Puis on passe à un relais sur 50 m mais dans la lenteur, relais par trois. Puis on passe à un 50 m plus pour celles et ceux qui veulent. Il faut retravailler les sécus."
+    },
+    {
+        "id": "323fcef9a1614cee98de146f9ed6b40d",
+        "date": "2024-11-17",
+        "place": "La Gombe",
+        "description": "Sortie à 7 macapnéistes organisée par Greg."
     }
 ]
