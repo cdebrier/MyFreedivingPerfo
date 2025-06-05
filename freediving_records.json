@@ -430,5 +430,29 @@
         "discipline": "Static Apnea (STA)",
         "original_performance_str": "4:00",
         "parsed_value": 240.0
+    },
+    {
+        "id": "fe11de89646248169b5c0e8060f409d7",
+        "user": "Bernard V.H.",
+        "date": "2025-06-05",
+        "discipline": "Dynamic Bi-fins (DYN-BF)",
+        "original_performance_str": "0",
+        "parsed_value": 0
+    },
+    {
+        "id": "4e33039b9f424901aee11041e5776981",
+        "user": "Théo G.",
+        "date": "2025-06-05",
+        "discipline": "Dynamic Bi-fins (DYN-BF)",
+        "original_performance_str": "0",
+        "parsed_value": 0
+    },
+    {
+        "id": "f3bfaac2700141e88c8f0bff407c4541",
+        "user": "Vincent C.",
+        "date": "2024-12-10",
+        "discipline": "Depth (CWT/FIM)",
+        "original_performance_str": "30",
+        "parsed_value": 30
     }
 ]
