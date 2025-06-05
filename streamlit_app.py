@@ -872,15 +872,14 @@ def main():
                     st.session_state.password_input_unlock_form = ""
 
             with st.sidebar.form(key="unlock_privileges_form"):
-                password_attempt_form = st.text_input(
+                st.session_state.password_input_unlock_form = st.text_input(
                     _("enter_access_code_prompt", lang), 
-                    type="password", 
-                    key="password_input_unlock_form" # Value will be in st.session_state using this key
+                    type="password" 
                 )
                 submitted_unlock = st.form_submit_button(_("unlock_button_label", lang))
 
                 if submitted_unlock:
-                    if password_attempt_form == CORRECT_PASSWORD:
+                    if st.session_state.password_input_unlock_form == CORRECT_PASSWORD:
                         st.session_state.privileged_user_authenticated = True
                         st.session_state.authenticated_privileged_user = current_user
                         st.session_state.password_input_unlock_form = "" # Clear after successful attempt
