@@ -148,5 +148,11 @@
         "certification_date": null,
         "lifras_id": "",
         "anonymize_results": true
+    },
+    "Charles D.T.": {
+        "certification": "Not Specified",
+        "certification_date": null,
+        "lifras_id": "",
+        "anonymize_results": false
     }
 }

@@ -50,7 +50,7 @@
     {
         "id": "af3ef8fe99ab49baab1922257afc487c",
         "feedback_date": "2025-06-04",
-        "diver_name": "Charles D.",
+        "diver_name": "Charles D.T.",
         "training_session_id": "323fcef9a1614cee98de146f9ed6b40d",
         "instructor_name": "Philippe K.",
         "feedback_text": "J’ai pris Arnaud et Charles + Philippe D qui avait l’intention de faire valider les 4 exercices de sécurité pour son A3.  Pour les 2 S1, nickel, et malgré sa fine combi, Charles a aimé cette première."
@@ -206,5 +206,21 @@
         "training_session_id": "aa9542682cf64da3a2447a3c6e6cb65f",
         "instructor_name": "Charles D.B.",
         "feedback_text": "Passage A1 piscine. Deborah franchement très bien."
+    },
+    {
+        "id": "0599650cd1464a58811362082a8d5b8c",
+        "feedback_date": "2025-06-05",
+        "diver_name": "Lauranne P.",
+        "training_session_id": "aa9542682cf64da3a2447a3c6e6cb65f",
+        "instructor_name": "Charles D.B.",
+        "feedback_text": "Exam piscine. Lauranne un peu distraite parfois, et pour le moment niveau A1 max., à suivre. Elle a fait le max de points pour l'exam théorique. Première de promo."
+    },
+    {
+        "id": "b177b8fb93674bdbb4239cc6156fbfc6",
+        "feedback_date": "2025-06-05",
+        "diver_name": "Charles D.B.",
+        "training_session_id": "5c0eca7da3dd461892b9f7bc23c407cd",
+        "instructor_name": "Charles D.B.",
+        "feedback_text": "Moi assez content de la sortie, 1h25 dans l'eau, j'ai tenté le pince-nez sans masque avec longe, mais à retenter, parce que ça fait bcp d'infos en même temps (froid au niveau des yeux, froid tout court, positionnement étanche du pince-nez), etc. Voilà pour les news, j'enverrai des petites photos sur Macapnée bientôt. Bon weekend ! De mon côté, spectacle Arya ce soir. A plus ! Feedback général, pas plus conquis que ça par la Plate-Taille. Mais peut-être sympa si on y reste plusieurs jours, où qu'on combine avec vélo / VTT."
     }
 ]
