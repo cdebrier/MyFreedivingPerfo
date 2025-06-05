@@ -58,5 +58,11 @@
         "date": "2024-06-25",
         "place": "Rixensart",
         "description": "Dernière de l'année à la piscine. Dans le noir."
+    },
+    {
+        "id": "4e69cdcdb4ee4891937e675aed40251b",
+        "date": "2024-04-16",
+        "place": "Rixensart",
+        "description": "Entraînement piscine"
     }
 ]

@@ -214,5 +214,13 @@
         "training_session_id": "aa9542682cf64da3a2447a3c6e6cb65f",
         "instructor_name": "Charles D.B.",
         "feedback_text": "Exam piscine. Lauranne un peu distraite parfois, et pour le moment niveau A1 max., à suivre. Elle a fait le max de points pour l'exam théorique. Première de promo."
+    },
+    {
+        "id": "17121867420343b384c1e54b484f3c5e",
+        "feedback_date": "2025-06-05",
+        "diver_name": "Théo G.",
+        "training_session_id": "4e69cdcdb4ee4891937e675aed40251b",
+        "instructor_name": "Philippe K.",
+        "feedback_text": "Petit feedback sur la perte d’équilibre de Théo.\nHier après une compensation dans la grande profondeur, il a eu la tête qui tourne.  Il a mis un temps avant de récupérer son équilibre.  \nIl faudra le surveiller à Némo si il a encore ce problème à l’oreille droite."
     }
 ]
