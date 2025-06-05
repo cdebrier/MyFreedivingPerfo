@@ -753,21 +753,17 @@ def main():
     if 'authenticated_privileged_user' not in st.session_state: st.session_state.authenticated_privileged_user = None
     if 'current_user' not in st.session_state: st.session_state.current_user = None 
     
-    # Buffers for sidebar user selection before confirmation
-    # The selectbox will read its default index from st.session_state.current_user if set and valid
-    # The text input for new user will have its own key within the form
-    if 'new_freediver_name_input_buffer_key' not in st.session_state: # Used to reset new user text input
+    if 'new_freediver_name_input_buffer_key' not in st.session_state: 
         st.session_state.new_freediver_name_input_buffer_key = ""
-
 
     lang = st.session_state.language
 
     if st.session_state.initiate_clear_training_inputs:
-        st.session_state.training_desc_form_val = "" # Use form-specific keys if needed
-        st.session_state.training_place_form_val = "Blocry"
+        if "training_desc_form_widget_key" in st.session_state: st.session_state.training_desc_form_widget_key = "" 
+        if "training_place_form_widget_key" in st.session_state: st.session_state.training_place_form_widget_key = "Blocry"
         st.session_state.initiate_clear_training_inputs = False
     if st.session_state.initiate_clear_feedback_inputs:
-        st.session_state.feedback_text_form_val = ""
+        if "feedback_text_form_widget_key" in st.session_state: st.session_state.feedback_text_form_widget_key = ""
         st.session_state.initiate_clear_feedback_inputs = False
 
     st.set_page_config(page_title=_("page_title", lang), layout="wide", initial_sidebar_state="expanded")
@@ -794,36 +790,37 @@ def main():
     translated_disciplines_for_display = [_("disciplines." + key, lang) for key in discipline_keys]
 
     # --- Sidebar: User Management ---
-    # Removed st.container(border=True)
     st.sidebar.header(_("user_management_header", lang))
     all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
     
-    with st.sidebar.form(key="freediver_selection_form"):
+    with st.sidebar.form(key="freediver_selection_form_sidebar"): # Unique form key
         user_options_display = [_("add_new_user_option", lang)] + all_known_users_list
         
         default_selectbox_value = st.session_state.current_user
         if default_selectbox_value not in user_options_display or default_selectbox_value is None:
-            default_selectbox_value = _("add_new_user_option", lang) # Default to "Add New" if current_user is not set or invalid
+            default_selectbox_value = _("add_new_user_option", lang)
         
         try:
             current_selectbox_index = user_options_display.index(default_selectbox_value)
-        except ValueError:
+        except ValueError: 
             current_selectbox_index = 0 
-        
+            default_selectbox_value = _("add_new_user_option", lang)
+
         selectbox_choice = st.selectbox(
             _("select_user_or_add", lang),
             user_options_display,
             index=current_selectbox_index,
-            key="user_selectbox_in_form" 
+            key="user_selectbox_in_freediver_form" # Widget key within the form
         )
 
-        new_freediver_name_input_val = ""
+        new_freediver_name_input_val_form = "" 
         if selectbox_choice == _("add_new_user_option", lang):
-            new_freediver_name_input_val = st.text_input(
+            new_freediver_name_input_val_form = st.text_input(
                 _("enter_freediver_name_sidebar", lang),
-                value=st.session_state.new_freediver_name_input_buffer_key, # Use buffer for prefill
-                key="new_freediver_name_text_input_form"
+                value=st.session_state.get("new_freediver_name_input_buffer_key",""), # Use buffer
+                key="new_freediver_name_text_input_in_form" # Widget key
             ).strip()
+            st.session_state.new_freediver_name_input_buffer_key = new_freediver_name_input_val_form # Update buffer
         
         submitted_confirm_freediver = st.form_submit_button(_("confirm_freediver_button_sidebar", lang))
 
@@ -832,28 +829,31 @@ def main():
             is_adding_new_user_scenario = False
 
             if selectbox_choice == _("add_new_user_option", lang):
-                user_to_be_confirmed = new_freediver_name_input_val # From text input
+                user_to_be_confirmed = new_freediver_name_input_val_form # Value from text input
                 is_adding_new_user_scenario = True
             else:
-                user_to_be_confirmed = selectbox_choice # From selectbox
+                user_to_be_confirmed = selectbox_choice # Value from selectbox
             
             if user_to_be_confirmed:
-                if st.session_state.current_user != user_to_be_confirmed: # If user changed
+                if st.session_state.current_user != user_to_be_confirmed: 
                     st.session_state.privileged_user_authenticated = False
                     st.session_state.authenticated_privileged_user = None
-                    if "password_input_unlock_form" in st.session_state: 
-                        st.session_state.password_input_unlock_form = ""
+                    if "password_input_unlock_form_widget_key" in st.session_state: # Clear password field if user changes
+                         st.session_state.password_input_unlock_form_widget_key = ""
                 
-                st.session_state.current_user = user_to_be_confirmed # Set the active user
+                st.session_state.current_user = user_to_be_confirmed 
 
                 if is_adding_new_user_scenario and user_to_be_confirmed not in all_known_users_list:
                     st.success(_("new_user_success", lang, user=user_to_be_confirmed))
                     if user_to_be_confirmed not in user_profiles: 
                         user_profiles[user_to_be_confirmed] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": "", "anonymize_results": False}
+                        save_user_profiles(user_profiles) # Save new profile stub
+                        all_known_users_list.append(user_to_be_confirmed) # Add to known list for current session
+                        all_known_users_list.sort()
                 elif user_to_be_confirmed in all_known_users_list:
                      st.info(_("existing_user_selected", lang, user=user_to_be_confirmed))
                 
-                st.session_state.new_freediver_name_input_buffer_key = "" # Clear the text input buffer
+                st.session_state.new_freediver_name_input_buffer_key = "" 
                 st.rerun() 
             else:
                 st.warning("Veuillez sélectionner ou entrer un nom d'apnéiste et confirmer.")
@@ -865,37 +865,36 @@ def main():
            st.session_state.get('authenticated_privileged_user') != current_user:
             
             if st.session_state.get('authenticated_privileged_user') != current_user:
-                # Reset auth state if the current_user (privileged) has changed
                 st.session_state.privileged_user_authenticated = False
                 st.session_state.authenticated_privileged_user = None
-                if "password_input_unlock_form" in st.session_state: # Ensure password field is clear for new attempt
-                    st.session_state.password_input_unlock_form = ""
+                # No direct clearing of password input state here to avoid error
 
-            with st.sidebar.form(key="unlock_privileges_form"):
-                st.session_state.password_input_unlock_form = st.text_input(
+            with st.sidebar.form(key="unlock_privileges_form_sidebar"): # Unique key for this form
+                st.session_state.password_input_unlock_form = st.text_input( # Using the user-provided assignment
                     _("enter_access_code_prompt", lang), 
-                    type="password" 
+                    type="password",
+                    key = "password_field_for_unlock_form" # Give explicit key to text_input
                 )
                 submitted_unlock = st.form_submit_button(_("unlock_button_label", lang))
 
                 if submitted_unlock:
-                    if st.session_state.password_input_unlock_form == CORRECT_PASSWORD:
+                    # Access value from the text_input's key
+                    if st.session_state.password_field_for_unlock_form == CORRECT_PASSWORD:
                         st.session_state.privileged_user_authenticated = True
                         st.session_state.authenticated_privileged_user = current_user
-                        st.session_state.password_input_unlock_form = "" # Clear after successful attempt
+                        # Do not clear st.session_state.password_field_for_unlock_form here. Rerun handles UI.
                         st.success(_("access_unlocked_success", lang))
                         st.rerun() 
                     else:
                         st.error(_("incorrect_access_code_error", lang))
                         st.session_state.privileged_user_authenticated = False
                         st.session_state.authenticated_privileged_user = None
-                        # Password attempt (wrong) remains in the field for user to see/correct
+                        # Incorrect password remains in field.
 
-    elif st.session_state.get('privileged_user_authenticated', False): # Current user is not (or no longer) the authenticated privileged one
+    elif st.session_state.get('privileged_user_authenticated', False): 
         st.session_state.privileged_user_authenticated = False
         st.session_state.authenticated_privileged_user = None
-        if "password_input_unlock_form" in st.session_state:
-            st.session_state.password_input_unlock_form = "" # Clear password if auth state is lost
+        # No need to clear specific password widget state if form not rendered
 
 
     is_admin_view_authorized = False
@@ -911,12 +910,11 @@ def main():
             is_sidebar_instructor_section_visible = True
 
     # --- Sidebar: Log New Performance ---
-    # Removed st.container(border=True)
     st.sidebar.header(_("log_performance_header", lang))
     if not current_user:
         st.sidebar.warning(_("select_user_first_warning", lang))
     else:
-        with st.sidebar.form(key="log_performance_form_sidebar"):
+        with st.sidebar.form(key="log_performance_form_sidebar_main"): # Unique key
             st.write(_("logging_for", lang, user=current_user))
             
             training_session_options_for_select_perf = {_("no_specific_session_option", lang): "none"} 
@@ -926,31 +924,33 @@ def main():
             
             select_box_display_options_perf = list(training_session_options_for_select_perf.keys())
             
-            # Use a unique key for the selectbox inside the form
+            selected_training_session_display_name_perf_key = "link_ts_perf_log_form_sb_unique_key"
             selected_training_session_display_name_perf = st.selectbox(
                 _("link_training_session_label", lang),
                 options=select_box_display_options_perf,
                 index=0, 
-                key="link_ts_perf_log_form_widget_sb_unique" 
+                key=selected_training_session_display_name_perf_key 
             )
             
-            # Discipline selection
+            selected_translated_discipline_key = "log_discipline_form_sb_unique_key"
             selected_translated_discipline = st.selectbox(
-                _("discipline", lang), translated_disciplines_for_display, key="log_discipline_form_widget_sb_unique" 
+                _("discipline", lang), translated_disciplines_for_display, key=selected_translated_discipline_key 
             )
-            log_discipline_original_key = None
+            
+            log_discipline_original_key_perf_form = None # Determine based on selected_translated_discipline for help text
             for key_iter in discipline_keys:
                 if _("disciplines." + key_iter, lang) == selected_translated_discipline:
-                    log_discipline_original_key = key_iter
+                    log_discipline_original_key_perf_form = key_iter
                     break
-            
-            performance_help_text = ""
-            if is_time_based_discipline(log_discipline_original_key):
-                performance_help_text = _("sta_help", lang)
-            elif log_discipline_original_key in ["Dynamic Bi-fins (DYN-BF)", "Depth (CWT/FIM)", "Profondeur (VWT/NLT)"]:
-                performance_help_text = _("dyn_depth_help", lang)
-            
-            log_performance_str_form = st.text_input(_("performance_value", lang), help=performance_help_text, key="log_perf_input_form_widget_sb_unique").strip() 
+
+            performance_help_text_perf_form = ""
+            if is_time_based_discipline(log_discipline_original_key_perf_form):
+                performance_help_text_perf_form = _("sta_help", lang)
+            elif log_discipline_original_key_perf_form in ["Dynamic Bi-fins (DYN-BF)", "Depth (CWT/FIM)", "Profondeur (VWT/NLT)"]:
+                performance_help_text_perf_form = _("dyn_depth_help", lang)
+
+            log_performance_str_form_key = "log_perf_input_form_sb_unique_key"
+            log_performance_str_form = st.text_input(_("performance_value", lang), help=performance_help_text_perf_form, key=log_performance_str_form_key).strip() 
 
             submitted_save_perf = st.form_submit_button(_("save_performance_button", lang))
 
@@ -959,7 +959,8 @@ def main():
                 actual_event_date_iso = date.today().isoformat() 
                 actual_linked_training_id = None
                 
-                sel_ts_id_from_form = training_session_options_for_select_perf.get(st.session_state.link_ts_perf_log_form_widget_sb_unique)
+                # Get values from form using their keys
+                sel_ts_id_from_form = training_session_options_for_select_perf.get(st.session_state[selected_training_session_display_name_perf_key])
 
                 if sel_ts_id_from_form and sel_ts_id_from_form != "none":
                     linked_session = next((s for s in training_log_loaded if s.get('id') == sel_ts_id_from_form), None)
@@ -968,9 +969,9 @@ def main():
                         actual_event_name = f"{linked_session.get('place','Session')} - {linked_session.get('description','Entraînement')}"[:100] 
                         actual_linked_training_id = sel_ts_id_from_form
                 
-                current_log_perf_str = st.session_state.log_perf_input_form_widget_sb_unique 
+                current_log_perf_str = st.session_state[log_performance_str_form_key] 
                 current_log_disc_key = None
-                sel_trans_disc_from_form = st.session_state.log_discipline_form_widget_sb_unique
+                sel_trans_disc_from_form = st.session_state[selected_translated_discipline_key]
                 for key_iter_form in discipline_keys:
                     if _("disciplines." + key_iter_form, lang) == sel_trans_disc_from_form:
                         current_log_disc_key = key_iter_form
@@ -1001,25 +1002,25 @@ def main():
                             user_profiles[current_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": "", "anonymize_results": False}
                             save_user_profiles(user_profiles)
                         st.success(_("performance_saved_success", lang, user=current_user))
-                        st.session_state.log_perf_input_form_widget_sb_unique = "" 
-                        st.session_state.link_ts_perf_log_form_widget_sb_unique = _("no_specific_session_option", lang) 
+                        st.session_state[log_performance_str_form_key] = "" 
+                        st.session_state[selected_training_session_display_name_perf_key] = _("no_specific_session_option", lang) 
                         st.rerun()
     
     # --- Sidebar: Log New Training Session ---
     if is_sidebar_instructor_section_visible:
-        # Removed st.container(border=True)
         st.sidebar.header(_("log_training_header_sidebar", lang))
-        with st.sidebar.form(key="log_training_form"):
+        with st.sidebar.form(key="log_training_form_sidebar"): # Unique form key
             training_date_log_val_form = st.date_input(_("training_date_label", lang), date.today(), key="training_date_input_form_widget")
-            training_place_form = st.text_input(_("training_place_label", lang), value=st.session_state.get("training_place_form_val", "Blocry"), key="training_place_form_widget")
-            training_description_form = st.text_area(_("training_description_label", lang), value=st.session_state.get("training_desc_form_val", ""), key="training_desc_form_widget")
+            # Use different session state keys for form value persistence if needed, or rely on widget keys
+            training_place_form = st.text_input(_("training_place_label", lang), value=st.session_state.get("log_training_place_val", "Blocry"), key="log_training_place_widget")
+            training_description_form = st.text_area(_("training_description_label", lang), value=st.session_state.get("log_training_desc_val", ""), key="log_training_desc_widget")
             
             submitted_save_training = st.form_submit_button(_("save_training_button", lang))
 
             if submitted_save_training:
-                desc_to_save = st.session_state.training_desc_form_widget.strip() # Access with key
-                place_to_save = st.session_state.training_place_form_widget.strip() # Access with key
-                date_to_save = st.session_state.training_date_input_form_widget # Access with key
+                desc_to_save = st.session_state.log_training_desc_widget.strip() 
+                place_to_save = st.session_state.log_training_place_widget.strip() 
+                date_to_save = st.session_state.training_date_input_form_widget 
 
                 if not desc_to_save: 
                     st.error(_("training_description_empty_error", lang))
@@ -1028,37 +1029,56 @@ def main():
                     training_log_loaded.append(new_training_entry)
                     save_training_log(training_log_loaded)
                     st.success(_("training_session_saved_success", lang))
-                    st.session_state.training_place_form_val = "Blocry" 
-                    st.session_state.training_desc_form_val = ""
+                    st.session_state.log_training_place_val = "Blocry" # Reset buffer for next time
+                    st.session_state.log_training_desc_val = ""
                     st.rerun()
     
     # --- Sidebar: Log Instructor Feedback ---
     if is_sidebar_instructor_section_visible:
-        # Removed st.container(border=True)
         st.sidebar.header(_("log_feedback_header_sidebar", lang))
-        with st.sidebar.form(key="log_feedback_form"):
+        with st.sidebar.form(key="log_feedback_form_sidebar"): # Unique form key
             if not all_known_users_list: st.warning("Please add freedivers before logging feedback.") 
             else:
+                feedback_for_user_key_form = "feedback_for_user_form_sb_widget_key"
+                feedback_training_session_key_form = "feedback_training_session_form_sb_widget_key"
+                feedback_text_key_form = "feedback_text_form_sb_widget_key"
+
+                # Initialize session state for these keys if not present, for controlled components
+                if feedback_for_user_key_form not in st.session_state:
+                    st.session_state[feedback_for_user_key_form] = _("select_freediver_prompt", lang)
+                if feedback_training_session_key_form not in st.session_state:
+                    st.session_state[feedback_training_session_key_form] = _("select_training_prompt", lang)
+                if feedback_text_key_form not in st.session_state:
+                    st.session_state[feedback_text_key_form] = ""
+                
                 feedback_for_user_form = st.selectbox(
-                    _("feedback_for_freediver_label", lang), options=[_("select_freediver_prompt", lang)] + [u for u in all_known_users_list if u != current_user], key="feedback_for_user_form_widget" 
+                    _("feedback_for_freediver_label", lang), 
+                    options=[_("select_freediver_prompt", lang)] + [u for u in all_known_users_list if u != current_user], 
+                    key=feedback_for_user_key_form 
                 )
                 
                 training_session_options_fb_form = {log['id']: f"{log['date']} - {log['place']}" for log in sorted(training_log_loaded, key=lambda x: x['date'], reverse=True)}
                 training_session_options_display_fb_form = [_("select_training_prompt", lang)] + list(training_session_options_fb_form.values())
                 selected_training_display_fb_form = st.selectbox(
-                    _("training_session_label", lang), options=training_session_options_display_fb_form, key="feedback_training_session_form_widget" 
+                    _("training_session_label", lang), 
+                    options=training_session_options_display_fb_form, 
+                    key=feedback_training_session_key_form
                 )
                 
                 st.write(f"{_('instructor_name_label', lang)} {current_user}") 
                 
-                feedback_text_form = st.text_area(_("feedback_text_label", lang), value=st.session_state.get("feedback_text_form_val", ""), key="feedback_text_form_widget")
+                feedback_text_form = st.text_area(
+                    _("feedback_text_label", lang), 
+                    value=st.session_state[feedback_text_key_form], 
+                    key=feedback_text_key_form 
+                )
 
                 submitted_save_feedback = st.form_submit_button(_("save_feedback_button", lang))
 
                 if submitted_save_feedback:
-                    sel_fb_for_user = st.session_state.feedback_for_user_form_widget
-                    sel_fb_training_disp = st.session_state.feedback_training_session_form_widget
-                    sel_fb_text = st.session_state.feedback_text_form_widget.strip()
+                    sel_fb_for_user = st.session_state[feedback_for_user_key_form]
+                    sel_fb_training_disp = st.session_state[feedback_training_session_key_form]
+                    sel_fb_text = st.session_state[feedback_text_key_form].strip() 
                     
                     sel_fb_training_id = None
                     if sel_fb_training_disp != _("select_training_prompt", lang):
@@ -1073,16 +1093,15 @@ def main():
                         instructor_feedback_loaded.append(new_feedback)
                         save_instructor_feedback(instructor_feedback_loaded)
                         st.success(_("feedback_saved_success", lang))
-                        st.session_state.feedback_text_form_val = ""
-                        st.session_state.feedback_for_user_form_widget = _("select_freediver_prompt", lang)
-                        st.session_state.feedback_training_session_form_widget = _("select_training_prompt", lang)
+                        st.session_state[feedback_text_key_form] = "" 
+                        st.session_state[feedback_for_user_key_form] = _("select_freediver_prompt", lang)
+                        st.session_state[feedback_training_session_key_form] = _("select_training_prompt", lang)
                         st.rerun()
 
     # --- Sidebar: Profile Section ---
     if current_user: 
-        # Removed st.container(border=True)
         st.sidebar.header(_("profile_header_sidebar", lang))
-        with st.sidebar.form(key="profile_form_sidebar"):
+        with st.sidebar.form(key="profile_form_sidebar_main"): # Unique key
             user_profile_data_sidebar = user_profiles.get(current_user, {})
             
             current_certification_sidebar = user_profile_data_sidebar.get("certification", _("no_certification_option", lang))
@@ -1093,7 +1112,7 @@ def main():
             
             new_certification_sidebar_form = st.selectbox(
                 _("certification_label", lang), options=actual_selectbox_options_sidebar, 
-                index=current_cert_index_sidebar, key="certification_select_profile_form" 
+                index=current_cert_index_sidebar, key="certification_select_profile_form_sb" # Unique key
             )
             
             current_cert_date_str_sidebar = user_profile_data_sidebar.get("certification_date")
@@ -1103,37 +1122,33 @@ def main():
                 except ValueError: current_cert_date_obj_sidebar = None
             
             new_cert_date_sidebar_form = st.date_input(
-                _("certification_date_label", lang), value=current_cert_date_obj_sidebar, key="cert_date_profile_form" 
+                _("certification_date_label", lang), value=current_cert_date_obj_sidebar, key="cert_date_profile_form_sb" # Unique key
             )
             
             current_lifras_id_sidebar = user_profile_data_sidebar.get("lifras_id", "")
             new_lifras_id_sidebar_form = st.text_input(
-                _("lifras_id_label", lang), value=current_lifras_id_sidebar, key="lifras_id_profile_form" 
+                _("lifras_id_label", lang), value=current_lifras_id_sidebar, key="lifras_id_profile_form_sb" # Unique key
             )
             
             current_anonymize_sidebar = user_profile_data_sidebar.get("anonymize_results", False)
             new_anonymize_sidebar_form = st.checkbox(
-                _("anonymize_results_label", lang), value=current_anonymize_sidebar, key="anonymize_profile_form" 
+                _("anonymize_results_label", lang), value=current_anonymize_sidebar, key="anonymize_profile_form_sb" # Unique key
             )
             
             submitted_save_profile = st.form_submit_button(_("save_profile_button", lang))
 
             if submitted_save_profile:
                 user_profiles.setdefault(current_user, {}) 
-                user_profiles[current_user]["certification"] = st.session_state.certification_select_profile_form
-                cert_date_val = st.session_state.cert_date_profile_form
+                user_profiles[current_user]["certification"] = st.session_state.certification_select_profile_form_sb
+                cert_date_val = st.session_state.cert_date_profile_form_sb
                 user_profiles[current_user]["certification_date"] = cert_date_val.isoformat() if cert_date_val else None
-                user_profiles[current_user]["lifras_id"] = st.session_state.lifras_id_profile_form.strip()
-                user_profiles[current_user]["anonymize_results"] = st.session_state.anonymize_profile_form
+                user_profiles[current_user]["lifras_id"] = st.session_state.lifras_id_profile_form_sb.strip()
+                user_profiles[current_user]["anonymize_results"] = st.session_state.anonymize_profile_form_sb
                 save_user_profiles(user_profiles)
                 st.success(_("profile_saved_success", lang, user=current_user))
-                # Rerun handled by form submission
+                st.rerun()
     
     # --- Main Display Area ---
-    # (Rest of the main function code for displaying tabs and content remains largely the same, 
-    #  ensure all references to data use the loaded and potentially updated variables)
-    # ... (Previous main content display logic) ...
-
     tab_label_personal = _("personal_records_tab_label", lang)
     tab_label_main_feedback_log = _("feedback_log_tab_label", lang)
     tab_label_club_performances = _("club_performances_overview_tab_label", lang)
@@ -1176,7 +1191,7 @@ def main():
                 if not user_records_for_tab:
                     st.info(_("no_performances_yet", lang))
                 else:
-                    with st.container(border=True): # Keep container for internal grouping if desired
+                    with st.container(border=True): 
                         st.subheader(_("personal_bests_subheader", lang))
                         pbs_tab = {}
                         for disc_key_pb_tab in discipline_keys:
@@ -1576,7 +1591,7 @@ def main():
                                         certification_summary_renamed[_("avg_performance_col", lang)] = certification_summary_renamed['avg_perf'].apply(lambda x: format_perf_value_for_stats(x, is_time_discipline_for_stats))
                                         
                                         display_cols = [_("certification_level_col", lang), _("min_performance_col", lang), _("max_performance_col", lang), _("avg_performance_col", lang)]
-                                        final_display_cols = [col for col in display_cols if col in certification_summary_renamed.columns] # Ensure all selected columns exist
+                                        final_display_cols = [col for col in display_cols if col in certification_summary_renamed.columns] 
                                         display_stats_df = certification_summary_renamed[final_display_cols]
                                         
                                         if display_stats_df.empty: st.info(_("no_stats_data", lang))
@@ -1681,7 +1696,7 @@ def main():
                                         if record['user'] == original_name: record['user'] = new_name
                                     if st.session_state.get('current_user') == original_name: 
                                         st.session_state.current_user = new_name
-                                        st.session_state.sidebar_user_selectbox_choice = new_name
+                                        st.session_state.user_selectbox_in_form = new_name # Update selectbox choice to reflect rename
                                 else:
                                     temp_user_profiles.setdefault(original_name, {}).update({'certification': new_certification, 'certification_date': new_cert_date_str, 'lifras_id': new_lifras_id, 'anonymize_results': new_anonymize_status})
                         if changes_made_freedivers: 

@@ -182,5 +182,29 @@
         "training_session_id": "bfc4f5c4b10e4b3cb6f1a9ada99ea40c",
         "instructor_name": "Vincent C.",
         "feedback_text": "Gregory a fait une descente jusqu'au fond en CNF (sans palmes, sans utiliser la corde), d'un style que j'ai trouvé parfait! C'était beau à voir!\nPerso, je me suis senti détendu dans mes descentes profondes (merci à Greg pour la sécu à ces moments-là)."
+    },
+    {
+        "id": "004e459c31c7483eb3911409a1dcb6e4",
+        "feedback_date": "2025-06-05",
+        "diver_name": "Charles D.",
+        "training_session_id": "aa9542682cf64da3a2447a3c6e6cb65f",
+        "instructor_name": "Charles D.B.",
+        "feedback_text": "Passage A1 piscine. Charles franchement très bien."
+    },
+    {
+        "id": "447a5db84d284100b38084d9f406f6eb",
+        "feedback_date": "2025-06-05",
+        "diver_name": "Martin V.",
+        "training_session_id": "aa9542682cf64da3a2447a3c6e6cb65f",
+        "instructor_name": "Charles D.B.",
+        "feedback_text": "Passage A1 piscine. Martin franchement très bien."
+    },
+    {
+        "id": "63745a77b69e4485a110b34c7d19d189",
+        "feedback_date": "2025-06-05",
+        "diver_name": "Déborah L.",
+        "training_session_id": "aa9542682cf64da3a2447a3c6e6cb65f",
+        "instructor_name": "Charles D.B.",
+        "feedback_text": "Passage A1 piscine. Deborah franchement très bien."
     }
 ]
