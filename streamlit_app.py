@@ -12,7 +12,7 @@ INSTRUCTOR_FEEDBACK_FILE = "instructor_feedback.json"
 
 # --- Privileged User Configuration ---
 PRIVILEGED_USERS = ["Philippe K.", "Vincent C.", "Charles D.B.", "Rémy L.", "Gregory D."]
-CORRECT_PASSWORD = "M@c@apnée" # Ensure this is a secure password in a real application
+CORRECT_PASSWORD = "M@capnée" # Ensure this is a secure password in a real application
 
 # Instructor certification levels for different functionalities
 INSTRUCTOR_CERT_LEVELS_FOR_LOGGING_FEEDBACK_SIDEBAR = ["S4", "I1", "I2", "I3"]
@@ -519,7 +519,7 @@ TRANSLATIONS = {
         "freedivers_updated_success": "Vrijduikergegevens succesvol bijgewerkt.", 
         "freediver_name_conflict_error": "Fout: Naam '{new_name}' is al in gebruik door een andere vrijduiker. Kies een unieke naam.", 
         "original_name_col_editor_hidden": "originele_naam",
-        "freediver_certification_summary_header": "🔢 Vrijduikers per Certificatieniveau", 
+        "freediver_certification_summary_header": "� Vrijduikers per Certificatieniveau", 
         "count_col": "Aantal",
         "training_log_tab_title": "📅 Trainingslogboek",
         "log_training_header_sidebar": "🏋️ Nieuwe Trainingssessie Loggen",
@@ -761,9 +761,15 @@ def main():
     if 'log_perf_session_select_buffer' not in st.session_state: st.session_state.log_perf_session_select_buffer = _("no_specific_session_option", st.session_state.language)
     if 'training_place_buffer' not in st.session_state: st.session_state.training_place_buffer = "Blocry"
     if 'training_desc_buffer' not in st.session_state: st.session_state.training_desc_buffer = ""
-    if 'feedback_for_user_buffer' not in st.session_state: st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", st.session_state.language)
-    if 'feedback_training_session_buffer' not in st.session_state: st.session_state.feedback_training_session_buffer = _("select_training_prompt", st.session_state.language)
-    if 'feedback_text_buffer' not in st.session_state: st.session_state.feedback_text_buffer = ""
+    
+    # Initialize feedback form buffers carefully to avoid issues if lang changes before first use
+    default_lang_for_init = st.session_state.get('language', 'en')
+    if 'feedback_for_user_buffer' not in st.session_state: 
+        st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", default_lang_for_init)
+    if 'feedback_training_session_buffer' not in st.session_state: 
+        st.session_state.feedback_training_session_buffer = _("select_training_prompt", default_lang_for_init)
+    if 'feedback_text_buffer' not in st.session_state: 
+        st.session_state.feedback_text_buffer = ""
 
 
     lang = st.session_state.language
@@ -818,20 +824,24 @@ def main():
             current_selectbox_index_user_form = 0 
             default_selectbox_value_user_form = _("add_new_user_option", lang)
 
+        # This selectbox value is directly used for logic within the form
         selectbox_choice_user_form = st.selectbox(
             _("select_user_or_add", lang),
             user_options_display,
             index=current_selectbox_index_user_form,
-            key="user_selectbox_in_freediver_form_key" 
+            key="user_selectbox_in_freediver_form_key" # Key for this widget
         )
 
         new_freediver_name_input_val_form = "" 
         if selectbox_choice_user_form == _("add_new_user_option", lang):
+            # The value of this text_input is also accessed via its key from st.session_state
             new_freediver_name_input_val_form = st.text_input(
                 _("enter_freediver_name_sidebar", lang),
-                value=st.session_state.new_freediver_name_input_buffer_key, 
+                value=st.session_state.new_freediver_name_input_buffer_key, # Pre-fill with buffer
                 key="new_freediver_name_text_input_in_form_key" 
             ).strip()
+            # Update buffer with current input, to persist if form is not submitted but rerun happens
+            st.session_state.new_freediver_name_input_buffer_key = new_freediver_name_input_val_form
         
         submitted_confirm_freediver = st.form_submit_button(_("confirm_freediver_button_sidebar", lang))
 
@@ -878,34 +888,27 @@ def main():
             if st.session_state.get('authenticated_privileged_user') != current_user:
                 st.session_state.privileged_user_authenticated = False
                 st.session_state.authenticated_privileged_user = None
-                if "password_field_for_unlock_form_key" in st.session_state: # Key for the text_input
+                if "password_field_for_unlock_form_key" in st.session_state: 
                     st.session_state.password_field_for_unlock_form_key = ""
 
 
-            with st.sidebar.form(key="unlock_privileges_form_sidebar_key"): # Unique key
-                # The user snippet was: st.session_state.password_input_unlock_form = st.text_input(...)
-                # This is incorrect. The value is accessed via the widget's key from st.session_state.
-                # The widget needs its own key.
-                password_attempt_in_form = st.text_input(
+            with st.sidebar.form(key="unlock_privileges_form_sidebar_key"): 
+                st.session_state.password_field_for_unlock_form_key = st.text_input(
                     _("enter_access_code_prompt", lang), 
-                    type="password",
-                    key = "password_field_for_unlock_form_key" # Use this key to get value
+                    type="password"
                 )
                 submitted_unlock_form = st.form_submit_button(_("unlock_button_label", lang))
 
                 if submitted_unlock_form:
-                    if password_attempt_in_form == CORRECT_PASSWORD: # Check value from st.session_state[key]
+                    if st.session_state.password_field_for_unlock_form_key == CORRECT_PASSWORD: 
                         st.session_state.privileged_user_authenticated = True
                         st.session_state.authenticated_privileged_user = current_user
-                        # No need to clear st.session_state.password_field_for_unlock_form_key here,
-                        # the form will not be rendered on next run if authenticated.
                         st.success(_("access_unlocked_success", lang))
                         st.rerun() 
                     else:
                         st.error(_("incorrect_access_code_error", lang))
                         st.session_state.privileged_user_authenticated = False
                         st.session_state.authenticated_privileged_user = None
-                        # The incorrect password will remain in the field for the user to see/correct upon re-render.
 
     elif st.session_state.get('privileged_user_authenticated', False): 
         st.session_state.privileged_user_authenticated = False
@@ -941,14 +944,12 @@ def main():
             
             select_box_display_options_perf = list(training_session_options_for_select_perf.keys())
             
-            # Determine default index for performance session selectbox
             default_perf_session_idx = 0
             try:
                 default_perf_session_idx = select_box_display_options_perf.index(st.session_state.log_perf_session_select_buffer)
-            except (ValueError, KeyError): # If buffer not set or invalid
+            except (ValueError, KeyError): 
                 st.session_state.log_perf_session_select_buffer = _("no_specific_session_option", lang)
                 default_perf_session_idx = 0
-
 
             selected_training_session_display_name_perf = st.selectbox(
                 _("link_training_session_label", lang),
@@ -1066,18 +1067,20 @@ def main():
         with st.sidebar.form(key="log_feedback_form_sidebar"): 
             if not all_known_users_list: st.warning("Please add freedivers before logging feedback.") 
             else:
-                freediver_options_for_feedback = [_("select_freediver_prompt", lang)] + [u for u in all_known_users_list if u != current_user]
+                freediver_options_for_feedback = [_("select_freediver_prompt", lang)] + all_known_users_list # Allow selecting self
+                
                 default_fb_user_idx = 0
                 try:
                     default_fb_user_idx = freediver_options_for_feedback.index(st.session_state.feedback_for_user_buffer)
                 except (ValueError, KeyError):
                     st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
 
+                feedback_for_user_sb_key_form = "feedback_for_user_selectbox_key_in_form" # New key
                 feedback_for_user_form = st.selectbox(
                     _("feedback_for_freediver_label", lang), 
                     options=freediver_options_for_feedback, 
                     index=default_fb_user_idx,
-                    key="feedback_for_user_sb_key" 
+                    key=feedback_for_user_sb_key_form
                 )
                 
                 training_session_options_fb_form = {log['id']: f"{log['date']} - {log['place']}" for log in sorted(training_log_loaded, key=lambda x: x['date'], reverse=True)}
@@ -1089,27 +1092,29 @@ def main():
                 except (ValueError, KeyError):
                      st.session_state.feedback_training_session_buffer = _("select_training_prompt", lang)
 
+                feedback_training_session_sb_key_form = "feedback_training_session_selectbox_key_in_form" # New key
                 selected_training_display_fb_form = st.selectbox(
                     _("training_session_label", lang), 
                     options=training_session_options_display_fb_form, 
                     index=default_fb_ts_idx,
-                    key="feedback_training_session_sb_key"
+                    key=feedback_training_session_sb_key_form
                 )
                 
                 st.write(f"{_('instructor_name_label', lang)} {current_user}") 
                 
+                feedback_text_area_key_form = "feedback_text_area_key_in_form" # New key
                 feedback_text_form = st.text_area(
                     _("feedback_text_label", lang), 
                     value=st.session_state.feedback_text_buffer, 
-                    key="feedback_text_area_key" 
+                    key=feedback_text_area_key_form 
                 )
 
                 submitted_save_feedback = st.form_submit_button(_("save_feedback_button", lang))
 
                 if submitted_save_feedback:
-                    sel_fb_for_user = st.session_state.feedback_for_user_sb_key
-                    sel_fb_training_disp = st.session_state.feedback_training_session_sb_key
-                    sel_fb_text = st.session_state.feedback_text_area_key.strip() 
+                    sel_fb_for_user = st.session_state[feedback_for_user_sb_key_form]
+                    sel_fb_training_disp = st.session_state[feedback_training_session_sb_key_form]
+                    sel_fb_text = st.session_state[feedback_text_area_key_form].strip() 
                     
                     sel_fb_training_id = None
                     if sel_fb_training_disp != _("select_training_prompt", lang):
@@ -1727,7 +1732,7 @@ def main():
                                         if record['user'] == original_name: record['user'] = new_name
                                     if st.session_state.get('current_user') == original_name: 
                                         st.session_state.current_user = new_name
-                                        st.session_state.user_selectbox_in_freediver_form = new_name 
+                                        st.session_state.user_selectbox_in_freediver_form_key = new_name 
                                 else:
                                     temp_user_profiles.setdefault(original_name, {}).update({'certification': new_certification, 'certification_date': new_cert_date_str, 'lifras_id': new_lifras_id, 'anonymize_results': new_anonymize_status})
                         if changes_made_freedivers: 
