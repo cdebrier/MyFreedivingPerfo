@@ -2,457 +2,571 @@
     {
         "id": "4d439d3732a947a09baa27db2cfa4285",
         "user": "Charles D.B.",
-        "date": "2025-05-17",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "43",
-        "parsed_value": 43
+        "parsed_value": 43,
+        "event_date": "2025-05-17",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-05-17"
     },
     {
         "id": "b63636e7931447fc8dd23834bb57cec0",
         "user": "Charles D.B.",
-        "date": "2025-05-28",
         "discipline": "Dynamic Bi-fins (DYN-BF)",
         "original_performance_str": "50",
-        "parsed_value": 50
+        "parsed_value": 50,
+        "event_date": "2025-05-28",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-05-28"
     },
     {
         "id": "9fdf493faaaf4288aa1ae04a07166be3",
         "user": "Charles D.B.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "7:47",
-        "parsed_value": 467.0
+        "parsed_value": 467.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "5232e1d3dda04e80b16f6d99e19bc91a",
         "user": "Charles D.B.",
-        "date": "2025-01-14",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "8:34",
-        "parsed_value": 514.0
+        "parsed_value": 514.0,
+        "event_date": "2025-01-14",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-01-14"
     },
     {
         "id": "fc82f69aea8f4d50bd4a33c567901e97",
         "user": "Charles D.B.",
-        "date": "2025-05-13",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "38",
-        "parsed_value": 38
+        "parsed_value": 38,
+        "event_date": "2025-05-13",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-05-13"
     },
     {
         "id": "74135c3d39914119b10df2713729acf2",
         "user": "Charles D.B.",
-        "date": "2025-05-14",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "42",
-        "parsed_value": 42
+        "parsed_value": 42,
+        "event_date": "2025-05-14",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-05-14"
     },
     {
         "id": "34b9df4be4b0462dabe223f2e404a0d9",
         "user": "Charles D.B.",
-        "date": "2025-05-12",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "35",
-        "parsed_value": 35
+        "parsed_value": 35,
+        "event_date": "2025-05-12",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-05-12"
     },
     {
         "id": "09f61df08afb48cf95883f7954fefb2d",
         "user": "Charles D.B.",
-        "date": "2025-05-11",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "27",
-        "parsed_value": 27
+        "parsed_value": 27,
+        "event_date": "2025-05-11",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-05-11"
     },
     {
         "id": "9fd17eac8ecc41a3962a8475e6d0aee3",
         "user": "Charles D.B.",
-        "date": "2025-05-10",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "16",
-        "parsed_value": 16
+        "parsed_value": 16,
+        "event_date": "2025-05-10",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-05-10"
     },
     {
         "id": "cb8b9fbde211431097f94774e17ad78b",
         "user": "Charles D.B.",
-        "date": "2025-05-09",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "31",
-        "parsed_value": 31
+        "parsed_value": 31,
+        "event_date": "2025-05-09",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-05-09"
     },
     {
         "id": "4d4fb24fea954a21a6b0bfdf16ee7437",
         "user": "Charles D.B.",
-        "date": "2025-01-07",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "28",
-        "parsed_value": 28
+        "parsed_value": 28,
+        "event_date": "2025-01-07",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-01-07"
     },
     {
         "id": "2b230b7395f34b418d526cf19eb706a0",
         "user": "Charles D.B.",
-        "date": "2024-10-22",
         "discipline": "Static Apnea (STA)",
         "original_performance_str": "05:00",
-        "parsed_value": 300.0
+        "parsed_value": 300.0,
+        "event_date": "2024-10-22",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2024-10-22"
     },
     {
         "id": "23d2c0e8441341debed224df33b6d108",
         "user": "Charles D.B.",
-        "date": "2024-01-16",
         "discipline": "Static Apnea (STA)",
         "original_performance_str": "5:10",
-        "parsed_value": 310.0
+        "parsed_value": 310.0,
+        "event_date": "2024-01-16",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2024-01-16"
     },
     {
         "id": "34ea76174ea34f70821322971bb57a18",
         "user": "Charles D.B.",
-        "date": "2024-01-28",
         "discipline": "Dynamic Bi-fins (DYN-BF)",
         "original_performance_str": "75",
-        "parsed_value": 75
+        "parsed_value": 75,
+        "event_date": "2024-01-28",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2024-01-28"
     },
     {
         "id": "ee7acfa3a9d8400eb62f22c391edb1dd",
         "user": "Charles D.B.",
-        "date": "2024-02-18",
         "discipline": "Dynamic Bi-fins (DYN-BF)",
         "original_performance_str": "85",
-        "parsed_value": 85
+        "parsed_value": 85,
+        "event_date": "2024-02-18",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2024-02-18"
     },
     {
         "id": "9a1a7b77b18545e1865a228cbba58a67",
         "user": "Philippe K.",
-        "date": "2024-10-29",
         "discipline": "Static Apnea (STA)",
         "original_performance_str": "5:15",
-        "parsed_value": 315.0
+        "parsed_value": 315.0,
+        "event_date": "2024-10-29",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2024-10-29"
     },
     {
         "id": "1c9c5468d80c447fbbd82bf52f60f3a8",
         "user": "Grégoire L.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "7:29",
-        "parsed_value": 449.0
+        "parsed_value": 449.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "02b15763b71e426eaad39d3648f36037",
         "user": "Charles D.B.",
-        "date": "2025-05-16",
         "discipline": "Profondeur (VWT/NLT)",
         "original_performance_str": "50",
-        "parsed_value": 50
+        "parsed_value": 50,
+        "event_date": "2025-05-16",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-05-16"
     },
     {
         "id": "35b03a36cf9e44999d8a055e1fb059a6",
         "user": "Eric M.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "07:48",
-        "parsed_value": 468.0
+        "parsed_value": 468.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "a24f8abfa47443eeacd742fad531e44f",
         "user": "Vincent C.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "08:20",
-        "parsed_value": 500.0
+        "parsed_value": 500.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "8644fe4540be4833be75b8d91c04fb88",
         "user": "Michel F.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "08:38",
-        "parsed_value": 518.0
+        "parsed_value": 518.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "ab69c0f1ce8f4428966e94b7bcc5ffae",
         "user": "Martin V.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "09:31",
-        "parsed_value": 571.0
+        "parsed_value": 571.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "89073bb7bef84fff9600ac6800017593",
         "user": "Gregory D.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "09:47",
-        "parsed_value": 587.0
+        "parsed_value": 587.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "fc42c3c18abd4f6abb50f6ee98691312",
         "user": "Florence S.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "10:00",
-        "parsed_value": 600.0
+        "parsed_value": 600.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "88e05db876a64ebab2244f61f71f8322",
         "user": "Yves G.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "10:34",
-        "parsed_value": 634.0
+        "parsed_value": 634.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "0482fc60536646489c7161a7b08b0c76",
         "user": "Perrine M.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "10:45",
-        "parsed_value": 645.0
+        "parsed_value": 645.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "de48888bcfd348e4a63eb5535965221f",
         "user": "Sébastien L.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "11:37",
-        "parsed_value": 697.0
+        "parsed_value": 697.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "717d70b079044a2ca4b2f32f95857801",
         "user": "Déborah L.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "12:26",
-        "parsed_value": 746.0
+        "parsed_value": 746.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "328d9abc6c944a8095699dd589a9d8e0",
         "user": "Lauranne P.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "12:30",
-        "parsed_value": 750.0
+        "parsed_value": 750.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "27fbad2283104e0ba734493423731771",
         "user": "Xavier M.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "12:32",
-        "parsed_value": 752.0
+        "parsed_value": 752.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "7bba91d6ee6140a983ffcbb22f179203",
         "user": "Aurélie B.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "12:35",
-        "parsed_value": 755.0
+        "parsed_value": 755.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "12358251eaa448d4b14662e881d21eaa",
         "user": "Luc D.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "12:46",
-        "parsed_value": 766.0
+        "parsed_value": 766.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "64205749118c4e12aa0f8ae4802ebeea",
         "user": "Emmanuel H.",
-        "date": "2025-04-08",
         "discipline": "16x25m Speed Endurance",
         "original_performance_str": "13:07",
-        "parsed_value": 787.0
+        "parsed_value": 787.0,
+        "event_date": "2025-04-08",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-08"
     },
     {
         "id": "dcdae78626b34fdc9c2fd39e1646cd30",
         "user": "Philippe K.",
-        "date": "2023-10-27",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "47",
-        "parsed_value": 47
+        "parsed_value": 47,
+        "event_date": "2023-10-27",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2023-10-27"
     },
     {
         "id": "f385f3514dd74c429f89e07a96587102",
         "user": "Grégoire L.",
-        "date": "2025-03-25",
         "discipline": "Dynamic Bi-fins (DYN-BF)",
         "original_performance_str": "100",
-        "parsed_value": 100
+        "parsed_value": 100,
+        "event_date": "2025-03-25",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-03-25"
     },
     {
         "id": "9e0a8e62985e4df484a2b3d95060298f",
         "user": "Charles D.B.",
-        "date": "2025-01-02",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "30",
-        "parsed_value": 30
+        "parsed_value": 30,
+        "event_date": "2025-01-02",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-01-02"
     },
     {
         "id": "a05803431f094cd0bd64c32de1145ea6",
         "user": "Charles D.B.",
-        "date": "2024-11-09",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "23",
-        "parsed_value": 23
+        "parsed_value": 23,
+        "event_date": "2024-11-09",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2024-11-09"
     },
     {
         "id": "b7fd14f4ce574acb8deae0bda9ded646",
         "user": "Charles D.B.",
-        "date": "2024-11-02",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "27",
-        "parsed_value": 27
+        "parsed_value": 27,
+        "event_date": "2024-11-02",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2024-11-02"
     },
     {
         "id": "36f357df0363491e8d6594b12f281370",
         "user": "Charles D.B.",
-        "date": "2024-10-22",
         "discipline": "Static Apnea (STA)",
         "original_performance_str": "05:04",
-        "parsed_value": 304.0
+        "parsed_value": 304.0,
+        "event_date": "2024-10-22",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2024-10-22"
     },
     {
         "id": "0e8f1da74b1d4fb7af6db1eceb12d9f5",
         "user": "Charles D.B.",
-        "date": "2024-10-15",
         "discipline": "Static Apnea (STA)",
         "original_performance_str": "04:04",
-        "parsed_value": 244.0
+        "parsed_value": 244.0,
+        "event_date": "2024-10-15",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2024-10-15"
     },
     {
         "id": "a2cb9f2418764e61925ccda1781dea63",
         "user": "Charles D.B.",
-        "date": "2024-08-27",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "32",
-        "parsed_value": 32
+        "parsed_value": 32,
+        "event_date": "2024-08-27",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2024-08-27"
     },
     {
         "id": "fad5de99d82b4f72a3b21d0f80697560",
         "user": "Charles D.B.",
-        "date": "2024-08-15",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "26",
-        "parsed_value": 26
+        "parsed_value": 26,
+        "event_date": "2024-08-15",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2024-08-15"
     },
     {
         "id": "97b4b8c0782d49e6a03b77d6e3af3dbb",
         "user": "Charles D.B.",
-        "date": "2024-08-06",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "32",
-        "parsed_value": 32
+        "parsed_value": 32,
+        "event_date": "2024-08-06",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2024-08-06"
     },
     {
         "id": "0d5e82bc25bd42239f4bf9354211469e",
         "user": "Charles D.B.",
-        "date": "2024-07-30",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "32",
-        "parsed_value": 32
+        "parsed_value": 32,
+        "event_date": "2024-07-30",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2024-07-30"
     },
     {
         "id": "668a1c60228243ed8f9f16237fe09f0c",
         "user": "Charles D.B.",
-        "date": "2024-07-27",
         "discipline": "Static Apnea (STA)",
         "original_performance_str": "04:46",
-        "parsed_value": 286.0
+        "parsed_value": 286.0,
+        "event_date": "2024-07-27",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2024-07-27"
     },
     {
         "id": "22551ed9a1054747b17f1597804c83b8",
         "user": "Charles D.B.",
-        "date": "2025-04-15",
         "discipline": "Static Apnea (STA)",
         "original_performance_str": "03:43",
-        "parsed_value": 223.0
+        "parsed_value": 223.0,
+        "event_date": "2025-04-15",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-15"
     },
     {
         "id": "bba38cf1d801444aaf9b85c5fc15dcf8",
         "user": "Charles D.B.",
-        "date": "2025-04-04",
         "discipline": "Static Apnea (STA)",
         "original_performance_str": "04:04",
-        "parsed_value": 244.0
+        "parsed_value": 244.0,
+        "event_date": "2025-04-04",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-04-04"
     },
     {
         "id": "e477f99f364a43f39acf551dd874e6c9",
         "user": "Charles D.B.",
-        "date": "2025-05-15",
         "discipline": "Profondeur (VWT/NLT)",
         "original_performance_str": "40",
-        "parsed_value": 40
+        "parsed_value": 40,
+        "event_date": "2025-05-15",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-05-15"
     },
     {
         "id": "33967c4a3ca542b999fca1f5aca21c93",
         "user": "Donald S.",
-        "date": "2025-01-01",
         "discipline": "Dynamic Bi-fins (DYN-BF)",
         "original_performance_str": "100",
-        "parsed_value": 100
+        "parsed_value": 100,
+        "event_date": "2025-01-01",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-01-01"
     },
     {
         "id": "b5fbaf2edea04e0a92a7465eb3dce6fc",
         "user": "François B.",
-        "date": "2025-01-01",
         "discipline": "Static Apnea (STA)",
         "original_performance_str": "05:40",
-        "parsed_value": 340.0
+        "parsed_value": 340.0,
+        "event_date": "2025-01-01",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-01-01"
     },
     {
         "id": "2d1e1d596f934c889581b12a2e679263",
         "user": "Florence S.",
-        "date": "2025-01-03",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "22",
-        "parsed_value": 22
+        "parsed_value": 22,
+        "event_date": "2025-01-03",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-01-03"
     },
     {
         "id": "677572d7454d41ada787400ceb407cf5",
         "user": "Perrine M.",
-        "date": "2025-01-03",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "20",
-        "parsed_value": 20
+        "parsed_value": 20,
+        "event_date": "2025-01-03",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-01-03"
     },
     {
         "id": "b55c61c0189e400d8471258b052a012f",
         "user": "Gregory D.",
-        "date": "2023-10-24",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "38",
-        "parsed_value": 38
+        "parsed_value": 38,
+        "event_date": "2023-10-24",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2023-10-24"
     },
     {
         "id": "165a1f01688949fcb54637c51e0540f5",
         "user": "Charles D.B.",
-        "date": "2025-06-04",
         "discipline": "Static Apnea (STA)",
         "original_performance_str": "4:00",
-        "parsed_value": 240.0
+        "parsed_value": 240.0,
+        "event_date": "2025-06-04",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-06-04"
     },
     {
         "id": "fe11de89646248169b5c0e8060f409d7",
         "user": "Bernard V.H.",
-        "date": "2025-06-05",
         "discipline": "Dynamic Bi-fins (DYN-BF)",
         "original_performance_str": "0",
-        "parsed_value": 0
+        "parsed_value": 0,
+        "event_date": "2025-06-05",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-06-05"
     },
     {
         "id": "4e33039b9f424901aee11041e5776981",
         "user": "Théo G.",
-        "date": "2025-06-05",
         "discipline": "Dynamic Bi-fins (DYN-BF)",
         "original_performance_str": "0",
-        "parsed_value": 0
+        "parsed_value": 0,
+        "event_date": "2025-06-05",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2025-06-05"
     },
     {
         "id": "f3bfaac2700141e88c8f0bff407c4541",
         "user": "Vincent C.",
-        "date": "2024-12-10",
         "discipline": "Depth (CWT/FIM)",
         "original_performance_str": "30",
-        "parsed_value": 30
+        "parsed_value": 30,
+        "event_date": "2024-12-10",
+        "event_name": "General Training / Unknown",
+        "entry_date": "2024-12-10"
     }
 ]
