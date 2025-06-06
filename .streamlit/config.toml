@@ -1,8 +1,0 @@
-[secrets]
-
-# List of locations where secrets are searched. An entry can be a path to a
-# TOML file or directory path where Kubernetes style secrets are saved.
-# Order is important, import is first to last, so secrets in later files
-# will take precedence over earlier ones.
-# Default: [ <path to local environment's secrets.toml file>, <path to project's secrets.toml file>,]
-files = ["~/.streamlit/secrets.toml"]
