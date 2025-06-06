@@ -26,7 +26,7 @@ TRANSLATIONS = {
         "user_management_header": "👤 Freediver Management",
         "no_users_yet": "No freedivers yet. Add a new freediver to begin.",
         "enter_freediver_name_sidebar": "Enter New Freediver Name (Format: Firstname L.)",
-        "confirm_freediver_button_sidebar": "Confirm Freediver",
+        "confirm_freediver_button_sidebar": "Show Freediver Data",
         "new_user_success": "New freediver: **{user}**. Profile/performance to be saved to finalize.", 
         "select_user_or_add": "Select Freediver or Add New", 
         "add_new_user_option": "✨ Add New Freediver...",
@@ -35,7 +35,7 @@ TRANSLATIONS = {
         "profile_header_sidebar": "🪪 Freediver Profile",
         "select_user_first_warning": "Confirm or add a freediver first to log performances.",
         "logging_for": "Logging for: **{user}**",
-        "link_training_session_label": "Link to Training Session (optional):",
+        "link_training_session_label": "Training Session",
         "no_specific_session_option": "Custom Event / No specific session",
         "entry_date_label": "Entry Date",
         "discipline": "Discipline",
@@ -51,10 +51,10 @@ TRANSLATIONS = {
         "personal_records_tab_label": "📊 My Performances",
         "select_user_to_view_personal_records": "Please confirm a freediver from the sidebar to view their personal records.",
         "no_performances_yet": "No performances logged yet for this freediver. Add some using the sidebar!",
-        "personal_bests_subheader": "🏆 Personal Bests",
+        "personal_bests_subheader": "🌟 Personal Bests",
         "club_bests_subheader": "🌟 Club Best Performances",
-        "pb_label": "PB {discipline_short_name}",
-        "club_best_label": "Club Best {discipline_short_name}",
+        "pb_label": "{discipline_short_name}",
+        "club_best_label": "{discipline_short_name}",
         "achieved_at_event_on_date_caption": "By {user} at {event_name} on {event_date}",
         "achieved_on_event_caption": "Achieved at {event_name} on: {event_date}",
         "no_record_yet_caption": "No record yet",
@@ -210,7 +210,7 @@ TRANSLATIONS = {
         "user_management_header": "👤 Gestion des Apnéistes",
         "no_users_yet": "Aucun apnéiste pour le moment. Ajoutez un nouvel apnéiste pour commencer.",
         "enter_freediver_name_sidebar": "Entrez le nom du Nouvel Apnéiste (Format: Prénom L.)",
-        "confirm_freediver_button_sidebar": "Confirmer l'Apnéiste",
+        "confirm_freediver_button_sidebar": "Afficher les Données",
         "new_user_success": "Nouvel apnéiste : **{user}**. Profil/performance à sauvegarder pour finaliser.",
         "select_user_or_add": "Sélectionnez un apnéiste ou ajoutez-en un nouveau",
         "add_new_user_option": "✨ Ajouter un nouvel apnéiste...",
@@ -219,7 +219,7 @@ TRANSLATIONS = {
         "profile_header_sidebar": "🪪 Profil Apnéiste",
         "select_user_first_warning": "Confirmez ou ajoutez d'abord un apnéiste pour enregistrer des performances.",
         "logging_for": "Enregistrement pour : **{user}**",
-        "link_training_session_label": "Lier à une session d'entraînement (optionnel) :",
+        "link_training_session_label": "Session d'Entraînement",
         "no_specific_session_option": "Événement personnalisé / Aucune session spécifique",
         "entry_date_label": "Date d'Entrée",
         "discipline": "Discipline",
@@ -235,10 +235,10 @@ TRANSLATIONS = {
         "personal_records_tab_label": "📊 Mes Performances",
         "select_user_to_view_personal_records": "Veuillez confirmer un apnéiste dans la barre latérale pour voir ses records personnels.",
         "no_performances_yet": "Aucune performance enregistrée pour cet apnéiste. Ajoutez-en via la barre latérale !",
-        "personal_bests_subheader": "🏆 Records Personnels",
+        "personal_bests_subheader": "🌟 Records Personnels",
         "club_bests_subheader": "🌟 Meilleures Performances du Club",
-        "pb_label": "RP {discipline_short_name}",
-        "club_best_label": "Record Club {discipline_short_name}",
+        "pb_label": "{discipline_short_name}",
+        "club_best_label": "{discipline_short_name}",
         "achieved_at_event_on_date_caption": "Par {user} à {event_name} le {event_date}",
         "achieved_on_event_caption": "Réalisé à {event_name} le : {event_date}",
         "no_record_yet_caption": "Aucun record pour l'instant",
@@ -394,7 +394,7 @@ TRANSLATIONS = {
         "user_management_header": "👤 Vrijduiker Beheer", 
         "no_users_yet": "Nog geen vrijduikers. Voeg een nieuwe vrijduiker toe om te beginnen.", 
         "enter_freediver_name_sidebar": "Voer Naam Nieuwe Vrijduiker in (Formaat: Voornaam L.)", 
-        "confirm_freediver_button_sidebar": "Bevestig Vrijduiker", 
+        "confirm_freediver_button_sidebar": "Toon Vrijduiker Gegevens", 
         "new_user_success": "Nieuwe vrijduiker: **{user}**. Profiel/prestatie op te slaan om te finaliseren.", 
         "select_user_or_add": "Selecteer Vrijduiker of voeg nieuwe toe", 
         "add_new_user_option": "✨ Nieuwe vrijduiker toevoegen...", 
@@ -403,7 +403,7 @@ TRANSLATIONS = {
         "profile_header_sidebar": "🪪 Vrijduiker Profiel", 
         "select_user_first_warning": "Bevestig of voeg eerst een vrijduiker toe om prestaties te loggen.", 
         "logging_for": "Loggen voor: **{user}**",
-        "link_training_session_label": "Koppel aan trainingssessie (optioneel):",
+        "link_training_session_label": "Trainingssessie",
         "no_specific_session_option": "Aangepast evenement / Geen specifieke sessie",
         "entry_date_label": "Invoerdatum",
         "discipline": "Discipline",
@@ -419,10 +419,10 @@ TRANSLATIONS = {
         "personal_records_tab_label": "📊 Mijn Prestaties",
         "select_user_to_view_personal_records": "Bevestig een vrijduiker in de zijbalk om persoonlijke records te bekijken.", 
         "no_performances_yet": "Nog geen prestaties gelogd voor deze vrijduiker. Voeg er enkele toe via de zijbalk!", 
-        "personal_bests_subheader": "🏆 Persoonlijke Records",
+        "personal_bests_subheader": "🌟 Persoonlijke Records",
         "club_bests_subheader": "🌟 Club Beste Prestaties",
-        "pb_label": "PR {discipline_short_name}",
-        "club_best_label": "Clubrecord {discipline_short_name}",
+        "pb_label": "{discipline_short_name}",
+        "club_best_label": "{discipline_short_name}",
         "achieved_at_event_on_date_caption": "Door {user} op {event_name} op {event_date}",
         "achieved_on_event_caption": "Behaald op {event_name} op: {event_date}",
         "no_record_yet_caption": "Nog geen record",
@@ -519,7 +519,7 @@ TRANSLATIONS = {
         "freedivers_updated_success": "Vrijduikergegevens succesvol bijgewerkt.", 
         "freediver_name_conflict_error": "Fout: Naam '{new_name}' is al in gebruik door een andere vrijduiker. Kies een unieke naam.", 
         "original_name_col_editor_hidden": "originele_naam",
-        "freediver_certification_summary_header": "� Vrijduikers per Certificatieniveau", 
+        "freediver_certification_summary_header": "🔢 Vrijduikers per Certificatieniveau", 
         "count_col": "Aantal",
         "training_log_tab_title": "📅 Trainingslogboek",
         "log_training_header_sidebar": "🏋️ Nieuwe Trainingssessie Loggen",
@@ -621,7 +621,7 @@ def ensure_performance_fields(records_list):
             record['event_date'] = record.pop('date')
             updated = True
         if 'event_name' not in record:
-            record['event_name'] = "General Training / Unknown"
+            record['event_name'] = "Unspecified Training"
             updated = True
         if 'event_date' not in record:
             record['event_date'] = today_iso
@@ -787,31 +787,19 @@ def main():
     st.set_page_config(page_title=_("page_title", lang), layout="wide", initial_sidebar_state="expanded")
     st.title(_("app_title", lang))
 
-    language_options = {"English": "en", "Français": "fr", "Nederlands": "nl"}
-    current_lang_display_name = [k_disp for k_disp, v_code in language_options.items() if v_code == lang][0]
-    selected_lang_display_name = st.sidebar.selectbox(
-        "language_selector_internal_label", options=list(language_options.keys()),
-        index=list(language_options.keys()).index(current_lang_display_name),
-        key="language_selector_widget", label_visibility="collapsed"
-    )
-    new_lang_code = language_options[selected_lang_display_name]
-    if st.session_state.language != new_lang_code:
-        st.session_state.language = new_lang_code; st.rerun()
-    lang = st.session_state.language
-
     all_records_loaded = load_records()
     user_profiles = load_user_profiles()
     training_log_loaded = load_training_log() 
     instructor_feedback_loaded = load_instructor_feedback()
 
-    discipline_keys = ["Static Apnea (STA)", "Dynamic Bi-fins (DYN-BF)", "Depth (CWT/FIM)", "Profondeur (VWT/NLT)", "16x25m Speed Endurance"]
+    discipline_keys = ["Dynamic Bi-fins (DYN-BF)", "Static Apnea (STA)", "Depth (CWT/FIM)", "Profondeur (VWT/NLT)", "16x25m Speed Endurance"]
     translated_disciplines_for_display = [_("disciplines." + key, lang) for key in discipline_keys]
 
     # --- Sidebar: User Management ---
-    st.sidebar.header(_("user_management_header", lang))
+    # st.sidebar.header(_("user_management_header", lang))
     all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
     
-    with st.sidebar.form(key="freediver_selection_form_sidebar"): 
+    with st.sidebar.form(key="freediver_selection_form_sidebar", border=False): 
         user_options_display = [_("add_new_user_option", lang)] + all_known_users_list
         
         default_selectbox_value_user_form = st.session_state.current_user
@@ -860,7 +848,7 @@ def main():
                     st.session_state.privileged_user_authenticated = False
                     st.session_state.authenticated_privileged_user = None
                     if "password_field_for_unlock_form_key" in st.session_state:
-                         st.session_state.password_field_for_unlock_form_key = ""
+                        st.session_state.password_field_for_unlock_form_key = ""
                 
                 st.session_state.current_user = user_to_be_confirmed 
 
@@ -919,8 +907,8 @@ def main():
 
     is_admin_view_authorized = False
     if current_user in PRIVILEGED_USERS and \
-        st.session_state.get('authenticated_privileged_user') == current_user and \
-        st.session_state.get('privileged_user_authenticated', False):
+       st.session_state.get('authenticated_privileged_user') == current_user and \
+       st.session_state.get('privileged_user_authenticated', False):
         is_admin_view_authorized = True
     
     is_sidebar_instructor_section_visible = False
@@ -928,6 +916,57 @@ def main():
         user_cert_sidebar = user_profiles[current_user].get("certification")
         if user_cert_sidebar in INSTRUCTOR_CERT_LEVELS_FOR_LOGGING_FEEDBACK_SIDEBAR:
             is_sidebar_instructor_section_visible = True
+            
+    # --- Sidebar: Profile Section (Moved and put in an expander) ---
+    if current_user: 
+        with st.sidebar.expander(_("profile_header_sidebar", lang)):
+            with st.form(key="profile_form_sidebar_main", border=False): 
+                
+                user_profile_data_sidebar = user_profiles.get(current_user, {})
+                
+                current_certification_sidebar = user_profile_data_sidebar.get("certification", _("no_certification_option", lang))
+                cert_level_keys_from_dict_sidebar = list(TRANSLATIONS[lang]["certification_levels"].keys())
+                actual_selectbox_options_sidebar = [_("no_certification_option", lang)] + cert_level_keys_from_dict_sidebar
+                try: current_cert_index_sidebar = actual_selectbox_options_sidebar.index(current_certification_sidebar)
+                except ValueError: current_cert_index_sidebar = 0
+                
+                new_certification_sidebar_form = st.selectbox(
+                    _("certification_label", lang), options=actual_selectbox_options_sidebar, 
+                    index=current_cert_index_sidebar, key="certification_select_profile_form_sb" 
+                )
+                
+                current_cert_date_str_sidebar = user_profile_data_sidebar.get("certification_date")
+                current_cert_date_obj_sidebar = None
+                if current_cert_date_str_sidebar:
+                    try: current_cert_date_obj_sidebar = date.fromisoformat(current_cert_date_str_sidebar)
+                    except ValueError: current_cert_date_obj_sidebar = None
+                
+                new_cert_date_sidebar_form = st.date_input(
+                    _("certification_date_label", lang), value=current_cert_date_obj_sidebar, key="cert_date_profile_form_sb" 
+                )
+                
+                current_lifras_id_sidebar = user_profile_data_sidebar.get("lifras_id", "")
+                new_lifras_id_sidebar_form = st.text_input(
+                    _("lifras_id_label", lang), value=current_lifras_id_sidebar, key="lifras_id_profile_form_sb" 
+                )
+                
+                current_anonymize_sidebar = user_profile_data_sidebar.get("anonymize_results", False)
+                new_anonymize_sidebar_form = st.checkbox(
+                    _("anonymize_results_label", lang), value=current_anonymize_sidebar, key="anonymize_profile_form_sb" 
+                )
+                
+                submitted_save_profile = st.form_submit_button(_("save_profile_button", lang))
+
+                if submitted_save_profile:
+                    user_profiles.setdefault(current_user, {}) 
+                    user_profiles[current_user]["certification"] = st.session_state.certification_select_profile_form_sb
+                    cert_date_val = st.session_state.cert_date_profile_form_sb
+                    user_profiles[current_user]["certification_date"] = cert_date_val.isoformat() if cert_date_val else None
+                    user_profiles[current_user]["lifras_id"] = st.session_state.lifras_id_profile_form_sb.strip()
+                    user_profiles[current_user]["anonymize_results"] = st.session_state.anonymize_profile_form_sb
+                    save_user_profiles(user_profiles)
+                    st.success(_("profile_saved_success", lang, user=current_user))
+                    st.rerun()
 
     # --- Sidebar: Log New Performance ---
     st.sidebar.header(_("log_performance_header", lang))
@@ -1090,7 +1129,7 @@ def main():
                 try:
                     default_fb_ts_idx = training_session_options_display_fb_form.index(st.session_state.feedback_training_session_buffer)
                 except (ValueError, KeyError):
-                     st.session_state.feedback_training_session_buffer = _("select_training_prompt", lang)
+                    st.session_state.feedback_training_session_buffer = _("select_training_prompt", lang)
 
                 feedback_training_session_sb_key_form = "feedback_training_session_selectbox_key_in_form" # New key
                 selected_training_display_fb_form = st.selectbox(
@@ -1133,57 +1172,26 @@ def main():
                         st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
                         st.session_state.feedback_training_session_buffer = _("select_training_prompt", lang)
                         st.rerun()
-
-    # --- Sidebar: Profile Section ---
-    if current_user: 
-        st.sidebar.header(_("profile_header_sidebar", lang))
-        with st.sidebar.form(key="profile_form_sidebar_main"): 
-            user_profile_data_sidebar = user_profiles.get(current_user, {})
-            
-            current_certification_sidebar = user_profile_data_sidebar.get("certification", _("no_certification_option", lang))
-            cert_level_keys_from_dict_sidebar = list(TRANSLATIONS[lang]["certification_levels"].keys())
-            actual_selectbox_options_sidebar = [_("no_certification_option", lang)] + cert_level_keys_from_dict_sidebar
-            try: current_cert_index_sidebar = actual_selectbox_options_sidebar.index(current_certification_sidebar)
-            except ValueError: current_cert_index_sidebar = 0
-            
-            new_certification_sidebar_form = st.selectbox(
-                _("certification_label", lang), options=actual_selectbox_options_sidebar, 
-                index=current_cert_index_sidebar, key="certification_select_profile_form_sb" 
-            )
-            
-            current_cert_date_str_sidebar = user_profile_data_sidebar.get("certification_date")
-            current_cert_date_obj_sidebar = None
-            if current_cert_date_str_sidebar:
-                try: current_cert_date_obj_sidebar = date.fromisoformat(current_cert_date_str_sidebar)
-                except ValueError: current_cert_date_obj_sidebar = None
-            
-            new_cert_date_sidebar_form = st.date_input(
-                _("certification_date_label", lang), value=current_cert_date_obj_sidebar, key="cert_date_profile_form_sb" 
-            )
-            
-            current_lifras_id_sidebar = user_profile_data_sidebar.get("lifras_id", "")
-            new_lifras_id_sidebar_form = st.text_input(
-                _("lifras_id_label", lang), value=current_lifras_id_sidebar, key="lifras_id_profile_form_sb" 
-            )
-            
-            current_anonymize_sidebar = user_profile_data_sidebar.get("anonymize_results", False)
-            new_anonymize_sidebar_form = st.checkbox(
-                _("anonymize_results_label", lang), value=current_anonymize_sidebar, key="anonymize_profile_form_sb" 
-            )
-            
-            submitted_save_profile = st.form_submit_button(_("save_profile_button", lang))
-
-            if submitted_save_profile:
-                user_profiles.setdefault(current_user, {}) 
-                user_profiles[current_user]["certification"] = st.session_state.certification_select_profile_form_sb
-                cert_date_val = st.session_state.cert_date_profile_form_sb
-                user_profiles[current_user]["certification_date"] = cert_date_val.isoformat() if cert_date_val else None
-                user_profiles[current_user]["lifras_id"] = st.session_state.lifras_id_profile_form_sb.strip()
-                user_profiles[current_user]["anonymize_results"] = st.session_state.anonymize_profile_form_sb
-                save_user_profiles(user_profiles)
-                st.success(_("profile_saved_success", lang, user=current_user))
-                st.rerun()
+                        
+    # --- Sidebar: Language Selector (Moved to bottom) ---
+    language_options = {"English": "en", "Français": "fr", "Nederlands": "nl"}
+    current_lang_display_name = [k_disp for k_disp, v_code in language_options.items() if v_code == lang][0]
     
+    # Add a separator for visual distinction
+    st.sidebar.markdown("") 
+    st.sidebar.markdown("") 
+    st.sidebar.markdown("") 
+
+    selected_lang_display_name = st.sidebar.selectbox(
+        _("language_select_label", lang), options=list(language_options.keys()),
+        index=list(language_options.keys()).index(current_lang_display_name),
+        key="language_selector_widget"
+    )
+    new_lang_code = language_options[selected_lang_display_name]
+    if st.session_state.language != new_lang_code:
+        st.session_state.language = new_lang_code; st.rerun()
+    lang = st.session_state.language
+
     # --- Main Display Area ---
     tab_label_personal = _("personal_records_tab_label", lang)
     tab_label_main_feedback_log = _("feedback_log_tab_label", lang)
@@ -1218,16 +1226,15 @@ def main():
             main_feedback_log_tab_obj = tab_objects_main[current_tab_idx] 
         else:
             if len(tab_objects_main) > 1:
-                 tab_club_performances_view = tab_objects_main[current_tab_idx]
+                      tab_club_performances_view = tab_objects_main[current_tab_idx]
 
         with tab_personal:
             if current_user:
-                st.subheader(_("my_performances_header", lang, user=current_user))
                 user_records_for_tab = [r for r in all_records_loaded if r['user'] == current_user]
                 if not user_records_for_tab:
                     st.info(_("no_performances_yet", lang))
                 else:
-                    with st.container(border=True): 
+                    with st.container(border=True):
                         st.subheader(_("personal_bests_subheader", lang))
                         pbs_tab = {}
                         for disc_key_pb_tab in discipline_keys:
@@ -1256,129 +1263,130 @@ def main():
                                     st.caption(_("achieved_on_event_caption", lang, event_name=event_name_tab, event_date=event_date_tab))
                                 elif val_tab == "N/A": 
                                     st.caption(_("no_record_yet_caption", lang))
+                        
                         st.markdown("")
                         
-                        sub_tab_titles_user = [_("disciplines." + key, lang) for key in discipline_keys]
-                        sub_tabs_user = st.tabs(sub_tab_titles_user)
+                    sub_tab_titles_user = [_("disciplines." + key, lang) for key in discipline_keys]
+                    sub_tabs_user = st.tabs(sub_tab_titles_user)
 
-                        for i_sub_tab_user, disc_key_sub_tab_user in enumerate(discipline_keys):
-                            with sub_tabs_user[i_sub_tab_user]:
-                                sub_tab_specific_records_user_for_graph = [
-                                    r_sub_tab_u for r_sub_tab_u in user_records_for_tab
-                                    if r_sub_tab_u['discipline'] == disc_key_sub_tab_user and r_sub_tab_u.get('parsed_value') is not None and r_sub_tab_u.get('event_date')
-                                ]
-                                st.markdown(f"#### {_('performance_evolution_subheader', lang)}")
-                                if sub_tab_specific_records_user_for_graph:
-                                    chart_data_list_sub_tab_user = []
-                                    for r_chart_sub_tab_u in sorted(sub_tab_specific_records_user_for_graph, key=lambda x_chart_u: x_chart_u.get('event_date', '1900-01-01')): 
-                                        chart_data_list_sub_tab_user.append({
-                                            "Event Date": pd.to_datetime(r_chart_sub_tab_u['event_date']), 
-                                            "PerformanceValue": r_chart_sub_tab_u['parsed_value'],
-                                            "Event Name": r_chart_sub_tab_u.get('event_name', 'N/A')
-                                        })
-                                    if chart_data_list_sub_tab_user:
-                                        chart_df_sub_tab_user = pd.DataFrame(chart_data_list_sub_tab_user)
-                                        y_axis_title = _("performance_value", lang) + (f" ({_('seconds_unit', lang)})" if is_time_based_discipline(disc_key_sub_tab_user) else f" ({_('meters_unit', lang)})")
-                                        chart_altair = alt.Chart(chart_df_sub_tab_user).mark_line(point=True).encode(
-                                            x=alt.X('Event Date:T', title=_("history_event_date_col", lang)), 
-                                            y=alt.Y('PerformanceValue:Q', title=y_axis_title),
-                                            tooltip=['Event Date:T', 'PerformanceValue:Q', 'Event Name:N']
-                                        ).interactive()
-                                        st.altair_chart(chart_altair, use_container_width=True)
-                                    else: st.caption(_("no_data_for_graph", lang))
+                    for i_sub_tab_user, disc_key_sub_tab_user in enumerate(discipline_keys):
+                        with sub_tabs_user[i_sub_tab_user]:
+                            sub_tab_specific_records_user_for_graph = [
+                                r_sub_tab_u for r_sub_tab_u in user_records_for_tab
+                                if r_sub_tab_u['discipline'] == disc_key_sub_tab_user and r_sub_tab_u.get('parsed_value') is not None and r_sub_tab_u.get('event_date')
+                            ]
+                            st.markdown(f"#### {_('performance_evolution_subheader', lang)}")
+                            if sub_tab_specific_records_user_for_graph:
+                                chart_data_list_sub_tab_user = []
+                                for r_chart_sub_tab_u in sorted(sub_tab_specific_records_user_for_graph, key=lambda x_chart_u: x_chart_u.get('event_date', '1900-01-01')): 
+                                    chart_data_list_sub_tab_user.append({
+                                        "Event Date": pd.to_datetime(r_chart_sub_tab_u['event_date']), 
+                                        "PerformanceValue": r_chart_sub_tab_u['parsed_value'],
+                                        "Event Name": r_chart_sub_tab_u.get('event_name', 'N/A')
+                                    })
+                                if chart_data_list_sub_tab_user:
+                                    chart_df_sub_tab_user = pd.DataFrame(chart_data_list_sub_tab_user)
+                                    y_axis_title = _("performance_value", lang) + (f" ({_('seconds_unit', lang)})" if is_time_based_discipline(disc_key_sub_tab_user) else f" ({_('meters_unit', lang)})")
+                                    chart_altair = alt.Chart(chart_df_sub_tab_user).mark_line(point=True).encode(
+                                        x=alt.X('Event Date:T', title=_("history_event_date_col", lang)), 
+                                        y=alt.Y('PerformanceValue:Q', title=y_axis_title),
+                                        tooltip=['Event Date:T', 'PerformanceValue:Q', 'Event Name:N']
+                                    ).interactive()
+                                    st.altair_chart(chart_altair, use_container_width=True)
                                 else: st.caption(_("no_data_for_graph", lang))
+                            else: st.caption(_("no_data_for_graph", lang))
+                            
+                            st.markdown(f"#### {_('history_table_subheader', lang)}")
+                            history_for_editor_raw = [r for r in user_records_for_tab if r['discipline'] == disc_key_sub_tab_user]
+                            if not history_for_editor_raw:
+                                st.caption(_("no_history_display", lang))
+                            else:
+                                history_for_editor_display = []
+                                for rec in sorted(history_for_editor_raw, key=lambda x: x.get('event_date', '1900-01-01'), reverse=True):
+                                    history_for_editor_display.append({
+                                        "id": rec.get("id"),
+                                        _("history_event_name_col", lang): rec.get("event_name", "N/A"),
+                                        _("history_event_date_col", lang): rec.get("event_date"),
+                                        _("history_entry_date_col", lang): rec.get("entry_date"),
+                                        _("history_performance_col", lang): rec.get("original_performance_str", ""),
+                                        _("history_delete_col_editor", lang): False
+                                    })
+                                history_df_for_editor = pd.DataFrame(history_for_editor_display)
                                 
-                                st.markdown(f"#### {_('history_table_subheader', lang)}")
-                                history_for_editor_raw = [r for r in user_records_for_tab if r['discipline'] == disc_key_sub_tab_user]
-                                if not history_for_editor_raw:
-                                    st.caption(_("no_history_display", lang))
-                                else:
-                                    history_for_editor_display = []
-                                    for rec in sorted(history_for_editor_raw, key=lambda x: x.get('event_date', '1900-01-01'), reverse=True):
-                                        history_for_editor_display.append({
-                                            "id": rec.get("id"),
-                                            _("history_event_name_col", lang): rec.get("event_name", "N/A"),
-                                            _("history_event_date_col", lang): rec.get("event_date"),
-                                            _("history_entry_date_col", lang): rec.get("entry_date"),
-                                            _("history_performance_col", lang): rec.get("original_performance_str", ""),
-                                            _("history_delete_col_editor", lang): False
-                                        })
-                                    history_df_for_editor = pd.DataFrame(history_for_editor_display)
-                                    
-                                    if not history_df_for_editor.empty:
-                                        col_event_date_name = _("history_event_date_col", lang)
-                                        col_entry_date_name = _("history_entry_date_col", lang)
-                                        history_df_for_editor[col_event_date_name] = pd.to_datetime(history_df_for_editor[col_event_date_name], errors='coerce').dt.date
-                                        history_df_for_editor[col_entry_date_name] = pd.to_datetime(history_df_for_editor[col_entry_date_name], errors='coerce').dt.date
-                                    
-                                    data_editor_key = f"data_editor_{current_user}_{disc_key_sub_tab_user}"
-                                    edited_df = st.data_editor(
-                                        history_df_for_editor,
-                                        column_config={
-                                            "id": None,
-                                            _("history_event_name_col", lang): st.column_config.TextColumn(label=_("history_event_name_col", lang), required=True),
-                                            _("history_event_date_col", lang): st.column_config.DateColumn(label=_("history_event_date_col", lang), format="YYYY-MM-DD", required=True),
-                                            _("history_entry_date_col", lang): st.column_config.DateColumn(label=_("history_entry_date_col", lang), format="YYYY-MM-DD", disabled=True),
-                                            _("history_performance_col", lang): st.column_config.TextColumn(label=_("history_performance_col", lang), required=True),
-                                            _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(label=_("history_delete_col_editor", lang), default=False)
-                                        },
-                                        hide_index=True, key=data_editor_key, num_rows="dynamic"
-                                    )
+                                if not history_df_for_editor.empty:
+                                    col_event_date_name = _("history_event_date_col", lang)
+                                    col_entry_date_name = _("history_entry_date_col", lang)
+                                    history_df_for_editor[col_event_date_name] = pd.to_datetime(history_df_for_editor[col_event_date_name], errors='coerce').dt.date
+                                    history_df_for_editor[col_entry_date_name] = pd.to_datetime(history_df_for_editor[col_entry_date_name], errors='coerce').dt.date
+                                
+                                data_editor_key = f"data_editor_{current_user}_{disc_key_sub_tab_user}"
+                                edited_df = st.data_editor(
+                                    history_df_for_editor,
+                                    column_config={
+                                        "id": None,
+                                        _("history_event_name_col", lang): st.column_config.TextColumn(label=_("history_event_name_col", lang), required=True),
+                                        _("history_event_date_col", lang): st.column_config.DateColumn(label=_("history_event_date_col", lang), format="YYYY-MM-DD", required=True),
+                                        _("history_entry_date_col", lang): st.column_config.DateColumn(label=_("history_entry_date_col", lang), format="YYYY-MM-DD", disabled=True),
+                                        _("history_performance_col", lang): st.column_config.TextColumn(label=_("history_performance_col", lang), required=True),
+                                        _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(label=_("history_delete_col_editor", lang), default=False)
+                                    },
+                                    hide_index=True, key=data_editor_key, num_rows="dynamic"
+                                )
 
-                                    if st.button(_("save_history_changes_button", lang), key=f"save_hist_{disc_key_sub_tab_user}"):
-                                        changes_made = False
-                                        temp_all_records_loaded = [r.copy() for r in all_records_loaded]
-                                        for index, edited_row_series in edited_df.iterrows():
-                                            edited_row = edited_row_series.to_dict()
-                                            record_id = edited_row.get("id")
-                                            if record_id is None: continue
-                                            
-                                            original_record_index = next((i for i, r_loop in enumerate(temp_all_records_loaded) if r_loop.get('id') == record_id), -1)
-                                            if original_record_index == -1: continue
-                                            original_record = temp_all_records_loaded[original_record_index]
-
-                                            if edited_row[_("history_delete_col_editor", lang)]:
-                                                del temp_all_records_loaded[original_record_index]
-                                                changes_made = True
-                                                continue
-
-                                            edited_event_name = edited_row[_("history_event_name_col", lang)].strip()
-                                            edited_event_date_obj = edited_row[_("history_event_date_col", lang)]
-                                            edited_event_date_str = edited_event_date_obj.isoformat() if isinstance(edited_event_date_obj, date) else str(edited_event_date_obj)
-                                            edited_perf_str = str(edited_row[_("history_performance_col", lang)]).strip()
-                                            
-                                            if not edited_event_name:
-                                                st.error(f"Event name cannot be empty for record ID {record_id}. Changes not saved for this row.")
-                                                continue
-
-                                            if (original_record.get('event_name') != edited_event_name or
-                                                original_record.get('event_date') != edited_event_date_str or
-                                                original_record.get('original_performance_str') != edited_perf_str):
-                                                
-                                                parsed_edited_value = None
-                                                current_record_discipline = original_record['discipline']
-                                                if is_time_based_discipline(current_record_discipline):
-                                                    parsed_edited_value = parse_static_time_to_seconds(edited_perf_str, lang)
-                                                else:
-                                                    parsed_edited_value = parse_distance_to_meters(edited_perf_str, lang)
-                                                
-                                                if parsed_edited_value is None:
-                                                    st.error(f"Invalid performance format for '{edited_perf_str}' (ID: {record_id}). Changes not saved for this row.")
-                                                    continue
-                                                
-                                                temp_all_records_loaded[original_record_index]['event_name'] = edited_event_name
-                                                temp_all_records_loaded[original_record_index]['event_date'] = edited_event_date_str
-                                                temp_all_records_loaded[original_record_index]['original_performance_str'] = edited_perf_str
-                                                temp_all_records_loaded[original_record_index]['parsed_value'] = parsed_edited_value
-                                                changes_made = True
+                                if st.button(_("save_history_changes_button", lang), key=f"save_hist_{disc_key_sub_tab_user}"):
+                                    changes_made = False
+                                    temp_all_records_loaded = [r.copy() for r in all_records_loaded]
+                                    for index, edited_row_series in edited_df.iterrows():
+                                        edited_row = edited_row_series.to_dict()
+                                        record_id = edited_row.get("id")
+                                        if record_id is None: continue
                                         
-                                        if changes_made:
-                                            all_records_loaded[:] = temp_all_records_loaded
-                                            save_records(all_records_loaded)
-                                            st.success(_("history_updated_success", lang))
-                                            st.rerun()
-                                        else:
-                                            st.info("No changes detected in the history.")
+                                        original_record_index = next((i for i, r_loop in enumerate(temp_all_records_loaded) if r_loop.get('id') == record_id), -1)
+                                        if original_record_index == -1: continue
+                                        original_record = temp_all_records_loaded[original_record_index]
+
+                                        if edited_row[_("history_delete_col_editor", lang)]:
+                                            del temp_all_records_loaded[original_record_index]
+                                            changes_made = True
+                                            continue
+
+                                        edited_event_name = edited_row[_("history_event_name_col", lang)].strip()
+                                        edited_event_date_obj = edited_row[_("history_event_date_col", lang)]
+                                        edited_event_date_str = edited_event_date_obj.isoformat() if isinstance(edited_event_date_obj, date) else str(edited_event_date_obj)
+                                        edited_perf_str = str(edited_row[_("history_performance_col", lang)]).strip()
+                                        
+                                        if not edited_event_name:
+                                            st.error(f"Event name cannot be empty for record ID {record_id}. Changes not saved for this row.")
+                                            continue
+
+                                        if (original_record.get('event_name') != edited_event_name or
+                                            original_record.get('event_date') != edited_event_date_str or
+                                            original_record.get('original_performance_str') != edited_perf_str):
+                                            
+                                            parsed_edited_value = None
+                                            current_record_discipline = original_record['discipline']
+                                            if is_time_based_discipline(current_record_discipline):
+                                                parsed_edited_value = parse_static_time_to_seconds(edited_perf_str, lang)
+                                            else:
+                                                parsed_edited_value = parse_distance_to_meters(edited_perf_str, lang)
+                                            
+                                            if parsed_edited_value is None:
+                                                st.error(f"Invalid performance format for '{edited_perf_str}' (ID: {record_id}). Changes not saved for this row.")
+                                                continue
+                                            
+                                            temp_all_records_loaded[original_record_index]['event_name'] = edited_event_name
+                                            temp_all_records_loaded[original_record_index]['event_date'] = edited_event_date_str
+                                            temp_all_records_loaded[original_record_index]['original_performance_str'] = edited_perf_str
+                                            temp_all_records_loaded[original_record_index]['parsed_value'] = parsed_edited_value
+                                            changes_made = True
+                                    
+                                    if changes_made:
+                                        all_records_loaded[:] = temp_all_records_loaded
+                                        save_records(all_records_loaded)
+                                        st.success(_("history_updated_success", lang))
+                                        st.rerun()
+                                    else:
+                                        st.info("No changes detected in the history.")
             else:
                 st.info(_("select_user_to_view_personal_records", lang))
         
@@ -1450,72 +1458,72 @@ def main():
                             feedback_date_col_name = _("feedback_date_col", lang)
                             feedback_log_df[feedback_date_col_name] = pd.to_datetime(feedback_log_df[feedback_date_col_name], errors='coerce').dt.date
                         
-                        freediver_options_editor = all_known_users_list 
-                        instructor_options_editor_feedback = sorted([user for user, profile in user_profiles.items() if profile.get("certification") in INSTRUCTOR_CERT_LEVELS_FOR_ADMIN_TABS_AND_DROPDOWNS])
-                        if not instructor_options_editor_feedback: instructor_options_editor_feedback = [_("select_instructor_prompt", lang)]
-                        training_options_editor_map_feedback = {log['id']: f"{log['date']} - {log['place']}" for log in sorted(training_log_loaded, key=lambda x: x['date'], reverse=True)}
-                        training_options_editor_display_with_none_feedback = [_("select_training_prompt", lang)] + list(training_options_editor_map_feedback.values())
+                            freediver_options_editor = all_known_users_list 
+                            instructor_options_editor_feedback = sorted([user for user, profile in user_profiles.items() if profile.get("certification") in INSTRUCTOR_CERT_LEVELS_FOR_ADMIN_TABS_AND_DROPDOWNS])
+                            if not instructor_options_editor_feedback: instructor_options_editor_feedback = [_("select_instructor_prompt", lang)]
+                            training_options_editor_map_feedback = {log['id']: f"{log['date']} - {log['place']}" for log in sorted(training_log_loaded, key=lambda x: x['date'], reverse=True)}
+                            training_options_editor_display_with_none_feedback = [_("select_training_prompt", lang)] + list(training_options_editor_map_feedback.values())
 
-                        edited_feedback_log_df = st.data_editor(
-                            feedback_log_df,
-                            column_config={
-                                "id": None, "training_session_id_hidden": None,
-                                _("feedback_date_col", lang): st.column_config.DateColumn(label=_("feedback_date_col", lang), format="YYYY-MM-DD", required=True),
-                                _("feedback_for_freediver_label", lang): st.column_config.SelectboxColumn(label=_("feedback_for_freediver_label", lang), options=freediver_options_editor, required=True), 
-                                _("instructor_name_label", lang): st.column_config.SelectboxColumn(label=_("instructor_name_label", lang), options=instructor_options_editor_feedback, required=True),
-                                _("training_session_label", lang): st.column_config.SelectboxColumn(label=_("training_session_label", lang), options=training_options_editor_display_with_none_feedback, required=False),
-                                _("feedback_text_label", lang): st.column_config.TextColumn(label=_("feedback_text_label", lang), required=True),
-                                _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(label=_("history_delete_col_editor", lang), default=False)},
-                            hide_index=True, key="feedback_log_data_editor_sub", num_rows="dynamic"
-                        )
-                        if st.button(_("save_feedback_log_changes_button", lang), key="save_feedback_log_changes_sub"):
-                            feedback_log_changes_made = False
-                            temp_feedback_log = [fb_loop.copy() for fb_loop in instructor_feedback_loaded]
-                            newly_added_feedbacks = []
-                            for edited_row_data in edited_feedback_log_df.to_dict(orient="records"):
-                                feedback_id = edited_row_data.get("id")
-                                is_new_feedback_row = feedback_id is None
-                                if is_new_feedback_row: feedback_id = uuid.uuid4().hex; edited_row_data["id"] = feedback_id
-                                if edited_row_data[_("history_delete_col_editor", lang)] and not is_new_feedback_row:
-                                    temp_feedback_log = [fb_loop for fb_loop in temp_feedback_log if fb_loop.get("id") != feedback_id]
-                                    feedback_log_changes_made = True; continue
-                                edited_fb_date_obj = edited_row_data[_("feedback_date_col", lang)]
-                                edited_fb_date_str = edited_fb_date_obj.isoformat() if isinstance(edited_fb_date_obj, date) else str(edited_fb_date_obj)
-                                edited_freediver = edited_row_data[_("feedback_for_freediver_label", lang)] 
-                                edited_instructor_name_feedback = edited_row_data[_("instructor_name_label", lang)]
-                                edited_training_session_display = edited_row_data[_("training_session_label", lang)]
-                                edited_feedback_text = edited_row_data[_("feedback_text_label", lang)].strip()
-                                edited_training_id = None
-                                if edited_training_session_display != _("select_training_prompt", lang):
-                                    for log_id_map, display_str_map in training_options_editor_map_feedback.items():
-                                        if display_str_map == edited_training_session_display: edited_training_id = log_id_map; break
-                                if not edited_freediver or edited_freediver == _("select_freediver_prompt", lang) or \
-                                   not edited_instructor_name_feedback or edited_instructor_name_feedback == _("select_instructor_prompt", lang) or \
-                                   not edited_feedback_text:
-                                    st.error(f"Missing required fields for feedback (ID: {feedback_id if feedback_id else 'New'}). Skipping."); continue
-                                if is_new_feedback_row:
-                                    newly_added_feedbacks.append({"id": feedback_id, "feedback_date": edited_fb_date_str, "diver_name": edited_freediver, "training_session_id": edited_training_id, "instructor_name": edited_instructor_name_feedback, "feedback_text": edited_feedback_text}) 
-                                    feedback_log_changes_made = True
-                                else:
-                                    original_fb_index = next((i for i, fb_item_loop in enumerate(temp_feedback_log) if fb_item_loop.get("id") == feedback_id), -1)
-                                    if original_fb_index != -1:
-                                        original_fb_data = temp_feedback_log[original_fb_index]
-                                        if (original_fb_data.get('feedback_date') != edited_fb_date_str or original_fb_data.get('diver_name') != edited_freediver or 
-                                            original_fb_data.get('instructor_name') != edited_instructor_name_feedback or original_fb_data.get('training_session_id') != edited_training_id or
-                                            original_fb_data.get('feedback_text') != edited_feedback_text):
-                                            temp_feedback_log[original_fb_index].update({"feedback_date": edited_fb_date_str, "diver_name": edited_freediver, "instructor_name": edited_instructor_name_feedback, "training_session_id": edited_training_id, "feedback_text": edited_feedback_text}) 
-                                            feedback_log_changes_made = True
-                            if feedback_log_changes_made:
-                                instructor_feedback_loaded[:] = temp_feedback_log + newly_added_feedbacks
-                                save_instructor_feedback(instructor_feedback_loaded)
-                                st.success(_("feedback_log_updated_success", lang)); st.rerun()
-                            else: st.info("No changes detected in the feedback log.")
+                            edited_feedback_log_df = st.data_editor(
+                                feedback_log_df,
+                                column_config={
+                                    "id": None, "training_session_id_hidden": None,
+                                    _("feedback_date_col", lang): st.column_config.DateColumn(label=_("feedback_date_col", lang), format="YYYY-MM-DD", required=True),
+                                    _("feedback_for_freediver_label", lang): st.column_config.SelectboxColumn(label=_("feedback_for_freediver_label", lang), options=freediver_options_editor, required=True), 
+                                    _("instructor_name_label", lang): st.column_config.SelectboxColumn(label=_("instructor_name_label", lang), options=instructor_options_editor_feedback, required=True),
+                                    _("training_session_label", lang): st.column_config.SelectboxColumn(label=_("training_session_label", lang), options=training_options_editor_display_with_none_feedback, required=False),
+                                    _("feedback_text_label", lang): st.column_config.TextColumn(label=_("feedback_text_label", lang), required=True),
+                                    _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(label=_("history_delete_col_editor", lang), default=False)},
+                                hide_index=True, key="feedback_log_data_editor_sub", num_rows="dynamic"
+                            )
+                            if st.button(_("save_feedback_log_changes_button", lang), key="save_feedback_log_changes_sub"):
+                                feedback_log_changes_made = False
+                                temp_feedback_log = [fb_loop.copy() for fb_loop in instructor_feedback_loaded]
+                                newly_added_feedbacks = []
+                                for edited_row_data in edited_feedback_log_df.to_dict(orient="records"):
+                                    feedback_id = edited_row_data.get("id")
+                                    is_new_feedback_row = feedback_id is None
+                                    if is_new_feedback_row: feedback_id = uuid.uuid4().hex; edited_row_data["id"] = feedback_id
+                                    if edited_row_data[_("history_delete_col_editor", lang)] and not is_new_feedback_row:
+                                        temp_feedback_log = [fb_loop for fb_loop in temp_feedback_log if fb_loop.get("id") != feedback_id]
+                                        feedback_log_changes_made = True; continue
+                                    edited_fb_date_obj = edited_row_data[_("feedback_date_col", lang)]
+                                    edited_fb_date_str = edited_fb_date_obj.isoformat() if isinstance(edited_fb_date_obj, date) else str(edited_fb_date_obj)
+                                    edited_freediver = edited_row_data[_("feedback_for_freediver_label", lang)] 
+                                    edited_instructor_name_feedback = edited_row_data[_("instructor_name_label", lang)]
+                                    edited_training_session_display = edited_row_data[_("training_session_label", lang)]
+                                    edited_feedback_text = edited_row_data[_("feedback_text_label", lang)].strip()
+                                    edited_training_id = None
+                                    if edited_training_session_display != _("select_training_prompt", lang):
+                                        for log_id_map, display_str_map in training_options_editor_map_feedback.items():
+                                            if display_str_map == edited_training_session_display: edited_training_id = log_id_map; break
+                                    if not edited_freediver or edited_freediver == _("select_freediver_prompt", lang) or \
+                                       not edited_instructor_name_feedback or edited_instructor_name_feedback == _("select_instructor_prompt", lang) or \
+                                       not edited_feedback_text:
+                                        st.error(f"Missing required fields for feedback (ID: {feedback_id if feedback_id else 'New'}). Skipping."); continue
+                                    if is_new_feedback_row:
+                                        newly_added_feedbacks.append({"id": feedback_id, "feedback_date": edited_fb_date_str, "diver_name": edited_freediver, "training_session_id": edited_training_id, "instructor_name": edited_instructor_name_feedback, "feedback_text": edited_feedback_text}) 
+                                        feedback_log_changes_made = True
+                                    else:
+                                        original_fb_index = next((i for i, fb_item_loop in enumerate(temp_feedback_log) if fb_item_loop.get("id") == feedback_id), -1)
+                                        if original_fb_index != -1:
+                                            original_fb_data = temp_feedback_log[original_fb_index]
+                                            if (original_fb_data.get('feedback_date') != edited_fb_date_str or original_fb_data.get('diver_name') != edited_freediver or 
+                                                original_fb_data.get('instructor_name') != edited_instructor_name_feedback or original_fb_data.get('training_session_id') != edited_training_id or
+                                                original_fb_data.get('feedback_text') != edited_feedback_text):
+                                                temp_feedback_log[original_fb_index].update({"feedback_date": edited_fb_date_str, "diver_name": edited_freediver, "instructor_name": edited_instructor_name_feedback, "training_session_id": edited_training_id, "feedback_text": edited_feedback_text}) 
+                                                feedback_log_changes_made = True
+                                if feedback_log_changes_made:
+                                    instructor_feedback_loaded[:] = temp_feedback_log + newly_added_feedbacks
+                                    save_instructor_feedback(instructor_feedback_loaded)
+                                    st.success(_("feedback_log_updated_success", lang)); st.rerun()
+                                else: st.info("No changes detected in the feedback log.")
 
         if tab_club_performances_view:
             with tab_club_performances_view:
                 if not all_records_loaded: st.info(_("no_ranking_data", lang))
                 else:
-                    with st.container(border=True): 
+                    with st.container(border=True):
                         st.subheader(_("club_bests_subheader", lang))
                         club_pbs = {}
                         for disc_key_club_pb in discipline_keys:
@@ -1536,130 +1544,131 @@ def main():
                                 if user_club and event_date_club and event_date_club != "N/A":
                                     st.caption(_("achieved_at_event_on_date_caption", lang, user=display_user_club, event_name=event_name_club, event_date=event_date_club))
                                 elif val_club == "N/A": st.caption(_("no_record_yet_caption", lang))
-                        st.markdown("")
 
-                        ranking_sub_tab_titles = [_("disciplines." + key, lang) for key in discipline_keys]
-                        ranking_sub_tabs = st.tabs(ranking_sub_tab_titles)
-                        for i_rank_sub_tab, selected_discipline_ranking_key in enumerate(discipline_keys):
-                            with ranking_sub_tabs[i_rank_sub_tab]:
-                                user_pbs_for_discipline_ranking = []
-                                for u_rank_tab in all_known_users_list:
-                                    user_specific_discipline_records_ranking = [r_rank_tab for r_rank_tab in all_records_loaded if r_rank_tab['user'] == u_rank_tab and r_rank_tab['discipline'] == selected_discipline_ranking_key and r_rank_tab.get('parsed_value') is not None]
-                                    if user_specific_discipline_records_ranking:
-                                        best_record_for_user_ranking = min(user_specific_discipline_records_ranking, key=lambda x_rank_tab: x_rank_tab['parsed_value']) if selected_discipline_ranking_key == "16x25m Speed Endurance" else max(user_specific_discipline_records_ranking, key=lambda x_rank_tab: x_rank_tab['parsed_value'])
-                                        user_pbs_for_discipline_ranking.append({"user": u_rank_tab, "parsed_value": best_record_for_user_ranking['parsed_value'], "event_date": best_record_for_user_ranking.get('event_date'), "event_name": best_record_for_user_ranking.get('event_name'), "original_performance_str": best_record_for_user_ranking.get('original_performance_str')})
+                    st.markdown("")
+                    
+                    ranking_sub_tab_titles = [_("disciplines." + key, lang) for key in discipline_keys]
+                    ranking_sub_tabs = st.tabs(ranking_sub_tab_titles)
+                    for i_rank_sub_tab, selected_discipline_ranking_key in enumerate(discipline_keys):
+                        with ranking_sub_tabs[i_rank_sub_tab]:
+                            user_pbs_for_discipline_ranking = []
+                            for u_rank_tab in all_known_users_list:
+                                user_specific_discipline_records_ranking = [r_rank_tab for r_rank_tab in all_records_loaded if r_rank_tab['user'] == u_rank_tab and r_rank_tab['discipline'] == selected_discipline_ranking_key and r_rank_tab.get('parsed_value') is not None]
+                                if user_specific_discipline_records_ranking:
+                                    best_record_for_user_ranking = min(user_specific_discipline_records_ranking, key=lambda x_rank_tab: x_rank_tab['parsed_value']) if selected_discipline_ranking_key == "16x25m Speed Endurance" else max(user_specific_discipline_records_ranking, key=lambda x_rank_tab: x_rank_tab['parsed_value'])
+                                    user_pbs_for_discipline_ranking.append({"user": u_rank_tab, "parsed_value": best_record_for_user_ranking['parsed_value'], "event_date": best_record_for_user_ranking.get('event_date'), "event_name": best_record_for_user_ranking.get('event_name'), "original_performance_str": best_record_for_user_ranking.get('original_performance_str')})
+                            
+                            sort_reverse_ranking = selected_discipline_ranking_key != "16x25m Speed Endurance"
+                            sorted_rankings_tab = sorted(user_pbs_for_discipline_ranking, key=lambda x_sort_tab: x_sort_tab['parsed_value'], reverse=sort_reverse_ranking)
+
+                            if not sorted_rankings_tab: st.info(_("no_ranking_data", lang))
+                            else:
+                                st.subheader(_("podium_header", lang))
+                                podium_data = {1: [], 2: [], 3: []}
+                                distinct_podium_performances = []
+                                if sorted_rankings_tab:
+                                    temp_distinct_perfs = [sorted_rankings_tab[0]['parsed_value']]
+                                    for p_entry in sorted_rankings_tab:
+                                        if p_entry['parsed_value'] != temp_distinct_perfs[-1] and len(temp_distinct_perfs) < 3: temp_distinct_perfs.append(p_entry['parsed_value'])
+                                        elif len(temp_distinct_perfs) >=3: break
+                                    distinct_podium_performances = temp_distinct_perfs
+                                for place_idx, place_perf_val in enumerate(distinct_podium_performances):
+                                    if place_idx < 3: podium_data[place_idx+1] = sorted([p for p in sorted_rankings_tab if p['parsed_value'] == place_perf_val], key=lambda x: x.get('event_date', '1900-01-01')) 
                                 
-                                sort_reverse_ranking = selected_discipline_ranking_key != "16x25m Speed Endurance"
-                                sorted_rankings_tab = sorted(user_pbs_for_discipline_ranking, key=lambda x_sort_tab: x_sort_tab['parsed_value'], reverse=sort_reverse_ranking)
+                                podium_cols = st.columns(3)
+                                medal_emojis = ["🥇", "🥈", "�"]
+                                for i_podium in range(3):
+                                    with podium_cols[i_podium]:
+                                        place = i_podium + 1
+                                        if podium_data[place]:
+                                            st.markdown(f"<h3 style='text-align: center;'>{medal_emojis[i_podium]}</h3>", unsafe_allow_html=True)
+                                            for rank_entry in podium_data[place]:
+                                                perf_display = format_seconds_to_static_time(rank_entry['parsed_value']) if is_time_based_discipline(selected_discipline_ranking_key) else f"{rank_entry['parsed_value']}m"
+                                                display_name_podium = get_display_name(rank_entry['user'], user_profiles, lang)
+                                                st.markdown(f"<div style='text-align: center; border: 1px solid #eee; border-radius: 8px; padding: 8px; margin-bottom: 8px; background-color: #f9f9f9;'><h5>{display_name_podium}</h5><h6>{perf_display}</h6><p style='font-size: 0.8em;'>{rank_entry.get('event_name','')} - {rank_entry.get('event_date','')}</p></div>", unsafe_allow_html=True)
+                                        else: st.markdown(f"<div style='text-align: center; opacity: 0.5;'><h3>{medal_emojis[i_podium]}</h3><h4>-</h4><p style='font-size: 0.8em;'>&nbsp;</p></div>", unsafe_allow_html=True)
 
-                                if not sorted_rankings_tab: st.info(_("no_ranking_data", lang))
+                                st.markdown("")
+                                st.subheader(_("full_ranking_header", lang))
+                                ranking_table_data_tab = []
+                                for rank_idx_tab, rank_item_tab in enumerate(sorted_rankings_tab):
+                                    perf_display_table_tab = format_seconds_to_static_time(rank_item_tab['parsed_value']) if is_time_based_discipline(selected_discipline_ranking_key) else f"{rank_item_tab['parsed_value']}m"
+                                    ranking_table_data_tab.append({
+                                        _("rank_col", lang): rank_idx_tab + 1,
+                                        _("user_col", lang): get_display_name(rank_item_tab['user'], user_profiles, lang),
+                                        _("best_performance_col", lang): perf_display_table_tab,
+                                        _("event_col", lang): rank_item_tab.get('event_name', "N/A"),
+                                        _("date_achieved_col", lang): rank_item_tab.get('event_date', "N/A")}) 
+                                ranking_df_tab = pd.DataFrame(ranking_table_data_tab)
+                                st.dataframe(ranking_df_tab, use_container_width=True, hide_index=True)
+
+                                st.markdown("")
+                                st.subheader(_("certification_stats_header", lang))
+                                data_for_stats = []
+                                for item_stat in user_pbs_for_discipline_ranking:
+                                    user_profile_stat = user_profiles.get(item_stat['user'], {})
+                                    certification_stat = user_profile_stat.get("certification", _("no_certification_option", lang))
+                                    data_for_stats.append({"certification": certification_stat, "parsed_value": item_stat['parsed_value']})
+                                if not data_for_stats: st.info(_("no_stats_data", lang))
                                 else:
-                                    st.subheader(_("podium_header", lang))
-                                    podium_data = {1: [], 2: [], 3: []}
-                                    distinct_podium_performances = []
-                                    if sorted_rankings_tab:
-                                        temp_distinct_perfs = [sorted_rankings_tab[0]['parsed_value']]
-                                        for p_entry in sorted_rankings_tab:
-                                            if p_entry['parsed_value'] != temp_distinct_perfs[-1] and len(temp_distinct_perfs) < 3: temp_distinct_perfs.append(p_entry['parsed_value'])
-                                            elif len(temp_distinct_perfs) >=3: break
-                                        distinct_podium_performances = temp_distinct_perfs
-                                    for place_idx, place_perf_val in enumerate(distinct_podium_performances):
-                                        if place_idx < 3: podium_data[place_idx+1] = sorted([p for p in sorted_rankings_tab if p['parsed_value'] == place_perf_val], key=lambda x: x.get('event_date', '1900-01-01')) 
+                                    stats_df = pd.DataFrame(data_for_stats)
+                                    stats_df['parsed_value'] = pd.to_numeric(stats_df['parsed_value'])
                                     
-                                    podium_cols = st.columns(3)
-                                    medal_emojis = ["🥇", "🥈", "🥉"]
-                                    for i_podium in range(3):
-                                        with podium_cols[i_podium]:
-                                            place = i_podium + 1
-                                            if podium_data[place]:
-                                                st.markdown(f"<h3 style='text-align: center;'>{medal_emojis[i_podium]}</h3>", unsafe_allow_html=True)
-                                                for rank_entry in podium_data[place]:
-                                                    perf_display = format_seconds_to_static_time(rank_entry['parsed_value']) if is_time_based_discipline(selected_discipline_ranking_key) else f"{rank_entry['parsed_value']}m"
-                                                    display_name_podium = get_display_name(rank_entry['user'], user_profiles, lang)
-                                                    st.markdown(f"<div style='text-align: center; border: 1px solid #eee; border-radius: 8px; padding: 8px; margin-bottom: 8px; background-color: #f9f9f9;'><h5>{display_name_podium}</h5><h6>{perf_display}</h6><p style='font-size: 0.8em;'>{rank_entry.get('event_name','')} - {rank_entry.get('event_date','')}</p></div>", unsafe_allow_html=True)
-                                            else: st.markdown(f"<div style='text-align: center; opacity: 0.5;'><h3>{medal_emojis[i_podium]}</h3><h4>-</h4><p style='font-size: 0.8em;'>&nbsp;</p></div>", unsafe_allow_html=True)
+                                    certification_summary = stats_df.groupby('certification')['parsed_value'].agg(
+                                        min_perf='min', 
+                                        max_perf='max', 
+                                        avg_perf='mean'
+                                    ).reset_index() 
 
-                                    st.markdown("")
-                                    st.subheader(_("full_ranking_header", lang))
-                                    ranking_table_data_tab = []
-                                    for rank_idx_tab, rank_item_tab in enumerate(sorted_rankings_tab):
-                                        perf_display_table_tab = format_seconds_to_static_time(rank_item_tab['parsed_value']) if is_time_based_discipline(selected_discipline_ranking_key) else f"{rank_item_tab['parsed_value']}m"
-                                        ranking_table_data_tab.append({
-                                            _("rank_col", lang): rank_idx_tab + 1,
-                                            _("user_col", lang): get_display_name(rank_item_tab['user'], user_profiles, lang),
-                                            _("best_performance_col", lang): perf_display_table_tab,
-                                            _("event_col", lang): rank_item_tab.get('event_name', "N/A"),
-                                            _("date_achieved_col", lang): rank_item_tab.get('event_date', "N/A")}) 
-                                    ranking_df_tab = pd.DataFrame(ranking_table_data_tab)
-                                    st.dataframe(ranking_df_tab, use_container_width=True, hide_index=True)
+                                    is_time_discipline_for_stats = is_time_based_discipline(selected_discipline_ranking_key)
+                                    
+                                    def format_perf_value_for_stats(value, is_time_based):
+                                        if pd.isna(value): return "N/A"
+                                        if is_time_based: return format_seconds_to_static_time(value)
+                                        else: 
+                                            if isinstance(value, float) and value.is_integer(): return f"{int(value)}m"
+                                            elif isinstance(value, float): return f"{value:.1f}m" 
+                                            return f"{int(value)}m" 
 
-                                    st.markdown("")
-                                    st.subheader(_("certification_stats_header", lang))
-                                    data_for_stats = []
-                                    for item_stat in user_pbs_for_discipline_ranking:
-                                        user_profile_stat = user_profiles.get(item_stat['user'], {})
-                                        certification_stat = user_profile_stat.get("certification", _("no_certification_option", lang))
-                                        data_for_stats.append({"certification": certification_stat, "parsed_value": item_stat['parsed_value']})
-                                    if not data_for_stats: st.info(_("no_stats_data", lang))
-                                    else:
-                                        stats_df = pd.DataFrame(data_for_stats)
-                                        stats_df['parsed_value'] = pd.to_numeric(stats_df['parsed_value'])
-                                        
-                                        certification_summary = stats_df.groupby('certification')['parsed_value'].agg(
-                                            min_perf='min', 
-                                            max_perf='max', 
-                                            avg_perf='mean'
-                                        ).reset_index() 
-
-                                        is_time_discipline_for_stats = is_time_based_discipline(selected_discipline_ranking_key)
-                                        
-                                        def format_perf_value_for_stats(value, is_time_based):
-                                            if pd.isna(value): return "N/A"
-                                            if is_time_based: return format_seconds_to_static_time(value)
-                                            else: 
-                                                if isinstance(value, float) and value.is_integer(): return f"{int(value)}m"
-                                                elif isinstance(value, float): return f"{value:.1f}m" 
-                                                return f"{int(value)}m" 
-
-                                        certification_summary_renamed = certification_summary.rename(columns={'certification': _("certification_level_col", lang)})
-                                        certification_summary_renamed[_("min_performance_col", lang)] = certification_summary_renamed['min_perf'].apply(lambda x: format_perf_value_for_stats(x, is_time_discipline_for_stats))
-                                        certification_summary_renamed[_("max_performance_col", lang)] = certification_summary_renamed['max_perf'].apply(lambda x: format_perf_value_for_stats(x, is_time_discipline_for_stats))
-                                        certification_summary_renamed[_("avg_performance_col", lang)] = certification_summary_renamed['avg_perf'].apply(lambda x: format_perf_value_for_stats(x, is_time_discipline_for_stats))
-                                        
-                                        display_cols = [_("certification_level_col", lang), _("min_performance_col", lang), _("max_performance_col", lang), _("avg_performance_col", lang)]
-                                        final_display_cols = [col for col in display_cols if col in certification_summary_renamed.columns] 
-                                        display_stats_df = certification_summary_renamed[final_display_cols]
-                                        
-                                        if display_stats_df.empty: st.info(_("no_stats_data", lang))
-                                        else: st.dataframe(display_stats_df, use_container_width=True, hide_index=True)
+                                    certification_summary_renamed = certification_summary.rename(columns={'certification': _("certification_level_col", lang)})
+                                    certification_summary_renamed[_("min_performance_col", lang)] = certification_summary_renamed['min_perf'].apply(lambda x: format_perf_value_for_stats(x, is_time_discipline_for_stats))
+                                    certification_summary_renamed[_("max_performance_col", lang)] = certification_summary_renamed['max_perf'].apply(lambda x: format_perf_value_for_stats(x, is_time_discipline_for_stats))
+                                    certification_summary_renamed[_("avg_performance_col", lang)] = certification_summary_renamed['avg_perf'].apply(lambda x: format_perf_value_for_stats(x, is_time_discipline_for_stats))
+                                    
+                                    display_cols = [_("certification_level_col", lang), _("min_performance_col", lang), _("max_performance_col", lang), _("avg_performance_col", lang)]
+                                    final_display_cols = [col for col in display_cols if col in certification_summary_renamed.columns] 
+                                    display_stats_df = certification_summary_renamed[final_display_cols]
+                                    
+                                    if display_stats_df.empty: st.info(_("no_stats_data", lang))
+                                    else: st.dataframe(display_stats_df, use_container_width=True, hide_index=True)
                                 
-                                    st.markdown("---")
-                                    st.subheader(_("club_performances_tab_title", lang)) 
-                                    club_discipline_records_graph = [r for r in all_records_loaded if r['discipline'] == selected_discipline_ranking_key and r.get('parsed_value') is not None and r.get('event_date')]
-                                    if not club_discipline_records_graph: st.caption(_("no_data_for_club_performance_display", lang))
-                                    else:
-                                        df_club_discipline_graph_data = [{'event_date': pd.to_datetime(r_club['event_date']), 'parsed_value': r_club['parsed_value'], 'user': get_display_name(r_club['user'], user_profiles, lang), 'event_name': r_club.get('event_name','N/A'), 'original_performance_str': r_club['original_performance_str']} for r_club in club_discipline_records_graph]
-                                        df_club_discipline_graph = pd.DataFrame(df_club_discipline_graph_data)
-                                        y_title_graph = _("performance_value", lang) + (f" ({_('seconds_unit', lang)})" if is_time_based_discipline(selected_discipline_ranking_key) else f" ({_('meters_unit', lang)})")
-                                        x_title_graph = _("history_event_date_col", lang) 
-                                        
-                                        individual_lines_graph = alt.Chart(df_club_discipline_graph).mark_line(point=True).encode(
+                                st.markdown("---")
+                                st.subheader(_("club_performances_tab_title", lang)) 
+                                club_discipline_records_graph = [r for r in all_records_loaded if r['discipline'] == selected_discipline_ranking_key and r.get('parsed_value') is not None and r.get('event_date')]
+                                if not club_discipline_records_graph: st.caption(_("no_data_for_club_performance_display", lang))
+                                else:
+                                    df_club_discipline_graph_data = [{'event_date': pd.to_datetime(r_club['event_date']), 'parsed_value': r_club['parsed_value'], 'user': get_display_name(r_club['user'], user_profiles, lang), 'event_name': r_club.get('event_name','N/A'), 'original_performance_str': r_club['original_performance_str']} for r_club in club_discipline_records_graph]
+                                    df_club_discipline_graph = pd.DataFrame(df_club_discipline_graph_data)
+                                    y_title_graph = _("performance_value", lang) + (f" ({_('seconds_unit', lang)})" if is_time_based_discipline(selected_discipline_ranking_key) else f" ({_('meters_unit', lang)})")
+                                    x_title_graph = _("history_event_date_col", lang) 
+                                    
+                                    individual_lines_graph = alt.Chart(df_club_discipline_graph).mark_line(point=True).encode(
+                                        x=alt.X('event_date:T', title=x_title_graph), 
+                                        y=alt.Y('parsed_value:Q', title=y_title_graph), 
+                                        color='user:N', 
+                                        tooltip=['user:N', alt.Tooltip('event_date:T', title=x_title_graph), 'original_performance_str:N', 'event_name:N']
+                                    ).interactive()
+                                    
+                                    df_club_discipline_for_avg_graph = df_club_discipline_graph.set_index('event_date'); quarterly_avg_df_graph = df_club_discipline_for_avg_graph['parsed_value'].resample('QE').mean().reset_index(); quarterly_avg_df_graph.columns = ['event_date', 'average_performance']
+                                    if not quarterly_avg_df_graph.empty:
+                                        average_line_graph = alt.Chart(quarterly_avg_df_graph).mark_line(color='black', strokeDash=[5,5], size=2).encode(
                                             x=alt.X('event_date:T', title=x_title_graph), 
-                                            y=alt.Y('parsed_value:Q', title=y_title_graph), 
-                                            color='user:N', 
-                                            tooltip=['user:N', alt.Tooltip('event_date:T', title=x_title_graph), 'original_performance_str:N', 'event_name:N']
-                                        ).interactive()
-                                        
-                                        df_club_discipline_for_avg_graph = df_club_discipline_graph.set_index('event_date'); quarterly_avg_df_graph = df_club_discipline_for_avg_graph['parsed_value'].resample('QE').mean().reset_index(); quarterly_avg_df_graph.columns = ['event_date', 'average_performance']
-                                        if not quarterly_avg_df_graph.empty:
-                                            average_line_graph = alt.Chart(quarterly_avg_df_graph).mark_line(color='black', strokeDash=[5,5], size=2).encode(
-                                                x=alt.X('event_date:T', title=x_title_graph), 
-                                                y=alt.Y('average_performance:Q', title=y_title_graph), 
-                                                tooltip=[alt.Tooltip('event_date:T', title=x_title_graph, format='%Y-%m'), alt.Tooltip('average_performance:Q', title=_("quarterly_average_label", lang), format=".2f" if not is_time_based_discipline(selected_discipline_ranking_key) else "")]
-                                            )
-                                            combined_chart_graph = alt.layer(individual_lines_graph, average_line_graph).resolve_scale(y='shared')
-                                            st.altair_chart(combined_chart_graph, use_container_width=True)
-                                        else: st.altair_chart(individual_lines_graph, use_container_width=True); st.caption("Not enough data for quarterly average.")
+                                            y=alt.Y('average_performance:Q', title=y_title_graph), 
+                                            tooltip=[alt.Tooltip('event_date:T', title=x_title_graph, format='%Y-%m'), alt.Tooltip('average_performance:Q', title=_("quarterly_average_label", lang), format=".2f" if not is_time_based_discipline(selected_discipline_ranking_key) else "")]
+                                        )
+                                        combined_chart_graph = alt.layer(individual_lines_graph, average_line_graph).resolve_scale(y='shared')
+                                        st.altair_chart(combined_chart_graph, use_container_width=True)
+                                    else: st.altair_chart(individual_lines_graph, use_container_width=True); st.caption("Not enough data for quarterly average.")
         
         if is_admin_view_authorized and tab_freedivers: 
             with tab_freedivers: 
@@ -1755,8 +1764,8 @@ def main():
                     if not training_log_loaded: st.info(_("no_training_sessions_logged", lang))
                     else:
                         for entry in sorted(training_log_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True):
-                            expander_title = f"{entry.get('date', 'N/A')} - {entry.get('place', 'N/A')}"
-                            with st.expander(expander_title): st.markdown(entry.get('description', _("no_description_available", lang)))
+                            expander_title = f"**{entry.get('date', 'N/A')} | {entry.get('place', 'N/A')}**"
+                            with st.expander(expander_title,  expanded=True): st.markdown(entry.get('description', _("no_description_available", lang)))
                 with training_sub_tab2:
                     st.subheader(_("training_log_table_header", lang))
                     if not training_log_loaded: st.info(_("no_training_sessions_logged", lang))
@@ -1766,26 +1775,26 @@ def main():
                         if not training_df_for_editor.empty:
                             training_date_col_name = _("training_date_label", lang)
                             training_df_for_editor[training_date_col_name] = pd.to_datetime(training_df_for_editor[training_date_col_name], errors='coerce').dt.date
-                        edited_training_df = st.data_editor(
-                            training_df_for_editor,
-                            column_config={"id": None, _("training_date_label", lang): st.column_config.DateColumn(label=_("training_date_label", lang), format="YYYY-MM-DD"), _("training_place_label", lang): st.column_config.TextColumn(label=_("training_place_label", lang)), _("training_description_label", lang): st.column_config.TextColumn(label=_("training_description_label", lang)), _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(label=_("history_delete_col_editor", lang), default=False)},
-                            hide_index=True, key="training_log_editor_sub", num_rows="dynamic"
-                        )
-                        if st.button(_("save_training_log_changes_button", lang), key="save_training_log_changes_sub"):
-                            training_changes_made = False; temp_training_log_loaded = [log.copy() for log in training_log_loaded]
-                            for index, edited_row_series in edited_training_df.iterrows():
-                                edited_row = edited_row_series.to_dict(); log_id = edited_row.get("id"); 
-                                if log_id is None: continue
-                                original_log_index = next((i for i, log_item in enumerate(temp_training_log_loaded) if log_item.get("id") == log_id), -1)
-                                if original_log_index == -1: continue
-                                if edited_row[_("history_delete_col_editor", lang)]: del temp_training_log_loaded[original_log_index]; training_changes_made = True; continue
-                                edited_log_date_obj = edited_row[_("training_date_label", lang)]; edited_log_date_str = edited_log_date_obj.isoformat() if isinstance(edited_log_date_obj, date) else str(edited_log_date_obj)
-                                if (temp_training_log_loaded[original_log_index]['date'] != edited_log_date_str or temp_training_log_loaded[original_log_index]['place'] != edited_row[_("training_place_label", lang)] or temp_training_log_loaded[original_log_index]['description'] != edited_row[_("training_description_label", lang)]):
-                                    temp_training_log_loaded[original_log_index].update({'date': edited_log_date_str, 'place': edited_row[_("training_place_label", lang)], 'description': edited_row[_("training_description_label", lang)]}); training_changes_made = True
-                            if training_changes_made:
-                                training_log_loaded[:] = temp_training_log_loaded; save_training_log(training_log_loaded)
-                                st.success(_("training_log_updated_success", lang)); st.rerun()
-                            else: st.info("No changes detected in the training log.")
+                            edited_training_df = st.data_editor(
+                                training_df_for_editor,
+                                column_config={"id": None, _("training_date_label", lang): st.column_config.DateColumn(label=_("training_date_label", lang), format="YYYY-MM-DD"), _("training_place_label", lang): st.column_config.TextColumn(label=_("training_place_label", lang)), _("training_description_label", lang): st.column_config.TextColumn(label=_("training_description_label", lang)), _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(label=_("history_delete_col_editor", lang), default=False)},
+                                hide_index=True, key="training_log_editor_sub", num_rows="dynamic"
+                            )
+                            if st.button(_("save_training_log_changes_button", lang), key="save_training_log_changes_sub"):
+                                training_changes_made = False; temp_training_log_loaded = [log.copy() for log in training_log_loaded]
+                                for index, edited_row_series in edited_training_df.iterrows():
+                                    edited_row = edited_row_series.to_dict(); log_id = edited_row.get("id"); 
+                                    if log_id is None: continue
+                                    original_log_index = next((i for i, log_item in enumerate(temp_training_log_loaded) if log_item.get("id") == log_id), -1)
+                                    if original_log_index == -1: continue
+                                    if edited_row[_("history_delete_col_editor", lang)]: del temp_training_log_loaded[original_log_index]; training_changes_made = True; continue
+                                    edited_log_date_obj = edited_row[_("training_date_label", lang)]; edited_log_date_str = edited_log_date_obj.isoformat() if isinstance(edited_log_date_obj, date) else str(edited_log_date_obj)
+                                    if (temp_training_log_loaded[original_log_index]['date'] != edited_log_date_str or temp_training_log_loaded[original_log_index]['place'] != edited_row[_("training_place_label", lang)] or temp_training_log_loaded[original_log_index]['description'] != edited_row[_("training_description_label", lang)]):
+                                        temp_training_log_loaded[original_log_index].update({'date': edited_log_date_str, 'place': edited_row[_("training_place_label", lang)], 'description': edited_row[_("training_description_label", lang)]}); training_changes_made = True
+                                if training_changes_made:
+                                    training_log_loaded[:] = temp_training_log_loaded; save_training_log(training_log_loaded)
+                                    st.success(_("training_log_updated_success", lang)); st.rerun()
+                                else: st.info("No changes detected in the training log.")
         
         if is_admin_view_authorized and tab_performance_log:
             with tab_performance_log:
@@ -1810,83 +1819,83 @@ def main():
                         all_perf_df_for_editor[col_event_date_log] = pd.to_datetime(all_perf_df_for_editor[col_event_date_log], errors='coerce').dt.date
                         all_perf_df_for_editor[col_entry_date_log] = pd.to_datetime(all_perf_df_for_editor[col_entry_date_log], errors='coerce').dt.date
                     
-                    edited_all_perf_df = st.data_editor(
-                        all_perf_df_for_editor,
-                        column_config={
-                            "id": None,
-                            _("history_event_name_col", lang): st.column_config.TextColumn(label=_("history_event_name_col", lang), required=True),
-                            _("history_event_date_col", lang): st.column_config.DateColumn(label=_("history_event_date_col", lang), format="YYYY-MM-DD", required=True),
-                            _("history_entry_date_col", lang): st.column_config.DateColumn(label=_("history_entry_date_col", lang), format="YYYY-MM-DD", disabled=True), 
-                            _("user_col", lang): st.column_config.TextColumn(label=_("user_col", lang), required=True),
-                            _("history_discipline_col", lang): st.column_config.SelectboxColumn(label=_("history_discipline_col", lang), options=discipline_keys, required=True),
-                            _("history_performance_col", lang): st.column_config.TextColumn(label=_("history_performance_col", lang), required=True),
-                            _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(label=_("history_delete_col_editor", lang), default=False)},
-                        hide_index=True, key="all_performances_data_editor", num_rows="dynamic"
-                    )
-                    if st.button(_("save_all_performances_button", lang), key="save_all_perf_changes"):
-                        changes_made_all_perf = False; temp_master_records = [r.copy() for r in all_records_loaded]; newly_added_records_from_editor = []
-                        for edited_row_data in edited_all_perf_df.to_dict(orient="records"):
-                            record_id = edited_row_data.get("id"); is_new_row = record_id is None
-                            if is_new_row: record_id = uuid.uuid4().hex; edited_row_data["id"] = record_id
-                            if edited_row_data[_("history_delete_col_editor", lang)] and not is_new_row:
-                                temp_master_records = [r for r in temp_master_records if r.get("id") != record_id]; changes_made_all_perf = True; continue
-                            
-                            edited_user = edited_row_data[_("user_col", lang)].strip()
-                            edited_event_name = edited_row_data[_("history_event_name_col", lang)].strip()
-                            edited_event_date_obj = edited_row_data[_("history_event_date_col", lang)]
-                            edited_discipline_key = edited_row_data[_("history_discipline_col", lang)]
-                            edited_perf_str = str(edited_row_data[_("history_performance_col", lang)]).strip()
-                            
-                            edited_event_date_str = None
-                            if isinstance(edited_event_date_obj, date): edited_event_date_str = edited_event_date_obj.isoformat()
-                            elif isinstance(edited_event_date_obj, str): 
-                                try: edited_event_date_str = date.fromisoformat(edited_event_date_obj).isoformat()
-                                except ValueError: st.error(f"Invalid event date format '{edited_event_date_obj}' for user {edited_user}. Skipping."); continue
-                            else: st.error(f"Invalid event date provided for user {edited_user}. Skipping."); continue
+                        edited_all_perf_df = st.data_editor(
+                            all_perf_df_for_editor,
+                            column_config={
+                                "id": None,
+                                _("history_event_name_col", lang): st.column_config.TextColumn(label=_("history_event_name_col", lang), required=True),
+                                _("history_event_date_col", lang): st.column_config.DateColumn(label=_("history_event_date_col", lang), format="YYYY-MM-DD", required=True),
+                                _("history_entry_date_col", lang): st.column_config.DateColumn(label=_("history_entry_date_col", lang), format="YYYY-MM-DD", disabled=True), 
+                                _("user_col", lang): st.column_config.TextColumn(label=_("user_col", lang), required=True),
+                                _("history_discipline_col", lang): st.column_config.SelectboxColumn(label=_("history_discipline_col", lang), options=discipline_keys, required=True),
+                                _("history_performance_col", lang): st.column_config.TextColumn(label=_("history_performance_col", lang), required=True),
+                                _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(label=_("history_delete_col_editor", lang), default=False)},
+                            hide_index=True, key="all_performances_data_editor", num_rows="dynamic"
+                        )
+                        if st.button(_("save_all_performances_button", lang), key="save_all_perf_changes"):
+                            changes_made_all_perf = False; temp_master_records = [r.copy() for r in all_records_loaded]; newly_added_records_from_editor = []
+                            for edited_row_data in edited_all_perf_df.to_dict(orient="records"):
+                                record_id = edited_row_data.get("id"); is_new_row = record_id is None
+                                if is_new_row: record_id = uuid.uuid4().hex; edited_row_data["id"] = record_id
+                                if edited_row_data[_("history_delete_col_editor", lang)] and not is_new_row:
+                                    temp_master_records = [r for r in temp_master_records if r.get("id") != record_id]; changes_made_all_perf = True; continue
+                                
+                                edited_user = edited_row_data[_("user_col", lang)].strip()
+                                edited_event_name = edited_row_data[_("history_event_name_col", lang)].strip()
+                                edited_event_date_obj = edited_row_data[_("history_event_date_col", lang)]
+                                edited_discipline_key = edited_row_data[_("history_discipline_col", lang)]
+                                edited_perf_str = str(edited_row_data[_("history_performance_col", lang)]).strip()
+                                
+                                edited_event_date_str = None
+                                if isinstance(edited_event_date_obj, date): edited_event_date_str = edited_event_date_obj.isoformat()
+                                elif isinstance(edited_event_date_obj, str): 
+                                    try: edited_event_date_str = date.fromisoformat(edited_event_date_obj).isoformat()
+                                    except ValueError: st.error(f"Invalid event date format '{edited_event_date_obj}' for user {edited_user}. Skipping."); continue
+                                else: st.error(f"Invalid event date provided for user {edited_user}. Skipping."); continue
 
-                            if not edited_user or not edited_event_name or not edited_discipline_key or not edited_perf_str or not edited_event_date_str:
-                                st.error(f"Missing data for one of the records. Skipping."); continue
-                            
-                            parsed_value = parse_static_time_to_seconds(edited_perf_str, lang) if is_time_based_discipline(edited_discipline_key) else parse_distance_to_meters(edited_perf_str, lang)
-                            if parsed_value is None: st.error(f"Invalid performance format for '{edited_perf_str}'. Skipping."); continue
+                                if not edited_user or not edited_event_name or not edited_discipline_key or not edited_perf_str or not edited_event_date_str:
+                                    st.error(f"Missing data for one of the records. Skipping."); continue
+                                
+                                parsed_value = parse_static_time_to_seconds(edited_perf_str, lang) if is_time_based_discipline(edited_discipline_key) else parse_distance_to_meters(edited_perf_str, lang)
+                                if parsed_value is None: st.error(f"Invalid performance format for '{edited_perf_str}'. Skipping."); continue
 
-                            current_entry_date = date.today().isoformat() 
-                            linked_session_id_to_save = None 
+                                current_entry_date = date.today().isoformat() 
+                                linked_session_id_to_save = None 
 
-                            if not is_new_row:
-                                original_record_for_updates = next((r for r in temp_master_records if r.get("id") == record_id), None)
-                                if original_record_for_updates:
-                                    current_entry_date = original_record_for_updates.get('entry_date', current_entry_date)
-                                    linked_session_id_to_save = original_record_for_updates.get('linked_training_session_id') 
+                                if not is_new_row:
+                                    original_record_for_updates = next((r for r in temp_master_records if r.get("id") == record_id), None)
+                                    if original_record_for_updates:
+                                        current_entry_date = original_record_for_updates.get('entry_date', current_entry_date)
+                                        linked_session_id_to_save = original_record_for_updates.get('linked_training_session_id') 
 
 
-                            if is_new_row:
-                                newly_added_records_from_editor.append({
-                                    "id": record_id, "user": edited_user, "event_name": edited_event_name, "event_date": edited_event_date_str, 
-                                    "entry_date": current_entry_date, "discipline": edited_discipline_key, 
-                                    "original_performance_str": edited_perf_str, "parsed_value": parsed_value,
-                                    "linked_training_session_id": linked_session_id_to_save 
-                                })
-                                changes_made_all_perf = True
-                                if edited_user not in user_profiles: user_profiles[edited_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": "", "anonymize_results": False}
-                            else:
-                                original_record_index = next((i for i, r_item in enumerate(temp_master_records) if r_item.get("id") == record_id), -1)
-                                if original_record_index != -1:
-                                    original_rec_data = temp_master_records[original_record_index]
-                                    if (original_rec_data.get('event_name') != edited_event_name or original_rec_data.get('event_date') != edited_event_date_str or
-                                        original_rec_data.get('user') != edited_user or original_rec_data.get('discipline') != edited_discipline_key or
-                                        original_rec_data.get('original_performance_str') != edited_perf_str):
-                                        temp_master_records[original_record_index].update({
-                                            'event_name': edited_event_name, 'event_date': edited_event_date_str, 'user': edited_user, 
-                                            'discipline': edited_discipline_key, 'original_performance_str': edited_perf_str, 'parsed_value': parsed_value
-                                        })
-                                        changes_made_all_perf = True
-                                        if edited_user not in user_profiles: user_profiles[edited_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": "", "anonymize_results": False}
-                        if changes_made_all_perf:
-                            all_records_loaded[:] = temp_master_records + newly_added_records_from_editor
-                            save_records(all_records_loaded); save_user_profiles(user_profiles) 
-                            st.success(_("all_performances_updated_success", lang)); st.rerun()
-                        else: st.info("No changes detected in all performances.")
+                                if is_new_row:
+                                    newly_added_records_from_editor.append({
+                                        "id": record_id, "user": edited_user, "event_name": edited_event_name, "event_date": edited_event_date_str, 
+                                        "entry_date": current_entry_date, "discipline": edited_discipline_key, 
+                                        "original_performance_str": edited_perf_str, "parsed_value": parsed_value,
+                                        "linked_training_session_id": linked_session_id_to_save 
+                                    })
+                                    changes_made_all_perf = True
+                                    if edited_user not in user_profiles: user_profiles[edited_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": "", "anonymize_results": False}
+                                else:
+                                    original_record_index = next((i for i, r_item in enumerate(temp_master_records) if r_item.get("id") == record_id), -1)
+                                    if original_record_index != -1:
+                                        original_rec_data = temp_master_records[original_record_index]
+                                        if (original_rec_data.get('event_name') != edited_event_name or original_rec_data.get('event_date') != edited_event_date_str or
+                                            original_rec_data.get('user') != edited_user or original_rec_data.get('discipline') != edited_discipline_key or
+                                            original_rec_data.get('original_performance_str') != edited_perf_str):
+                                            temp_master_records[original_record_index].update({
+                                                'event_name': edited_event_name, 'event_date': edited_event_date_str, 'user': edited_user, 
+                                                'discipline': edited_discipline_key, 'original_performance_str': edited_perf_str, 'parsed_value': parsed_value
+                                            })
+                                            changes_made_all_perf = True
+                                            if edited_user not in user_profiles: user_profiles[edited_user] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": "", "anonymize_results": False}
+                            if changes_made_all_perf:
+                                all_records_loaded[:] = temp_master_records + newly_added_records_from_editor
+                                save_records(all_records_loaded); save_user_profiles(user_profiles) 
+                                st.success(_("all_performances_updated_success", lang)); st.rerun()
+                            else: st.info("No changes detected in all performances.")
 
 if __name__ == "__main__":
     main()
