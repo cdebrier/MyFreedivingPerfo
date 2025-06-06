@@ -153,6 +153,18 @@
         "certification": "Not Specified",
         "certification_date": null,
         "lifras_id": "",
-        "anonymize_results": false
+        "anonymize_results": true
+    },
+    "Bernard V.H.": {
+        "certification": "Not Specified",
+        "certification_date": null,
+        "lifras_id": "",
+        "anonymize_results": true
+    },
+    "Théo G.": {
+        "certification": "Not Specified",
+        "certification_date": null,
+        "lifras_id": "",
+        "anonymize_results": true
     }
 }
