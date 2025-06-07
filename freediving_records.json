@@ -327,7 +327,7 @@
         "id": "5232e1d3dda04e80b16f6d99e19bc91a",
         "user": "Charles D.B.",
         "discipline": "16x25m Speed Endurance",
-        "linked_training_session_id": null,
+        "linked_training_session_id": "4f3b4bbba5ea4457988f51e5da79eef1",
         "original_performance_str": "8:34",
         "parsed_value": 514.0,
         "entry_date": "2025-01-14"
@@ -336,7 +336,7 @@
         "id": "4d4fb24fea954a21a6b0bfdf16ee7437",
         "user": "Charles D.B.",
         "discipline": "Depth (CWT/FIM)",
-        "linked_training_session_id": null,
+        "linked_training_session_id": "49c103e425144880b4252ef406f6a7a8",
         "original_performance_str": "28",
         "parsed_value": 28,
         "entry_date": "2025-01-07"

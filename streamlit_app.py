@@ -170,6 +170,8 @@ TRANSLATIONS = {
         "save_training_log_changes_button": "💾 Save Training Log Changes",
         "training_log_updated_success": "Training log updated successfully.",
         "performance_log_tab_label": "📜 Performance Log",
+        "performances_overview_tab_label": "📋 Performances",
+        "edit_performances_sub_tab_label": "✏️ Edit Performances",
         "save_all_performances_button": "💾 Save Performance Log Changes",
         "all_performances_updated_success": "Performance log updated successfully.",
         "feedback_log_tab_label": "💬 Feedback Log",
@@ -356,6 +358,8 @@ TRANSLATIONS = {
         "save_training_log_changes_button": "💾 Sauvegarder le Journal d'Entraînement",
         "training_log_updated_success": "Journal d'entraînement mis à jour avec succès.",
         "performance_log_tab_label": "📜 Journal des Performances",
+        "performances_overview_tab_label": "Vue d'ensemble des Performances",
+        "edit_performances_sub_tab_label": "Modifier les Performances",
         "save_all_performances_button": "💾 Sauvegarder les Modifications du Journal",
         "all_performances_updated_success": "Journal des performances mis à jour avec succès.",
         "feedback_log_tab_label": "💬 Journal des Feedbacks", 
@@ -542,6 +546,8 @@ TRANSLATIONS = {
         "save_training_log_changes_button": "💾 Trainingslogboek Opslaan",
         "training_log_updated_success": "Trainingslogboek succesvol bijgewerkt.",
         "performance_log_tab_label": "📜 Prestatielogboek",
+        "performances_overview_tab_label": "Prestatieoverzicht",
+        "edit_performances_sub_tab_label": "Prestaties Bewerken",
         "save_all_performances_button": "💾 Prestatielogboekwijzigingen Opslaan",
         "all_performances_updated_success": "Prestatielogboek succesvol bijgewerkt.",
         "feedback_log_tab_label": "💬 Feedbacklogboek",
@@ -1134,7 +1140,7 @@ def main():
                         st.rerun()
                         
     # --- Sidebar: Language Selector (Moved to bottom) ---
-    st.sidebar.markdown("") 
+    st.sidebar.markdown("---") 
     language_options = {"English": "en", "Français": "fr", "Nederlands": "nl"}
     current_lang_display_name = [k_disp for k_disp, v_code in language_options.items() if v_code == lang][0]
     
@@ -1204,7 +1210,7 @@ def main():
                             elif val_tab == "N/A": 
                                 st.caption(_("no_record_yet_caption", lang))
                 
-                st.markdown("")
+                st.markdown("---")
                 
                 sub_tab_titles_user = [_("disciplines." + key, lang) for key in discipline_keys]
                 sub_tabs_user = st.tabs(sub_tab_titles_user)
@@ -1300,7 +1306,7 @@ def main():
                                     st.rerun()
                                 else:
                                     st.info("No changes detected.")
-
+        
         with tab_objects_main[1]: # Club Performances
             if not all_records_loaded:
                 st.info(_("no_ranking_data", lang))
@@ -1332,7 +1338,7 @@ def main():
                             elif val_club == "N/A":
                                 st.caption(_("no_record_yet_caption", lang))
 
-                st.markdown("")
+                st.markdown("---")
                 
                 ranking_sub_tab_titles = [_("disciplines." + key, lang) for key in discipline_keys]
                 ranking_sub_tabs = st.tabs(ranking_sub_tab_titles)
@@ -1527,71 +1533,104 @@ def main():
                                 st.info("No changes detected in the training log.")
 
             with tab_objects_main[admin_tabs_start_index + 2]: # Performance Log
-                st.subheader(_("performance_log_tab_label", lang))
-                if not all_records_loaded:
-                    st.info("No performances logged in the system.")
-                else:
-                    training_session_options = {log['id']: f"{log.get('date')} - {log.get('place', 'N/A')}" for log in training_log_loaded}
+                overview_sub_tab, edit_sub_tab = st.tabs([
+                    _("performances_overview_tab_label", lang),
+                    _("edit_performances_sub_tab_label", lang)
+                ])
+
+                with overview_sub_tab:
+                    st.subheader(_("performances_overview_tab_label", lang))
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        filter_user_perf = st.selectbox(_("filter_by_freediver_label", lang), [_("all_freedivers_option", lang)] + all_known_users_list, key="perf_log_user_filter")
+                    with col2:
+                        session_options = {s['id']: f"{s['date']} - {s['place']}" for s in training_log_loaded}
+                        filter_session_id_perf = st.selectbox(_("filter_by_training_session_label", lang), [_("all_sessions_option", lang)] + list(session_options.keys()), format_func=lambda x: session_options.get(x, x), key="perf_log_session_filter")
+
+                    filtered_records = all_records_loaded
+                    if filter_user_perf != _("all_freedivers_option", lang):
+                        filtered_records = [r for r in filtered_records if r['user'] == filter_user_perf]
+                    if filter_session_id_perf != _("all_sessions_option", lang):
+                        filtered_records = [r for r in filtered_records if r.get('linked_training_session_id') == filter_session_id_perf]
                     
-                    perf_log_data = []
-                    for rec in sorted(all_records_loaded, key=lambda x: x.get('entry_date', '1900-01-01'), reverse=True):
-                        perf_log_data.append({
-                            "id": rec["id"],
+                    display_data = []
+                    for rec in sorted(filtered_records, key=lambda x: x.get('entry_date', '1900-01-01'), reverse=True):
+                        session_details = get_training_session_details(rec.get("linked_training_session_id"), training_log_loaded)
+                        display_data.append({
                             _("user_col", lang): rec["user"],
                             _("history_discipline_col", lang): rec["discipline"],
-                            _("link_training_session_label", lang): training_session_options.get(rec.get("linked_training_session_id")),
+                            _("link_training_session_label", lang): f"{session_details['event_date']} - {session_details['event_name']}",
                             _("history_performance_col", lang): rec["original_performance_str"],
-                            _("history_delete_col_editor", lang): False
+                            _("history_entry_date_col", lang): rec["entry_date"]
                         })
+                    st.dataframe(pd.DataFrame(display_data), hide_index=True)
 
-                    edited_perf_log_df = st.data_editor(
-                        pd.DataFrame(perf_log_data),
-                        column_config={
-                            "id": None,
-                            _("user_col", lang): st.column_config.SelectboxColumn(options=all_known_users_list, required=True),
-                            _("history_discipline_col", lang): st.column_config.SelectboxColumn(options=discipline_keys, required=True),
-                            _("link_training_session_label", lang): st.column_config.SelectboxColumn(options=list(training_session_options.values()), required=True),
-                            _("history_performance_col", lang): st.column_config.TextColumn(required=True),
-                            _("history_delete_col_editor", lang): st.column_config.CheckboxColumn()
-                        },
-                        num_rows="dynamic",
-                        hide_index=True,
-                        key="all_perf_editor"
-                    )
-
-                    if st.button(_("save_all_performances_button", lang)):
-                        new_records = []
-                        session_display_to_id = {v: k for k, v in training_session_options.items()}
+                with edit_sub_tab:
+                    st.subheader(_("edit_performances_sub_tab_label", lang))
+                    if not all_records_loaded:
+                        st.info("No performances logged in the system.")
+                    else:
+                        training_session_options = {log['id']: f"{log.get('date')} - {log.get('place', 'N/A')}" for log in training_log_loaded}
                         
-                        for row in edited_perf_log_df.to_dict('records'):
-                            if row[_("history_delete_col_editor", lang)]:
-                                continue
-                            
-                            perf_str = str(row[_("history_performance_col", lang)]).strip()
-                            discipline = row[_("history_discipline_col", lang)]
-                            parsed_val = parse_static_time_to_seconds(perf_str, lang) if is_time_based_discipline(discipline) else parse_distance_to_meters(perf_str, lang)
-
-                            if parsed_val is None:
-                                st.error(f"Invalid performance '{perf_str}' for user {row[_('user_col', lang)]}. Skipping.");
-                                original_rec = next((r for r in all_records_loaded if r['id'] == row['id']), None)
-                                if original_rec: new_records.append(original_rec)
-                                continue
-                            
-                            original_rec = next((r for r in all_records_loaded if r['id'] == row['id']), {})
-                            
-                            new_records.append({
-                                "id": row.get("id") or uuid.uuid4().hex,
-                                "user": row[_("user_col", lang)],
-                                "discipline": discipline,
-                                "linked_training_session_id": session_display_to_id.get(row[_("link_training_session_label", lang)]),
-                                "original_performance_str": perf_str,
-                                "parsed_value": parsed_val,
-                                "entry_date": original_rec.get('entry_date', date.today().isoformat())
+                        perf_log_data = []
+                        for rec in sorted(all_records_loaded, key=lambda x: x.get('entry_date', '1900-01-01'), reverse=True):
+                            perf_log_data.append({
+                                "id": rec["id"],
+                                _("user_col", lang): rec["user"],
+                                _("history_discipline_col", lang): rec["discipline"],
+                                _("link_training_session_label", lang): training_session_options.get(rec.get("linked_training_session_id")),
+                                _("history_performance_col", lang): rec["original_performance_str"],
+                                _("history_delete_col_editor", lang): False
                             })
-                        
-                        save_records(new_records)
-                        st.success(_("all_performances_updated_success", lang))
-                        st.rerun()
+
+                        edited_perf_log_df = st.data_editor(
+                            pd.DataFrame(perf_log_data),
+                            column_config={
+                                "id": None,
+                                _("user_col", lang): st.column_config.SelectboxColumn(options=all_known_users_list, required=True),
+                                _("history_discipline_col", lang): st.column_config.SelectboxColumn(options=discipline_keys, required=True),
+                                _("link_training_session_label", lang): st.column_config.SelectboxColumn(options=list(training_session_options.values()), required=True),
+                                _("history_performance_col", lang): st.column_config.TextColumn(required=True),
+                                _("history_delete_col_editor", lang): st.column_config.CheckboxColumn()
+                            },
+                            num_rows="dynamic",
+                            hide_index=True,
+                            key="all_perf_editor"
+                        )
+
+                        if st.button(_("save_all_performances_button", lang)):
+                            new_records = []
+                            session_display_to_id = {v: k for k, v in training_session_options.items()}
+                            
+                            for row in edited_perf_log_df.to_dict('records'):
+                                if row[_("history_delete_col_editor", lang)]:
+                                    continue
+                                
+                                perf_str = str(row[_("history_performance_col", lang)]).strip()
+                                discipline = row[_("history_discipline_col", lang)]
+                                parsed_val = parse_static_time_to_seconds(perf_str, lang) if is_time_based_discipline(discipline) else parse_distance_to_meters(perf_str, lang)
+
+                                if parsed_val is None:
+                                    st.error(f"Invalid performance '{perf_str}' for user {row[_('user_col', lang)]}. Skipping.");
+                                    original_rec = next((r for r in all_records_loaded if r['id'] == row['id']), None)
+                                    if original_rec: new_records.append(original_rec)
+                                    continue
+                                
+                                original_rec = next((r for r in all_records_loaded if r['id'] == row['id']), {})
+                                
+                                new_records.append({
+                                    "id": row.get("id") or uuid.uuid4().hex,
+                                    "user": row[_("user_col", lang)],
+                                    "discipline": discipline,
+                                    "linked_training_session_id": session_display_to_id.get(row[_("link_training_session_label", lang)]),
+                                    "original_performance_str": perf_str,
+                                    "parsed_value": parsed_val,
+                                    "entry_date": original_rec.get('entry_date', date.today().isoformat())
+                                })
+                            
+                            save_records(new_records)
+                            st.success(_("all_performances_updated_success", lang))
+                            st.rerun()
 
             with tab_objects_main[admin_tabs_start_index + 3]: # Feedback Log
                 fb_overview_tab, fb_edit_tab = st.tabs([_("feedbacks_overview_tab_label", lang), _("edit_feedbacks_sub_tab_label", lang)])
