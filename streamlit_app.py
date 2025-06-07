@@ -202,9 +202,11 @@ TRANSLATIONS = {
         "filter_by_freediver_label": "Filter by Freediver:", 
         "filter_by_training_session_label": "Filter by Training Session:",
         "filter_by_instructor_label": "Filter by Instructor:",
+        "filter_by_discipline_label": "Filter by Discipline:",
         "all_freedivers_option": "All Freedivers", 
         "all_sessions_option": "All Sessions",
         "all_instructors_option": "All Instructors",
+        "all_disciplines_option": "All Disciplines",
         "no_feedbacks_match_filters": "No feedbacks match the current filters.",
         "enter_access_code_prompt": "Enter access code:",
         "unlock_button_label": "Unlock Privileged Access",
@@ -390,9 +392,11 @@ TRANSLATIONS = {
         "filter_by_freediver_label": "Filtrer par Apnéiste :", 
         "filter_by_training_session_label": "Filtrer par Session d'Entraînement :",
         "filter_by_instructor_label": "Filtrer par Instructeur :",
+        "filter_by_discipline_label": "Filtrer par Discipline :",
         "all_freedivers_option": "Tous les Apnéistes", 
         "all_sessions_option": "Toutes les Sessions",
         "all_instructors_option": "Tous les Instructeurs",
+        "all_disciplines_option": "Toutes les Disciplines",
         "no_feedbacks_match_filters": "Aucun feedback ne correspond aux filtres actuels.",
         "enter_access_code_prompt": "Entrez le code d'accès :",
         "unlock_button_label": "Déverrouiller Accès Privilégié",
@@ -411,7 +415,7 @@ TRANSLATIONS = {
         "add_new_user_option": "✨ Nieuwe vrijduiker toevoegen...", 
         "existing_user_selected": "Vrijduiker **{user}** bevestigd.", 
         "log_performance_header": "✏️ Log Nieuwe Prestatie",
-        "profile_header_sidebar": "🪪 Vrijduiker Profiel", 
+        "profile_header_sidebar": "� Vrijduiker Profiel", 
         "select_user_first_warning": "Bevestig of voeg eerst een vrijduiker toe om prestaties te loggen.", 
         "logging_for": "Loggen voor: **{user}**",
         "link_training_session_label": "Trainingssessie",
@@ -524,7 +528,6 @@ TRANSLATIONS = {
         "lifras_id_col_editor": "LIFRAS ID",
         "pb_sta_col_editor": "PR STA",
         "pb_dynbf_col_editor": "PR DYN-BF",
-        "pb_dnf_col_editor": "PR DNF",
         "pb_depth_col_editor": "PR Diepte",
         "pb_vwt_nlt_col_editor": "PR Diepte (VWT/NLT)",
         "pb_16x25_col_editor": "PR 16x25m",
@@ -578,9 +581,11 @@ TRANSLATIONS = {
         "filter_by_freediver_label": "Filter op Vrijduiker:", 
         "filter_by_training_session_label": "Filter op Trainingssessie:",
         "filter_by_instructor_label": "Filter op Instructeur:",
+        "filter_by_discipline_label": "Filter op Discipline:",
         "all_freedivers_option": "Alle Vrijduikers", 
         "all_sessions_option": "Alle Sessies",
         "all_instructors_option": "Alle Instructeurs",
+        "all_disciplines_option": "Alle Disciplines",
         "no_feedbacks_match_filters": "Geen feedbacks komen overeen met de huidige filters.",
         "enter_access_code_prompt": "Voer toegangscode in:",
         "unlock_button_label": "Ontgrendel Bevoorrechte Toegang",
@@ -1306,7 +1311,7 @@ def main():
                                     st.rerun()
                                 else:
                                     st.info("No changes detected.")
-        
+
         with tab_objects_main[1]: # Club Performances
             if not all_records_loaded:
                 st.info(_("no_ranking_data", lang))
@@ -1540,18 +1545,22 @@ def main():
 
                 with overview_sub_tab:
                     st.subheader(_("performances_overview_tab_label", lang))
-                    col1, col2 = st.columns(2)
+                    col1, col2, col3 = st.columns(3)
                     with col1:
                         filter_user_perf = st.selectbox(_("filter_by_freediver_label", lang), [_("all_freedivers_option", lang)] + all_known_users_list, key="perf_log_user_filter")
                     with col2:
                         session_options = {s['id']: f"{s['date']} - {s['place']}" for s in training_log_loaded}
                         filter_session_id_perf = st.selectbox(_("filter_by_training_session_label", lang), [_("all_sessions_option", lang)] + list(session_options.keys()), format_func=lambda x: session_options.get(x, x), key="perf_log_session_filter")
+                    with col3:
+                        filter_discipline_perf = st.selectbox(_("filter_by_discipline_label", lang), [_("all_disciplines_option", lang)] + discipline_keys, key="perf_log_discipline_filter")
 
                     filtered_records = all_records_loaded
                     if filter_user_perf != _("all_freedivers_option", lang):
                         filtered_records = [r for r in filtered_records if r['user'] == filter_user_perf]
                     if filter_session_id_perf != _("all_sessions_option", lang):
                         filtered_records = [r for r in filtered_records if r.get('linked_training_session_id') == filter_session_id_perf]
+                    if filter_discipline_perf != _("all_disciplines_option", lang):
+                        filtered_records = [r for r in filtered_records if r['discipline'] == filter_discipline_perf]
                     
                     display_data = []
                     for rec in sorted(filtered_records, key=lambda x: x.get('entry_date', '1900-01-01'), reverse=True):

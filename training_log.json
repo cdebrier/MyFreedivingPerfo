@@ -208,5 +208,11 @@
         "date": "2025-01-07",
         "place": "Nemo",
         "description": "Sortie club à Nemo 33"
+    },
+    {
+        "id": "a606c9e3680649d88573e65b76769dea",
+        "date": "2023-10-24",
+        "place": "Kalamata",
+        "description": "Semaine à Kalamata"
     }
 ]

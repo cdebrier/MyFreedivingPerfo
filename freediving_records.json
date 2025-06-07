@@ -495,15 +495,6 @@
         "entry_date": "2024-02-18"
     },
     {
-        "id": "34ea76174ea34f70821322971bb57a18",
-        "user": "Charles D.B.",
-        "discipline": "Dynamic Bi-fins (DYN-BF)",
-        "linked_training_session_id": null,
-        "original_performance_str": "75",
-        "parsed_value": 75,
-        "entry_date": "2024-01-28"
-    },
-    {
         "id": "23d2c0e8441341debed224df33b6d108",
         "user": "Charles D.B.",
         "discipline": "Static Apnea (STA)",
@@ -525,7 +516,7 @@
         "id": "b55c61c0189e400d8471258b052a012f",
         "user": "Gregory D.",
         "discipline": "Depth (CWT/FIM)",
-        "linked_training_session_id": null,
+        "linked_training_session_id": "a606c9e3680649d88573e65b76769dea",
         "original_performance_str": "38",
         "parsed_value": 38,
         "entry_date": "2023-10-24"
