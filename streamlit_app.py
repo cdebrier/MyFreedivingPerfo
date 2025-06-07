@@ -28,7 +28,7 @@ TRANSLATIONS = {
         "enter_freediver_name_sidebar": "Enter New Freediver Name (Format: Firstname L.)",
         "confirm_freediver_button_sidebar": "Show Freediver Data",
         "new_user_success": "New freediver: **{user}**. Profile/performance to be saved to finalize.", 
-        "select_user_or_add": "Select Freediver or Add New", 
+        "select_user_or_add": "Select Freediver", 
         "add_new_user_option": "✨ Add New Freediver...",
         "existing_user_selected": "Freediver **{user}** confirmed.", 
         "log_performance_header": "✏️ Log New Performance",
@@ -52,9 +52,9 @@ TRANSLATIONS = {
         "select_user_to_view_personal_records": "Please confirm a freediver from the sidebar to view their personal records.",
         "no_performances_yet": "No performances logged yet for this freediver. Add some using the sidebar!",
         "personal_bests_subheader": "🌟 Personal Bests",
-        "club_bests_subheader": "🌟 Club Best Performances",
-        "pb_label": "{discipline_short_name}",
-        "club_best_label": "{discipline_short_name}",
+        "club_bests_subheader": "🏆 Club Best Performances",
+        "pb_label": "PB {discipline_short_name}",
+        "club_best_label": "Club Best {discipline_short_name}",
         "achieved_at_event_on_date_caption": "By {user} at {event_name} on {event_date}",
         "achieved_on_event_caption": "Achieved at {event_name} on: {event_date}",
         "no_record_yet_caption": "No record yet",
@@ -208,11 +208,11 @@ TRANSLATIONS = {
         "page_title": "Carnet d'Apnée",
         "app_title": "🌊 Suivi des Performances d'Apnée",
         "user_management_header": "👤 Gestion des Apnéistes",
-        "no_users_yet": "Aucun apnéiste pour le moment. Ajoutez un nouvel apnéiste pour commencer.",
+        "no_users_yet": "Aucun apnéiste pour le moment. Ajoutez-en un via l'onglet Apnéistes.",
         "enter_freediver_name_sidebar": "Entrez le nom du Nouvel Apnéiste (Format: Prénom L.)",
         "confirm_freediver_button_sidebar": "Afficher les Données",
         "new_user_success": "Nouvel apnéiste : **{user}**. Profil/performance à sauvegarder pour finaliser.",
-        "select_user_or_add": "Sélectionnez un apnéiste ou ajoutez-en un nouveau",
+        "select_user_or_add": "Sélectionnez un apnéiste",
         "add_new_user_option": "✨ Ajouter un nouvel apnéiste...",
         "existing_user_selected": "Apnéiste **{user}** confirmé.",
         "log_performance_header": "✏️ Enregistrer une nouvelle performance",
@@ -236,9 +236,9 @@ TRANSLATIONS = {
         "select_user_to_view_personal_records": "Veuillez confirmer un apnéiste dans la barre latérale pour voir ses records personnels.",
         "no_performances_yet": "Aucune performance enregistrée pour cet apnéiste. Ajoutez-en via la barre latérale !",
         "personal_bests_subheader": "🌟 Records Personnels",
-        "club_bests_subheader": "🌟 Meilleures Performances du Club",
-        "pb_label": "{discipline_short_name}",
-        "club_best_label": "{discipline_short_name}",
+        "club_bests_subheader": "🏆 Meilleures Performances du Club",
+        "pb_label": "RP {discipline_short_name}",
+        "club_best_label": "Record Club {discipline_short_name}",
         "achieved_at_event_on_date_caption": "Par {user} à {event_name} le {event_date}",
         "achieved_on_event_caption": "Réalisé à {event_name} le : {event_date}",
         "no_record_yet_caption": "Aucun record pour l'instant",
@@ -396,7 +396,7 @@ TRANSLATIONS = {
         "enter_freediver_name_sidebar": "Voer Naam Nieuwe Vrijduiker in (Formaat: Voornaam L.)", 
         "confirm_freediver_button_sidebar": "Toon Vrijduiker Gegevens", 
         "new_user_success": "Nieuwe vrijduiker: **{user}**. Profiel/prestatie op te slaan om te finaliseren.", 
-        "select_user_or_add": "Selecteer Vrijduiker of voeg nieuwe toe", 
+        "select_user_or_add": "Selecteer Vrijduiker", 
         "add_new_user_option": "✨ Nieuwe vrijduiker toevoegen...", 
         "existing_user_selected": "Vrijduiker **{user}** bevestigd.", 
         "log_performance_header": "✏️ Log Nieuwe Prestatie",
@@ -420,9 +420,9 @@ TRANSLATIONS = {
         "select_user_to_view_personal_records": "Bevestig een vrijduiker in de zijbalk om persoonlijke records te bekijken.", 
         "no_performances_yet": "Nog geen prestaties gelogd voor deze vrijduiker. Voeg er enkele toe via de zijbalk!", 
         "personal_bests_subheader": "🌟 Persoonlijke Records",
-        "club_bests_subheader": "🌟 Club Beste Prestaties",
-        "pb_label": "{discipline_short_name}",
-        "club_best_label": "{discipline_short_name}",
+        "club_bests_subheader": "🏆 Club Beste Prestaties",
+        "pb_label": "PR {discipline_short_name}",
+        "club_best_label": "Clubrecord {discipline_short_name}",
         "achieved_at_event_on_date_caption": "Door {user} op {event_name} op {event_date}",
         "achieved_on_event_caption": "Behaald op {event_name} op: {event_date}",
         "no_record_yet_caption": "Nog geen record",
@@ -620,7 +620,7 @@ def ensure_performance_fields(records_list):
         if 'date' in record and 'event_date' not in record:
             record['event_date'] = record.pop('date')
             updated = True
-        if 'event_name' not in record:
+        if 'event_name' not in record or record['event_name'] == "General Training / Unknown":
             record['event_name'] = "Unspecified Training"
             updated = True
         if 'event_date' not in record:
@@ -796,77 +796,43 @@ def main():
     translated_disciplines_for_display = [_("disciplines." + key, lang) for key in discipline_keys]
 
     # --- Sidebar: User Management ---
-    # st.sidebar.header(_("user_management_header", lang))
     all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
     
-    with st.sidebar.form(key="freediver_selection_form_sidebar", border=False): 
-        user_options_display = [_("add_new_user_option", lang)] + all_known_users_list
-        
-        default_selectbox_value_user_form = st.session_state.current_user
-        if default_selectbox_value_user_form not in user_options_display or default_selectbox_value_user_form is None:
-            default_selectbox_value_user_form = _("add_new_user_option", lang)
-        
-        try:
-            current_selectbox_index_user_form = user_options_display.index(default_selectbox_value_user_form)
-        except ValueError: 
-            current_selectbox_index_user_form = 0 
-            default_selectbox_value_user_form = _("add_new_user_option", lang)
-
-        # This selectbox value is directly used for logic within the form
-        selectbox_choice_user_form = st.selectbox(
-            _("select_user_or_add", lang),
-            user_options_display,
-            index=current_selectbox_index_user_form,
-            key="user_selectbox_in_freediver_form_key" # Key for this widget
-        )
-
-        new_freediver_name_input_val_form = "" 
-        if selectbox_choice_user_form == _("add_new_user_option", lang):
-            # The value of this text_input is also accessed via its key from st.session_state
-            new_freediver_name_input_val_form = st.text_input(
-                _("enter_freediver_name_sidebar", lang),
-                value=st.session_state.new_freediver_name_input_buffer_key, # Pre-fill with buffer
-                key="new_freediver_name_text_input_in_form_key" 
-            ).strip()
-            # Update buffer with current input, to persist if form is not submitted but rerun happens
-            st.session_state.new_freediver_name_input_buffer_key = new_freediver_name_input_val_form
-        
-        submitted_confirm_freediver = st.form_submit_button(_("confirm_freediver_button_sidebar", lang))
-
-        if submitted_confirm_freediver:
-            user_to_be_confirmed = None
-            is_adding_new_user_scenario = False
-
-            if selectbox_choice_user_form == _("add_new_user_option", lang):
-                user_to_be_confirmed = new_freediver_name_input_val_form 
-                is_adding_new_user_scenario = True
-            else:
-                user_to_be_confirmed = selectbox_choice_user_form
+    with st.sidebar.form(key="freediver_selection_form_sidebar", border=False):
+        if not all_known_users_list:
+            st.warning(_("no_users_yet", lang))
+            st.form_submit_button("...", disabled=True)
+        else:
+            default_selectbox_index = 0
+            if st.session_state.current_user and st.session_state.current_user in all_known_users_list:
+                try:
+                    default_selectbox_index = all_known_users_list.index(st.session_state.current_user)
+                except ValueError:
+                    pass # Keep default 0
             
-            if user_to_be_confirmed:
-                if st.session_state.current_user != user_to_be_confirmed: 
-                    st.session_state.privileged_user_authenticated = False
-                    st.session_state.authenticated_privileged_user = None
-                    if "password_field_for_unlock_form_key" in st.session_state:
-                        st.session_state.password_field_for_unlock_form_key = ""
-                
-                st.session_state.current_user = user_to_be_confirmed 
+            selectbox_choice_user_form = st.selectbox(
+                _("select_user_or_add", lang),
+                all_known_users_list,
+                index=default_selectbox_index,
+                key="user_selectbox_in_freediver_form_key"
+            )
 
-                if is_adding_new_user_scenario and user_to_be_confirmed not in all_known_users_list:
-                    st.success(_("new_user_success", lang, user=user_to_be_confirmed))
-                    if user_to_be_confirmed not in user_profiles: 
-                        user_profiles[user_to_be_confirmed] = {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": "", "anonymize_results": False}
-                        save_user_profiles(user_profiles) 
-                        all_known_users_list.append(user_to_be_confirmed) 
-                        all_known_users_list.sort()
-                elif user_to_be_confirmed in all_known_users_list:
-                     st.info(_("existing_user_selected", lang, user=user_to_be_confirmed))
+            submitted_confirm_freediver = st.form_submit_button(_("confirm_freediver_button_sidebar", lang))
+
+            if submitted_confirm_freediver:
+                user_to_be_confirmed = selectbox_choice_user_form
                 
-                st.session_state.new_freediver_name_input_buffer_key = "" 
-                st.rerun() 
-            else:
-                st.warning("Veuillez sélectionner ou entrer un nom d'apnéiste et confirmer.")
-    
+                if user_to_be_confirmed:
+                    if st.session_state.current_user != user_to_be_confirmed:
+                        st.session_state.privileged_user_authenticated = False
+                        st.session_state.authenticated_privileged_user = None
+                        if "password_field_for_unlock_form_key" in st.session_state:
+                            st.session_state.password_field_for_unlock_form_key = ""
+                    
+                    st.session_state.current_user = user_to_be_confirmed
+                    st.info(_("existing_user_selected", lang, user=user_to_be_confirmed))
+                    st.rerun()
+
     current_user = st.session_state.current_user 
 
     if current_user and current_user in PRIVILEGED_USERS:
@@ -1258,13 +1224,13 @@ def main():
                             with cols_pb_tab[i_pb_col_tab]:
                                 translated_full_discipline_name_tab = _("disciplines." + disc_key_pb_col_tab, lang)
                                 short_disc_name_tab = translated_full_discipline_name_tab.split('(')[0].strip() or translated_full_discipline_name_tab
-                                st.metric(label=_( "pb_label", lang, discipline_short_name=short_disc_name_tab), value=val_tab)
+                                st.metric(label=_("pb_label", lang, discipline_short_name=short_disc_name_tab), value=val_tab)
                                 if event_date_tab and event_date_tab != "N/A": 
                                     st.caption(_("achieved_on_event_caption", lang, event_name=event_name_tab, event_date=event_date_tab))
                                 elif val_tab == "N/A": 
                                     st.caption(_("no_record_yet_caption", lang))
                         
-                        st.markdown("")
+                    st.markdown("")
                         
                     sub_tab_titles_user = [_("disciplines." + key, lang) for key in discipline_keys]
                     sub_tabs_user = st.tabs(sub_tab_titles_user)
@@ -1576,7 +1542,7 @@ def main():
                                     if place_idx < 3: podium_data[place_idx+1] = sorted([p for p in sorted_rankings_tab if p['parsed_value'] == place_perf_val], key=lambda x: x.get('event_date', '1900-01-01')) 
                                 
                                 podium_cols = st.columns(3)
-                                medal_emojis = ["🥇", "🥈", "�"]
+                                medal_emojis = ["🥇", "🥈", "🥉"]
                                 for i_podium in range(3):
                                     with podium_cols[i_podium]:
                                         place = i_podium + 1
@@ -1673,87 +1639,163 @@ def main():
         if is_admin_view_authorized and tab_freedivers: 
             with tab_freedivers: 
                 cert_order = ["I3", "I2", "I1", "S4", "A3", "A2", "A1", "NB", _("no_certification_option", lang)]; cert_order_map = {level: i for i, level in enumerate(cert_order)}
-                if not all_known_users_list: st.info(_("no_users_yet", lang))
-                else:
-                    freedivers_data_for_editor = [] 
-                    for user_name in all_known_users_list:
-                        profile = user_profiles.get(user_name, {}); certification = profile.get("certification", _("no_certification_option", lang)); cert_date_str = profile.get("certification_date"); cert_date_obj = None
-                        if cert_date_str: 
-                            try: cert_date_obj = date.fromisoformat(cert_date_str)
-                            except ValueError: pass
-                        lifras_id = profile.get("lifras_id", ""); anonymize = profile.get("anonymize_results", False)
-                        user_pbs_display = {}
-                        for disc_key in discipline_keys:
-                            user_disc_records = [r for r in all_records_loaded if r['user'] == user_name and r['discipline'] == disc_key and r.get('parsed_value') is not None]
-                            if user_disc_records:
-                                best_record = min(user_disc_records, key=lambda x: x['parsed_value']) if disc_key == "16x25m Speed Endurance" else max(user_disc_records, key=lambda x: x['parsed_value'])
-                                user_pbs_display[disc_key] = format_seconds_to_static_time(best_record['parsed_value']) if is_time_based_discipline(disc_key) else f"{best_record['parsed_value']}m"
-                            else: user_pbs_display[disc_key] = "N/A"
-                        freedivers_data_for_editor.append({ 
-                            _("original_name_col_editor_hidden", lang): user_name, _("freediver_name_col_editor", lang): user_name, _("certification_col_editor", lang): certification, 
-                            _("certification_date_col_editor", lang): cert_date_obj, _("lifras_id_col_editor", lang): lifras_id, _("anonymize_results_col_editor", lang): anonymize,
-                            _("pb_sta_col_editor", lang): user_pbs_display.get("Static Apnea (STA)", "N/A"), _("pb_dynbf_col_editor", lang): user_pbs_display.get("Dynamic Bi-fins (DYN-BF)", "N/A"),
-                            _("pb_depth_col_editor", lang): user_pbs_display.get("Depth (CWT/FIM)", "N/A"), _("pb_vwt_nlt_col_editor", lang): user_pbs_display.get("Profondeur (VWT/NLT)", "N/A"),
-                            _("pb_16x25_col_editor", lang): user_pbs_display.get("16x25m Speed Endurance", "N/A"),
-                        })
-                    def sort_freedivers(freediver_entry): 
-                        cert_level = freediver_entry[_("certification_col_editor", lang)]; cert_date_val = freediver_entry[_("certification_date_col_editor", lang)]
-                        sortable_cert_date = cert_date_val if cert_date_val is not None else date.min
-                        return (cert_order_map.get(cert_level, len(cert_order)), sortable_cert_date)
-                    sorted_freedivers_data = sorted(freedivers_data_for_editor, key=sort_freedivers) 
-                    freedivers_df = pd.DataFrame(sorted_freedivers_data) 
-                    cert_options_for_editor = [_("no_certification_option", lang)] + list(_("certification_levels", lang).keys())
-                    column_config_freedivers = { 
-                        _("original_name_col_editor_hidden", lang): None,
-                        _("freediver_name_col_editor", lang): st.column_config.TextColumn(label=_("freediver_name_col_editor", lang), required=True), 
-                        _("certification_col_editor", lang): st.column_config.SelectboxColumn(label=_("certification_col_editor", lang), options=cert_options_for_editor, required=False),
-                        _("certification_date_col_editor", lang): st.column_config.DateColumn(label=_("certification_date_col_editor", lang), format="YYYY-MM-DD"),
-                        _("lifras_id_col_editor", lang): st.column_config.TextColumn(label=_("lifras_id_col_editor", lang)),
-                        _("anonymize_results_col_editor", lang): st.column_config.CheckboxColumn(label=_("anonymize_results_col_editor", lang), default=False),
-                        _("pb_sta_col_editor", lang): st.column_config.TextColumn(label=_("pb_sta_col_editor", lang), disabled=True),
-                        _("pb_dynbf_col_editor", lang): st.column_config.TextColumn(label=_("pb_dynbf_col_editor", lang), disabled=True),
-                        _("pb_depth_col_editor", lang): st.column_config.TextColumn(label=_("pb_depth_col_editor", lang), disabled=True),
-                        _("pb_vwt_nlt_col_editor", lang): st.column_config.TextColumn(label=_("pb_vwt_nlt_col_editor", lang), disabled=True),
-                        _("pb_16x25_col_editor", lang): st.column_config.TextColumn(label=_("pb_16x25_col_editor", lang), disabled=True),
-                    }
-                    edited_freedivers_df = st.data_editor(freedivers_df, column_config=column_config_freedivers, key="freedivers_data_editor", num_rows="fixed", hide_index=True) 
-                    if st.button(_("save_freedivers_changes_button", lang), key="save_freedivers_changes"): 
-                        changes_made_freedivers = False; temp_user_profiles = user_profiles.copy(); temp_all_records = [r.copy() for r in all_records_loaded] 
-                        for index, edited_row in edited_freedivers_df.iterrows(): 
-                            original_name = edited_row[_("original_name_col_editor_hidden", lang)]; new_name = edited_row[_("freediver_name_col_editor", lang)].strip() 
-                            new_certification = edited_row[_("certification_col_editor", lang)]; new_cert_date_obj = edited_row[_("certification_date_col_editor", lang)]
-                            new_cert_date_str = new_cert_date_obj.isoformat() if isinstance(new_cert_date_obj, date) else None
-                            new_lifras_id = edited_row[_("lifras_id_col_editor", lang)].strip(); new_anonymize_status = edited_row[_("anonymize_results_col_editor", lang)]
-                            if not new_name: st.error(f"Freediver name cannot be empty (row {index + 1})."); continue 
-                            other_original_names = [name for name in all_known_users_list if name != original_name]
-                            if new_name != original_name and new_name in other_original_names: st.error(_("freediver_name_conflict_error", lang, new_name=new_name)); continue 
-                            profile_data_to_update = temp_user_profiles.get(original_name, {})
-                            name_changed = original_name != new_name; cert_changed = profile_data_to_update.get("certification") != new_certification
-                            cert_date_changed = profile_data_to_update.get("certification_date") != new_cert_date_str; lifras_id_changed = profile_data_to_update.get("lifras_id", "") != new_lifras_id
-                            anonymize_changed = profile_data_to_update.get("anonymize_results", False) != new_anonymize_status
-                            if name_changed or cert_changed or cert_date_changed or lifras_id_changed or anonymize_changed:
-                                changes_made_freedivers = True 
+                
+                st.subheader(_("edit_freedivers_header", lang))
+
+                freedivers_data_for_editor = [] 
+                for user_name in all_known_users_list:
+                    profile = user_profiles.get(user_name, {}); certification = profile.get("certification", _("no_certification_option", lang)); cert_date_str = profile.get("certification_date"); cert_date_obj = None
+                    if cert_date_str: 
+                        try: cert_date_obj = date.fromisoformat(cert_date_str)
+                        except (ValueError, TypeError): pass
+                    lifras_id = profile.get("lifras_id", ""); anonymize = profile.get("anonymize_results", False)
+                    user_pbs_display = {}
+                    for disc_key in discipline_keys:
+                        user_disc_records = [r for r in all_records_loaded if r['user'] == user_name and r['discipline'] == disc_key and r.get('parsed_value') is not None]
+                        if user_disc_records:
+                            best_record = min(user_disc_records, key=lambda x: x['parsed_value']) if disc_key == "16x25m Speed Endurance" else max(user_disc_records, key=lambda x: x['parsed_value'])
+                            user_pbs_display[disc_key] = format_seconds_to_static_time(best_record['parsed_value']) if is_time_based_discipline(disc_key) else f"{best_record['parsed_value']}m"
+                        else: user_pbs_display[disc_key] = "N/A"
+                    freedivers_data_for_editor.append({ 
+                        _("original_name_col_editor_hidden", lang): user_name, _("freediver_name_col_editor", lang): user_name, _("certification_col_editor", lang): certification, 
+                        _("certification_date_col_editor", lang): cert_date_obj, _("lifras_id_col_editor", lang): lifras_id, _("anonymize_results_col_editor", lang): anonymize,
+                        _("pb_sta_col_editor", lang): user_pbs_display.get("Static Apnea (STA)", "N/A"), _("pb_dynbf_col_editor", lang): user_pbs_display.get("Dynamic Bi-fins (DYN-BF)", "N/A"),
+                        _("pb_depth_col_editor", lang): user_pbs_display.get("Depth (CWT/FIM)", "N/A"), _("pb_vwt_nlt_col_editor", lang): user_pbs_display.get("Profondeur (VWT/NLT)", "N/A"),
+                        _("pb_16x25_col_editor", lang): user_pbs_display.get("16x25m Speed Endurance", "N/A"),
+                    })
+                def sort_freedivers(freediver_entry): 
+                    cert_level = freediver_entry[_("certification_col_editor", lang)]; cert_date_val = freediver_entry[_("certification_date_col_editor", lang)]
+                    sortable_cert_date = cert_date_val if cert_date_val is not None else date.min
+                    return (cert_order_map.get(cert_level, len(cert_order)), sortable_cert_date)
+                sorted_freedivers_data = sorted(freedivers_data_for_editor, key=sort_freedivers) 
+                freedivers_df = pd.DataFrame(sorted_freedivers_data) 
+                cert_options_for_editor = [_("no_certification_option", lang)] + list(_("certification_levels", lang).keys())
+                column_config_freedivers = { 
+                    _("original_name_col_editor_hidden", lang): None,
+                    _("freediver_name_col_editor", lang): st.column_config.TextColumn(label=_("freediver_name_col_editor", lang), required=True), 
+                    _("certification_col_editor", lang): st.column_config.SelectboxColumn(label=_("certification_col_editor", lang), options=cert_options_for_editor, required=False),
+                    _("certification_date_col_editor", lang): st.column_config.DateColumn(label=_("certification_date_col_editor", lang), format="YYYY-MM-DD"),
+                    _("lifras_id_col_editor", lang): st.column_config.TextColumn(label=_("lifras_id_col_editor", lang)),
+                    _("anonymize_results_col_editor", lang): st.column_config.CheckboxColumn(label=_("anonymize_results_col_editor", lang), default=False),
+                    _("pb_sta_col_editor", lang): st.column_config.TextColumn(label=_("pb_sta_col_editor", lang), disabled=True),
+                    _("pb_dynbf_col_editor", lang): st.column_config.TextColumn(label=_("pb_dynbf_col_editor", lang), disabled=True),
+                    _("pb_depth_col_editor", lang): st.column_config.TextColumn(label=_("pb_depth_col_editor", lang), disabled=True),
+                    _("pb_vwt_nlt_col_editor", lang): st.column_config.TextColumn(label=_("pb_vwt_nlt_col_editor", lang), disabled=True),
+                    _("pb_16x25_col_editor", lang): st.column_config.TextColumn(label=_("pb_16x25_col_editor", lang), disabled=True),
+                }
+                edited_freedivers_df = st.data_editor(freedivers_df, column_config=column_config_freedivers, key="freedivers_data_editor", num_rows="dynamic", hide_index=True) 
+                
+                if st.button(_("save_freedivers_changes_button", lang), key="save_freedivers_changes"):
+                    changes_made = False
+                    
+                    # Get original and edited names
+                    original_names = set(freedivers_df[_("original_name_col_editor_hidden", lang)])
+                    edited_df_rows = edited_freedivers_df.to_dict(orient='records')
+                    edited_names_from_editor = {row[_("freediver_name_col_editor", lang)].strip() for row in edited_df_rows if row[_("freediver_name_col_editor", lang)] and str(row[_("freediver_name_col_editor", lang)]).strip()}
+
+                    # --- 1. Handle Deletions ---
+                    deleted_names = original_names - edited_names_from_editor
+                    if deleted_names:
+                        changes_made = True
+                        for name_to_delete in deleted_names:
+                            user_profiles.pop(name_to_delete, None)
+                            all_records_loaded = [r for r in all_records_loaded if r.get('user') != name_to_delete]
+                            instructor_feedback_loaded = [f for f in instructor_feedback_loaded if f.get('diver_name') != name_to_delete and f.get('instructor_name') != name_to_delete]
+                            if st.session_state.get('current_user') == name_to_delete:
+                                st.session_state.current_user = None
+
+                    # --- 2. Handle Additions and Updates ---
+                    name_update_map = {}
+                    current_names_in_db = set(user_profiles.keys())
+
+                    # Check for duplicate names in the editor before processing
+                    all_edited_names_list = [str(row[_("freediver_name_col_editor", lang)]).strip() for row in edited_df_rows if row[_("freediver_name_col_editor", lang)]]
+                    if len(all_edited_names_list) != len(set(all_edited_names_list)):
+                        st.error("Erreur : Des noms en double ont été trouvés dans le tableau. Veuillez vous assurer que tous les noms d'apnéistes sont uniques.")
+                        st.stop()
+
+                    for row in edited_df_rows:
+                        original_name = row[_("original_name_col_editor_hidden", lang)]
+                        new_name = str(row[_("freediver_name_col_editor", lang)]).strip()
+                        
+                        if not new_name:
+                            st.warning("Ligne avec un nom vide ignorée.")
+                            continue
+                            
+                        is_new_row = pd.isna(original_name)
+
+                        if is_new_row:
+                            if new_name in current_names_in_db:
+                                st.error(_("freediver_name_conflict_error", lang, new_name=new_name))
+                                continue
+                            
+                            changes_made = True
+                            user_profiles[new_name] = {
+                                "certification": row[_("certification_col_editor", lang)],
+                                "certification_date": row[_("certification_date_col_editor", lang)].isoformat() if pd.notna(row[_("certification_date_col_editor", lang)]) else None,
+                                "lifras_id": str(row[_("lifras_id_col_editor", lang)]).strip(),
+                                "anonymize_results": bool(row[_("anonymize_results_col_editor", lang)])
+                            }
+                            current_names_in_db.add(new_name)
+                        else:
+                            name_changed = (original_name != new_name)
+                            if name_changed and new_name in current_names_in_db:
+                                st.error(_("freediver_name_conflict_error", lang, new_name=new_name))
+                                continue
+
+                            profile = user_profiles.get(original_name, {})
+                            new_cert_date = row[_("certification_date_col_editor", lang)]
+                            new_cert_date_str = new_cert_date.isoformat() if pd.notna(new_cert_date) and isinstance(new_cert_date, date) else None
+                            
+                            if (name_changed or
+                                profile.get("certification") != row[_("certification_col_editor", lang)] or
+                                profile.get("certification_date") != new_cert_date_str or
+                                profile.get("lifras_id", "") != str(row[_("lifras_id_col_editor", lang)]).strip() or
+                                profile.get("anonymize_results", False) != bool(row[_("anonymize_results_col_editor", lang)])):
+                                
+                                changes_made = True
+                                profile_data = user_profiles.pop(original_name, {})
+                                profile_data.update({
+                                    "certification": row[_("certification_col_editor", lang)],
+                                    "certification_date": new_cert_date_str,
+                                    "lifras_id": str(row[_("lifras_id_col_editor", lang)]).strip(),
+                                    "anonymize_results": bool(row[_("anonymize_results_col_editor", lang)])
+                                })
+                                user_profiles[new_name] = profile_data
+                                
                                 if name_changed:
-                                    old_profile_data = temp_user_profiles.pop(original_name, {"certification": _("no_certification_option", lang), "certification_date": None, "lifras_id": "", "anonymize_results": False})
-                                    old_profile_data.update({'certification': new_certification, 'certification_date': new_cert_date_str, 'lifras_id': new_lifras_id, 'anonymize_results': new_anonymize_status})
-                                    temp_user_profiles[new_name] = old_profile_data
-                                    for record in temp_all_records:
-                                        if record['user'] == original_name: record['user'] = new_name
-                                    if st.session_state.get('current_user') == original_name: 
-                                        st.session_state.current_user = new_name
-                                        st.session_state.user_selectbox_in_freediver_form_key = new_name 
-                                else:
-                                    temp_user_profiles.setdefault(original_name, {}).update({'certification': new_certification, 'certification_date': new_cert_date_str, 'lifras_id': new_lifras_id, 'anonymize_results': new_anonymize_status})
-                        if changes_made_freedivers: 
-                            user_profiles.clear(); user_profiles.update(temp_user_profiles); all_records_loaded[:] = temp_all_records
-                            save_user_profiles(user_profiles); save_records(all_records_loaded)
-                            st.success(_("freedivers_updated_success", lang)); st.rerun() 
-                        else: st.info("No changes detected in freediver data.") 
-                    st.markdown("---"); st.subheader(_("freediver_certification_summary_header", lang)) 
-                    cert_counts = {}
-                    for profile in user_profiles.values(): cert_level = profile.get("certification", _("no_certification_option", lang)); cert_counts[cert_level] = cert_counts.get(cert_level, 0) + 1
-                    if not cert_counts: st.info(_("no_stats_data", lang))
-                    else: summary_data = [{_("certification_level_col", lang): level, _("count_col", lang): count} for level, count in cert_counts.items()]; summary_df = pd.DataFrame(summary_data); st.dataframe(summary_df, use_container_width=True, hide_index=True)
+                                    name_update_map[original_name] = new_name
+                                    current_names_in_db.discard(original_name)
+                                    current_names_in_db.add(new_name)
+
+                    if name_update_map:
+                        changes_made = True
+                        for record in all_records_loaded:
+                            if record.get('user') in name_update_map:
+                                record['user'] = name_update_map[record['user']]
+                        for feedback in instructor_feedback_loaded:
+                            if feedback.get('diver_name') in name_update_map:
+                                feedback['diver_name'] = name_update_map[feedback['diver_name']]
+                            if feedback.get('instructor_name') in name_update_map:
+                                feedback['instructor_name'] = name_update_map[feedback['instructor_name']]
+                        
+                        if st.session_state.get('current_user') in name_update_map:
+                            st.session_state.current_user = name_update_map[st.session_state.current_user]
+
+                    if changes_made:
+                        save_user_profiles(user_profiles)
+                        save_records(all_records_loaded)
+                        save_instructor_feedback(instructor_feedback_loaded)
+                        st.success(_("freedivers_updated_success", lang))
+                        st.rerun()
+                    else:
+                        st.info("Aucun changement détecté dans les données des apnéistes.")
+                
+                st.markdown("---"); st.subheader(_("freediver_certification_summary_header", lang)) 
+                cert_counts = {}
+                for profile in user_profiles.values(): cert_level = profile.get("certification", _("no_certification_option", lang)); cert_counts[cert_level] = cert_counts.get(cert_level, 0) + 1
+                if not cert_counts: st.info(_("no_stats_data", lang))
+                else: summary_data = [{_("certification_level_col", lang): level, _("count_col", lang): count} for level, count in cert_counts.items()]; summary_df = pd.DataFrame(summary_data); st.dataframe(summary_df, use_container_width=True, hide_index=True)
         
         if is_admin_view_authorized and main_training_log_tab_obj:
             with main_training_log_tab_obj:
@@ -1765,7 +1807,7 @@ def main():
                     else:
                         for entry in sorted(training_log_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True):
                             expander_title = f"**{entry.get('date', 'N/A')} | {entry.get('place', 'N/A')}**"
-                            with st.expander(expander_title,  expanded=True): st.markdown(entry.get('description', _("no_description_available", lang)))
+                            with st.expander(expander_title): st.markdown(entry.get('description', _("no_description_available", lang)))
                 with training_sub_tab2:
                     st.subheader(_("training_log_table_header", lang))
                     if not training_log_loaded: st.info(_("no_training_sessions_logged", lang))
@@ -1798,7 +1840,8 @@ def main():
         
         if is_admin_view_authorized and tab_performance_log:
             with tab_performance_log:
-                if not all_records_loaded: st.info("No performances logged yet in the system.")
+                if not all_records_loaded: 
+                    st.info("No performances logged yet in the system.")
                 else:
                     all_perf_display_list = []
                     for rec in sorted(all_records_loaded, key=lambda x: x.get('entry_date', '1900-01-01'), reverse=True): 

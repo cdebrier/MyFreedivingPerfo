@@ -70,5 +70,11 @@
         "date": "2025-06-10",
         "place": "Troisfontaines",
         "description": "Sortie à Troisfontaines pour permettre à ceux qui en ont beson de faire des sorties."
+    },
+    {
+        "id": "8b779d78e63d4ceb9d8f4554423ea573",
+        "date": "2025-04-08",
+        "place": "Rixensart",
+        "description": "16x25m"
     }
 ]

@@ -6,7 +6,7 @@
         "original_performance_str": "43",
         "parsed_value": 43,
         "event_date": "2025-05-17",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-05-17",
         "linked_training_session_id": null
     },
@@ -17,7 +17,7 @@
         "original_performance_str": "50",
         "parsed_value": 50,
         "event_date": "2025-05-28",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-05-28",
         "linked_training_session_id": null
     },
@@ -28,9 +28,9 @@
         "original_performance_str": "7:47",
         "parsed_value": 467.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
-        "linked_training_session_id": null
+        "linked_training_session_id": "8b779d78e63d4ceb9d8f4554423ea573"
     },
     {
         "id": "5232e1d3dda04e80b16f6d99e19bc91a",
@@ -39,7 +39,7 @@
         "original_performance_str": "8:34",
         "parsed_value": 514.0,
         "event_date": "2025-01-14",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-01-14",
         "linked_training_session_id": null
     },
@@ -50,7 +50,7 @@
         "original_performance_str": "38",
         "parsed_value": 38,
         "event_date": "2025-05-13",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-05-13",
         "linked_training_session_id": null
     },
@@ -61,7 +61,7 @@
         "original_performance_str": "42",
         "parsed_value": 42,
         "event_date": "2025-05-14",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-05-14",
         "linked_training_session_id": null
     },
@@ -72,7 +72,7 @@
         "original_performance_str": "35",
         "parsed_value": 35,
         "event_date": "2025-05-12",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-05-12",
         "linked_training_session_id": null
     },
@@ -83,7 +83,7 @@
         "original_performance_str": "27",
         "parsed_value": 27,
         "event_date": "2025-05-11",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-05-11",
         "linked_training_session_id": null
     },
@@ -94,7 +94,7 @@
         "original_performance_str": "16",
         "parsed_value": 16,
         "event_date": "2025-05-10",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-05-10",
         "linked_training_session_id": null
     },
@@ -105,7 +105,7 @@
         "original_performance_str": "31",
         "parsed_value": 31,
         "event_date": "2025-05-09",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-05-09",
         "linked_training_session_id": null
     },
@@ -116,7 +116,7 @@
         "original_performance_str": "28",
         "parsed_value": 28,
         "event_date": "2025-01-07",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-01-07",
         "linked_training_session_id": null
     },
@@ -127,7 +127,7 @@
         "original_performance_str": "05:00",
         "parsed_value": 300.0,
         "event_date": "2024-10-22",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2024-10-22",
         "linked_training_session_id": null
     },
@@ -138,7 +138,7 @@
         "original_performance_str": "5:10",
         "parsed_value": 310.0,
         "event_date": "2024-01-16",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2024-01-16",
         "linked_training_session_id": null
     },
@@ -149,7 +149,7 @@
         "original_performance_str": "75",
         "parsed_value": 75,
         "event_date": "2024-01-28",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2024-01-28",
         "linked_training_session_id": null
     },
@@ -160,7 +160,7 @@
         "original_performance_str": "85",
         "parsed_value": 85,
         "event_date": "2024-02-18",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2024-02-18",
         "linked_training_session_id": null
     },
@@ -171,7 +171,7 @@
         "original_performance_str": "5:15",
         "parsed_value": 315.0,
         "event_date": "2024-10-29",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2024-10-29",
         "linked_training_session_id": null
     },
@@ -182,7 +182,7 @@
         "original_performance_str": "7:29",
         "parsed_value": 449.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -193,7 +193,7 @@
         "original_performance_str": "50",
         "parsed_value": 50,
         "event_date": "2025-05-16",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-05-16",
         "linked_training_session_id": null
     },
@@ -204,7 +204,7 @@
         "original_performance_str": "07:48",
         "parsed_value": 468.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -215,7 +215,7 @@
         "original_performance_str": "08:20",
         "parsed_value": 500.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -226,7 +226,7 @@
         "original_performance_str": "08:38",
         "parsed_value": 518.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -237,7 +237,7 @@
         "original_performance_str": "09:31",
         "parsed_value": 571.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -248,7 +248,7 @@
         "original_performance_str": "09:47",
         "parsed_value": 587.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -259,7 +259,7 @@
         "original_performance_str": "10:00",
         "parsed_value": 600.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -270,7 +270,7 @@
         "original_performance_str": "10:34",
         "parsed_value": 634.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -281,7 +281,7 @@
         "original_performance_str": "10:45",
         "parsed_value": 645.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -292,7 +292,7 @@
         "original_performance_str": "11:37",
         "parsed_value": 697.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -303,7 +303,7 @@
         "original_performance_str": "12:26",
         "parsed_value": 746.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -314,7 +314,7 @@
         "original_performance_str": "12:30",
         "parsed_value": 750.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -325,7 +325,7 @@
         "original_performance_str": "12:32",
         "parsed_value": 752.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -336,7 +336,7 @@
         "original_performance_str": "12:35",
         "parsed_value": 755.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -347,7 +347,7 @@
         "original_performance_str": "12:46",
         "parsed_value": 766.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -358,7 +358,7 @@
         "original_performance_str": "13:07",
         "parsed_value": 787.0,
         "event_date": "2025-04-08",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-08",
         "linked_training_session_id": null
     },
@@ -369,7 +369,7 @@
         "original_performance_str": "47",
         "parsed_value": 47,
         "event_date": "2023-10-27",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2023-10-27",
         "linked_training_session_id": null
     },
@@ -380,7 +380,7 @@
         "original_performance_str": "100",
         "parsed_value": 100,
         "event_date": "2025-03-25",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-03-25",
         "linked_training_session_id": null
     },
@@ -391,7 +391,7 @@
         "original_performance_str": "30",
         "parsed_value": 30,
         "event_date": "2025-01-02",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-01-02",
         "linked_training_session_id": null
     },
@@ -402,7 +402,7 @@
         "original_performance_str": "23",
         "parsed_value": 23,
         "event_date": "2024-11-09",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2024-11-09",
         "linked_training_session_id": null
     },
@@ -413,7 +413,7 @@
         "original_performance_str": "27",
         "parsed_value": 27,
         "event_date": "2024-11-02",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2024-11-02",
         "linked_training_session_id": null
     },
@@ -424,7 +424,7 @@
         "original_performance_str": "05:04",
         "parsed_value": 304.0,
         "event_date": "2024-10-22",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2024-10-22",
         "linked_training_session_id": null
     },
@@ -435,7 +435,7 @@
         "original_performance_str": "04:04",
         "parsed_value": 244.0,
         "event_date": "2024-10-15",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2024-10-15",
         "linked_training_session_id": null
     },
@@ -446,7 +446,7 @@
         "original_performance_str": "32",
         "parsed_value": 32,
         "event_date": "2024-08-27",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2024-08-27",
         "linked_training_session_id": null
     },
@@ -457,7 +457,7 @@
         "original_performance_str": "26",
         "parsed_value": 26,
         "event_date": "2024-08-15",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2024-08-15",
         "linked_training_session_id": null
     },
@@ -468,7 +468,7 @@
         "original_performance_str": "32",
         "parsed_value": 32,
         "event_date": "2024-08-06",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2024-08-06",
         "linked_training_session_id": null
     },
@@ -479,7 +479,7 @@
         "original_performance_str": "32",
         "parsed_value": 32,
         "event_date": "2024-07-30",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2024-07-30",
         "linked_training_session_id": null
     },
@@ -490,7 +490,7 @@
         "original_performance_str": "04:46",
         "parsed_value": 286.0,
         "event_date": "2024-07-27",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2024-07-27",
         "linked_training_session_id": null
     },
@@ -501,7 +501,7 @@
         "original_performance_str": "03:43",
         "parsed_value": 223.0,
         "event_date": "2025-04-15",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-15",
         "linked_training_session_id": null
     },
@@ -512,7 +512,7 @@
         "original_performance_str": "04:04",
         "parsed_value": 244.0,
         "event_date": "2025-04-04",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-04-04",
         "linked_training_session_id": null
     },
@@ -523,7 +523,7 @@
         "original_performance_str": "40",
         "parsed_value": 40,
         "event_date": "2025-05-15",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-05-15",
         "linked_training_session_id": null
     },
@@ -534,7 +534,7 @@
         "original_performance_str": "100",
         "parsed_value": 100,
         "event_date": "2025-01-01",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-01-01",
         "linked_training_session_id": null
     },
@@ -545,7 +545,7 @@
         "original_performance_str": "05:40",
         "parsed_value": 340.0,
         "event_date": "2025-01-01",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-01-01",
         "linked_training_session_id": null
     },
@@ -556,7 +556,7 @@
         "original_performance_str": "22",
         "parsed_value": 22,
         "event_date": "2025-01-03",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-01-03",
         "linked_training_session_id": null
     },
@@ -567,7 +567,7 @@
         "original_performance_str": "20",
         "parsed_value": 20,
         "event_date": "2025-01-03",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-01-03",
         "linked_training_session_id": null
     },
@@ -578,7 +578,7 @@
         "original_performance_str": "38",
         "parsed_value": 38,
         "event_date": "2023-10-24",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2023-10-24",
         "linked_training_session_id": null
     },
@@ -589,7 +589,7 @@
         "original_performance_str": "4:00",
         "parsed_value": 240.0,
         "event_date": "2025-06-04",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-06-04",
         "linked_training_session_id": null
     },
@@ -600,7 +600,7 @@
         "original_performance_str": "0",
         "parsed_value": 0,
         "event_date": "2025-06-05",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-06-05",
         "linked_training_session_id": null
     },
@@ -611,7 +611,7 @@
         "original_performance_str": "0",
         "parsed_value": 0,
         "event_date": "2025-06-05",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2025-06-05",
         "linked_training_session_id": null
     },
@@ -622,7 +622,7 @@
         "original_performance_str": "30",
         "parsed_value": 30,
         "event_date": "2024-12-10",
-        "event_name": "General Training / Unknown",
+        "event_name": "Unspecified Training",
         "entry_date": "2024-12-10",
         "linked_training_session_id": null
     },
