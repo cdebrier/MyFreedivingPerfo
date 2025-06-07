@@ -1,8 +1,50 @@
 {
+    "Alain K.": {
+        "certification": "A1",
+        "certification_date": "2025-03-27",
+        "lifras_id": "55949",
+        "anonymize_results": true
+    },
+    "Arnaud B.": {
+        "certification": "A2",
+        "certification_date": "2025-03-27",
+        "lifras_id": "56003",
+        "anonymize_results": true
+    },
+    "Aurélie B.": {
+        "certification": "A1",
+        "certification_date": "2022-04-08",
+        "lifras_id": "741",
+        "anonymize_results": true
+    },
+    "Bernard V.H.": {
+        "certification": "A1",
+        "certification_date": null,
+        "lifras_id": "",
+        "anonymize_results": true
+    },
     "Charles D.": {
         "certification": "A1",
         "certification_date": "2025-03-27",
         "lifras_id": "56430",
+        "anonymize_results": true
+    },
+    "Charles D.B.": {
+        "certification": "S4",
+        "certification_date": "2024-05-13",
+        "lifras_id": "54041",
+        "anonymize_results": false
+    },
+    "Charles D.T.": {
+        "certification": "A1",
+        "certification_date": null,
+        "lifras_id": "",
+        "anonymize_results": true
+    },
+    "Donald S.": {
+        "certification": "A2",
+        "certification_date": null,
+        "lifras_id": "",
         "anonymize_results": true
     },
     "Déborah L.": {
@@ -11,22 +53,10 @@
         "lifras_id": "24606",
         "anonymize_results": true
     },
-    "Lauranne P.": {
-        "certification": "A1",
-        "certification_date": "2025-03-27",
-        "lifras_id": "56374",
-        "anonymize_results": true
-    },
-    "Martin V.": {
-        "certification": "A1",
-        "certification_date": "2025-02-14",
-        "lifras_id": "56405",
-        "anonymize_results": true
-    },
-    "Arnaud B.": {
-        "certification": "A2",
-        "certification_date": "2025-03-27",
-        "lifras_id": "56003",
+    "Emmanuel H.": {
+        "certification": "NB",
+        "certification_date": null,
+        "lifras_id": "",
         "anonymize_results": true
     },
     "Eric M.": {
@@ -41,22 +71,28 @@
         "lifras_id": "55986",
         "anonymize_results": true
     },
-    "Philippe K.": {
-        "certification": "I1",
-        "certification_date": "2023-12-01",
-        "lifras_id": "10194",
-        "anonymize_results": true
-    },
-    "Aurélie B.": {
-        "certification": "A1",
-        "certification_date": "2022-04-08",
-        "lifras_id": "741",
-        "anonymize_results": true
-    },
     "François B.": {
         "certification": "A1",
         "certification_date": "2015-07-23",
         "lifras_id": "43568",
+        "anonymize_results": true
+    },
+    "Gregory D.": {
+        "certification": "A3",
+        "certification_date": "2024-07-02",
+        "lifras_id": "54925",
+        "anonymize_results": true
+    },
+    "Grégoire L.": {
+        "certification": "A2",
+        "certification_date": null,
+        "lifras_id": "",
+        "anonymize_results": true
+    },
+    "Lauranne P.": {
+        "certification": "A1",
+        "certification_date": "2025-03-27",
+        "lifras_id": "56374",
         "anonymize_results": true
     },
     "Luc D.": {
@@ -65,22 +101,16 @@
         "lifras_id": "53721",
         "anonymize_results": true
     },
+    "Martin V.": {
+        "certification": "A1",
+        "certification_date": "2025-02-14",
+        "lifras_id": "56405",
+        "anonymize_results": true
+    },
     "Michel F.": {
         "certification": "A1",
         "certification_date": "2022-12-05",
         "lifras_id": "7485",
-        "anonymize_results": true
-    },
-    "Alain K.": {
-        "certification": "A1",
-        "certification_date": "2025-03-27",
-        "lifras_id": "55949",
-        "anonymize_results": true
-    },
-    "Xavier M.": {
-        "certification": "A1",
-        "certification_date": "2024-06-13",
-        "lifras_id": "49743",
         "anonymize_results": true
     },
     "Perrine M.": {
@@ -95,16 +125,10 @@
         "lifras_id": "30689",
         "anonymize_results": true
     },
-    "Yves G.": {
-        "certification": "A2",
-        "certification_date": "2022-03-04",
-        "lifras_id": "29525",
-        "anonymize_results": true
-    },
-    "Gregory D.": {
-        "certification": "A3",
-        "certification_date": "2024-07-02",
-        "lifras_id": "54925",
+    "Philippe K.": {
+        "certification": "I1",
+        "certification_date": "2023-12-01",
+        "lifras_id": "10194",
         "anonymize_results": true
     },
     "Rémy L.": {
@@ -113,58 +137,34 @@
         "lifras_id": "43187",
         "anonymize_results": true
     },
-    "Vincent C.": {
-        "certification": "S4",
-        "certification_date": "2023-12-01",
-        "lifras_id": "38397",
-        "anonymize_results": true
-    },
-    "Charles D.B.": {
-        "certification": "S4",
-        "certification_date": "2024-05-13",
-        "lifras_id": "54041",
-        "anonymize_results": false
-    },
-    "Grégoire L.": {
-        "certification": "A2",
-        "certification_date": null,
-        "lifras_id": "",
-        "anonymize_results": true
-    },
-    "Donald S.": {
-        "certification": "A2",
-        "certification_date": null,
-        "lifras_id": "",
-        "anonymize_results": true
-    },
-    "Emmanuel H.": {
-        "certification": "NB",
-        "certification_date": null,
-        "lifras_id": "",
-        "anonymize_results": true
-    },
     "Sébastien L.": {
         "certification": "NB",
         "certification_date": null,
         "lifras_id": "",
         "anonymize_results": true
     },
-    "Charles D.T.": {
-        "certification": "Not Specified",
-        "certification_date": null,
-        "lifras_id": "",
-        "anonymize_results": true
-    },
-    "Bernard V.H.": {
-        "certification": "Not Specified",
-        "certification_date": null,
-        "lifras_id": "",
-        "anonymize_results": true
-    },
     "Théo G.": {
-        "certification": "Not Specified",
+        "certification": "NB",
         "certification_date": null,
         "lifras_id": "",
+        "anonymize_results": true
+    },
+    "Vincent C.": {
+        "certification": "S4",
+        "certification_date": "2023-12-01",
+        "lifras_id": "38397",
+        "anonymize_results": true
+    },
+    "Xavier M.": {
+        "certification": "A1",
+        "certification_date": "2024-06-13",
+        "lifras_id": "49743",
+        "anonymize_results": true
+    },
+    "Yves G.": {
+        "certification": "A2",
+        "certification_date": "2022-03-04",
+        "lifras_id": "29525",
         "anonymize_results": true
     }
 }

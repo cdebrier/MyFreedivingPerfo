@@ -36,6 +36,15 @@
         "entry_date": "2025-06-07"
     },
     {
+        "id": "768fba25c1d74d24a389481d4b01c040",
+        "user": "Charles D.B.",
+        "discipline": "Dynamic No-fins (DNF)",
+        "linked_training_session_id": "62cc91c3eaf941d1b5d1b90f6bbcca8d",
+        "original_performance_str": "50",
+        "parsed_value": 50,
+        "entry_date": "2025-06-07"
+    },
+    {
         "id": "165a1f01688949fcb54637c51e0540f5",
         "user": "Charles D.B.",
         "discipline": "Static Apnea (STA)",
@@ -309,7 +318,7 @@
         "id": "f385f3514dd74c429f89e07a96587102",
         "user": "Grégoire L.",
         "discipline": "Dynamic Bi-fins (DYN-BF)",
-        "linked_training_session_id": null,
+        "linked_training_session_id": "874fa9faea9b410a99481a370cb86c9b",
         "original_performance_str": "100",
         "parsed_value": 100,
         "entry_date": "2025-03-25"
