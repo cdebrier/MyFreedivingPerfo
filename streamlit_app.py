@@ -559,7 +559,7 @@ TRANSLATIONS = {
         "freedivers_updated_success": "Vrijduikergegevens succesvol bijgewerkt.", 
         "freediver_name_conflict_error": "Fout: Naam '{new_name}' is al in gebruik door een andere vrijduiker. Kies een unieke naam.", 
         "original_name_col_editor_hidden": "originele_naam",
-        "freediver_certification_summary_header": "� Vrijduikers per Certificatieniveau", 
+        "freediver_certification_summary_header": "🔢 Vrijduikers per Certificatieniveau", 
         "count_col": "Aantal",
         "training_log_tab_title": "📅 Trainingslogboek",
         "log_training_header_sidebar": "🏋️ Nieuwe Trainingssessie Loggen",
@@ -1175,7 +1175,7 @@ def main():
                         st.rerun()
                         
     # --- Sidebar: Language Selector (Moved to bottom) ---
-    st.sidebar.markdown("") 
+    st.sidebar.markdown("---") 
     language_options = {"English": "en", "Français": "fr", "Nederlands": "nl"}
     current_lang_display_name = [k_disp for k_disp, v_code in language_options.items() if v_code == lang][0]
     
@@ -1245,7 +1245,7 @@ def main():
                             elif val_tab == "N/A": 
                                 st.caption(_("no_record_yet_caption", lang))
                 
-                st.markdown("")
+                st.markdown("---")
                 
                 sub_tab_titles_user = [_("disciplines." + key, lang) for key in discipline_keys]
                 sub_tabs_user = st.tabs(sub_tab_titles_user)
@@ -1373,7 +1373,7 @@ def main():
                             elif val_club == "N/A":
                                 st.caption(_("no_record_yet_caption", lang))
 
-                st.markdown("")
+                st.markdown("---")
                 
                 ranking_sub_tab_titles = [_("disciplines." + key, lang) for key in discipline_keys]
                 ranking_sub_tabs = st.tabs(ranking_sub_tab_titles)
@@ -1564,39 +1564,42 @@ def main():
                         )
                         if st.button(_("save_training_log_changes_button", lang)):
                             changes_made = False
-                            temp_training_log = []
-                            deleted_ids = []
+                            new_training_log = []
+                            original_logs_dict = {log['id']: log for log in training_log_loaded}
+                            edited_ids = set()
 
                             for row in edited_training_df.to_dict('records'):
+                                log_id = row.get('id')
+                                edited_ids.add(log_id)
+                                
                                 if row[_("history_delete_col_editor", lang)]:
-                                    if row['id']:
-                                        deleted_ids.append(row['id'])
-                                    changes_made = True
                                     continue
                                 
                                 log_date = row[_("training_date_label", lang)]
-                                temp_training_log.append({
-                                    "id": row.get('id') or uuid.uuid4().hex,
-                                    "date": log_date.isoformat() if isinstance(log_date, date) else str(log_date),
-                                    "place": row[_("training_place_label", lang)],
-                                    "description": row[_("training_description_label", lang)]
-                                })
-                            
-                            if len(deleted_ids) > 0 or len(temp_training_log) != len(training_log_loaded):
+                                current_row_data = {
+                                    "id": log_id or uuid.uuid4().hex,
+                                    "date": log_date.isoformat() if isinstance(log_date, (date, datetime)) else str(log_date),
+                                    "place": str(row[_("training_place_label", lang)]).strip(),
+                                    "description": str(row[_("training_description_label", lang)]).strip()
+                                }
+                                new_training_log.append(current_row_data)
+
+                            # Simple comparison to check for any changes
+                            if json.dumps(training_log_loaded, sort_keys=True) != json.dumps(new_training_log, sort_keys=True):
                                 changes_made = True
-                            
+
                             if changes_made:
+                                deleted_ids = set(original_logs_dict.keys()) - {log['id'] for log in new_training_log}
                                 for rec in all_records_loaded:
                                     if rec.get('linked_training_session_id') in deleted_ids:
                                         rec['linked_training_session_id'] = None
                                 
-                                save_training_log(temp_training_log)
+                                save_training_log(new_training_log)
                                 save_records(all_records_loaded)
                                 st.success(_("training_log_updated_success", lang))
                                 st.rerun()
                             else:
                                 st.info("No changes detected in the training log.")
-
             with tab_objects_main[admin_tabs_start_index + 2]: # Performance Log
                 overview_sub_tab, edit_sub_tab = st.tabs([
                     _("performances_overview_tab_label", lang),
