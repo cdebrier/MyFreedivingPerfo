@@ -1236,12 +1236,15 @@ def main():
                         if not history_for_editor_raw:
                             st.caption(_("no_history_display", lang))
                         else:
+                            training_session_options = {ts.get('id'): f"{ts.get('date')} - {ts.get('place', 'N/A')}" for ts in sorted(training_log_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True)}
+                            session_display_to_id = {v: k for k, v in training_session_options.items()}
+                            
                             history_for_editor_display = []
                             for rec in sorted(history_for_editor_raw, key=lambda x: get_training_session_details(x.get('linked_training_session_id'), training_log_loaded).get('event_date') or '1900-01-01', reverse=True):
-                                session_details = get_training_session_details(rec.get('linked_training_session_id'), training_log_loaded)
+                                session_display = training_session_options.get(rec.get("linked_training_session_id"), "N/A")
                                 history_for_editor_display.append({
                                     "id": rec.get("id"),
-                                    "Session": f"{session_details['event_date'] or 'N/A'} - {session_details['event_name']}",
+                                    _("link_training_session_label", lang): session_display,
                                     _("history_performance_col", lang): rec.get("original_performance_str", ""),
                                     _("history_delete_col_editor", lang): False
                                 })
@@ -1250,7 +1253,7 @@ def main():
                                 pd.DataFrame(history_for_editor_display),
                                 column_config={
                                     "id": None,
-                                    "Session": st.column_config.TextColumn(label="Session", disabled=True),
+                                    _("link_training_session_label", lang): st.column_config.SelectboxColumn(options=list(training_session_options.values()), required=True),
                                     _("history_performance_col", lang): st.column_config.TextColumn(label=_("history_performance_col", lang), required=True),
                                     _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(label=_("history_delete_col_editor", lang))
                                 },
@@ -1260,29 +1263,34 @@ def main():
                             if st.button(_("save_history_changes_button", lang), key=f"save_hist_{disc_key_sub_tab_user}"):
                                 changes_made = False
                                 records_to_keep = []
-                                for rec in all_records_loaded:
-                                    if rec['user'] != current_user or rec['discipline'] != disc_key_sub_tab_user:
-                                        records_to_keep.append(rec)
+                                records_to_process = [r for r in all_records_loaded if not(r['user'] == current_user and r['discipline'] == disc_key_sub_tab_user)]
+                                
+                                for row in edited_df.to_dict('records'):
+                                    if row[_("history_delete_col_editor", lang)]:
+                                        changes_made = True
                                         continue
-                                    
-                                    # Find corresponding row in editor
-                                    edited_row = next((row for row in edited_df.to_dict('records') if row['id'] == rec['id']), None)
-                                    if edited_row is None or edited_row[_("history_delete_col_editor", lang)]:
-                                        changes_made = True # Record was deleted
-                                        continue
-                                    
-                                    # Check for updates
-                                    new_perf_str = str(edited_row[_("history_performance_col", lang)]).strip()
-                                    if rec.get('original_performance_str') != new_perf_str:
+
+                                    original_rec = next((r for r in history_for_editor_raw if r['id'] == row['id']), None)
+                                    if not original_rec: continue
+
+                                    new_perf_str = str(row[_("history_performance_col", lang)]).strip()
+                                    new_session_id = session_display_to_id.get(row[_("link_training_session_label", lang)])
+
+                                    if original_rec.get('original_performance_str') != new_perf_str or original_rec.get('linked_training_session_id') != new_session_id:
+                                        changes_made = True
                                         parsed_val = parse_static_time_to_seconds(new_perf_str, lang) if is_time_based_discipline(disc_key_sub_tab_user) else parse_distance_to_meters(new_perf_str, lang)
                                         if parsed_val is not None:
-                                            rec['original_performance_str'] = new_perf_str
-                                            rec['parsed_value'] = parsed_val
-                                            changes_made = True
-                                    records_to_keep.append(rec)
+                                            original_rec['original_performance_str'] = new_perf_str
+                                            original_rec['parsed_value'] = parsed_val
+                                            original_rec['linked_training_session_id'] = new_session_id
+                                        else:
+                                            st.error(f"Invalid performance format for '{new_perf_str}'")
+                                    
+                                    records_to_process.append(original_rec)
+
 
                                 if changes_made:
-                                    save_records(records_to_keep)
+                                    save_records(records_to_process)
                                     st.success(_("history_updated_success", lang))
                                     st.rerun()
                                 else:
