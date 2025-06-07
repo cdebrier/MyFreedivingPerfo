@@ -88,6 +88,7 @@ TRANSLATIONS = {
         "disciplines": {
             "Static Apnea (STA)": "Static Apnea (STA)",
             "Dynamic Bi-fins (DYN-BF)": "Dynamic Bi-fins (DYN-BF)",
+            "Dynamic No-fins (DNF)": "Dynamic No-fins (DNF)",
             "Depth (CWT/FIM)": "Depth (CWT/FIM)",
             "Profondeur (VWT/NLT)": "Depth (VWT/NLT)",
             "16x25m Speed Endurance": "16x25m Speed Endurance"
@@ -147,6 +148,7 @@ TRANSLATIONS = {
         "lifras_id_col_editor": "LIFRAS ID",
         "pb_sta_col_editor": "PB STA",
         "pb_dynbf_col_editor": "PB DYN-BF",
+        "pb_dnf_col_editor": "PB DNF",
         "pb_depth_col_editor": "PB Depth",
         "pb_vwt_nlt_col_editor": "PB Depth (VWT/NLT)",
         "pb_16x25_col_editor": "PB 16x25m",
@@ -272,6 +274,7 @@ TRANSLATIONS = {
         "disciplines": {
             "Static Apnea (STA)": "Apnée Statique (STA)",
             "Dynamic Bi-fins (DYN-BF)": "Dynamique Bi-palmes (DYN-BF)",
+            "Dynamic No-fins (DNF)": "Dynamique Sans Palmes (DNF)",
             "Depth (CWT/FIM)": "Profondeur (CWT/FIM)",
             "Profondeur (VWT/NLT)": "Profondeur (VWT/NLT)",
             "16x25m Speed Endurance": "16x25m Vitesse Endurance"
@@ -331,6 +334,7 @@ TRANSLATIONS = {
         "lifras_id_col_editor": "ID LIFRAS",
         "pb_sta_col_editor": "RP STA",
         "pb_dynbf_col_editor": "RP DYN-BF",
+        "pb_dnf_col_editor": "RP DNF",
         "pb_depth_col_editor": "RP Profondeur",
         "pb_vwt_nlt_col_editor": "RP Prof. (VWT/NLT)",
         "pb_16x25_col_editor": "RP 16x25m",
@@ -403,7 +407,7 @@ TRANSLATIONS = {
         "add_new_user_option": "✨ Nieuwe vrijduiker toevoegen...", 
         "existing_user_selected": "Vrijduiker **{user}** bevestigd.", 
         "log_performance_header": "✏️ Log Nieuwe Prestatie",
-        "profile_header_sidebar": "� Vrijduiker Profiel", 
+        "profile_header_sidebar": "🪪 Vrijduiker Profiel", 
         "select_user_first_warning": "Bevestig of voeg eerst een vrijduiker toe om prestaties te loggen.", 
         "logging_for": "Loggen voor: **{user}**",
         "link_training_session_label": "Trainingssessie",
@@ -456,6 +460,7 @@ TRANSLATIONS = {
         "disciplines": {
             "Static Apnea (STA)": "Statische Apneu (STA)",
             "Dynamic Bi-fins (DYN-BF)": "Dynamisch Bi-vinnen (DYN-BF)",
+            "Dynamic No-fins (DNF)": "Dynamisch Zonder Vinnen (DNF)",
             "Depth (CWT/FIM)": "Diepte (CWT/FIM)",
             "Profondeur (VWT/NLT)": "Diepte (VWT/NLT)",
             "16x25m Speed Endurance": "16x25m Snelheid Uithouding"
@@ -515,6 +520,7 @@ TRANSLATIONS = {
         "lifras_id_col_editor": "LIFRAS ID",
         "pb_sta_col_editor": "PR STA",
         "pb_dynbf_col_editor": "PR DYN-BF",
+        "pb_dnf_col_editor": "PR DNF",
         "pb_depth_col_editor": "PR Diepte",
         "pb_vwt_nlt_col_editor": "PR Diepte (VWT/NLT)",
         "pb_16x25_col_editor": "PR 16x25m",
@@ -823,7 +829,7 @@ def main():
     user_profiles = load_user_profiles()
     instructor_feedback_loaded = load_instructor_feedback()
 
-    discipline_keys = ["Dynamic Bi-fins (DYN-BF)", "Static Apnea (STA)", "Depth (CWT/FIM)", "Profondeur (VWT/NLT)", "16x25m Speed Endurance"]
+    discipline_keys = ["Dynamic Bi-fins (DYN-BF)", "Static Apnea (STA)", "Dynamic No-fins (DNF)", "Depth (CWT/FIM)", "Profondeur (VWT/NLT)", "16x25m Speed Endurance"]
     translated_disciplines_for_display = [_("disciplines." + key, lang) for key in discipline_keys]
 
     # --- Sidebar: User Management ---
@@ -1021,7 +1027,7 @@ def main():
                 performance_help_text_perf_form = ""
                 if is_time_based_discipline(log_discipline_original_key_perf_form):
                     performance_help_text_perf_form = _("sta_help", lang)
-                elif log_discipline_original_key_perf_form in ["Dynamic Bi-fins (DYN-BF)", "Depth (CWT/FIM)", "Profondeur (VWT/NLT)"]:
+                elif log_discipline_original_key_perf_form in ["Dynamic Bi-fins (DYN-BF)", "Dynamic No-fins (DNF)", "Depth (CWT/FIM)", "Profondeur (VWT/NLT)"]:
                     performance_help_text_perf_form = _("dyn_depth_help", lang)
 
                 st.text_input(
@@ -1262,7 +1268,6 @@ def main():
 
                             if st.button(_("save_history_changes_button", lang), key=f"save_hist_{disc_key_sub_tab_user}"):
                                 changes_made = False
-                                records_to_keep = []
                                 records_to_process = [r for r in all_records_loaded if not(r['user'] == current_user and r['discipline'] == disc_key_sub_tab_user)]
                                 
                                 for row in edited_df.to_dict('records'):
