@@ -93,6 +93,10 @@ TRANSLATIONS = {
             "Profondeur (VWT/NLT)": "Depth (VWT/NLT)",
             "16x25m Speed Endurance": "16x25m Speed Endurance"
         },
+        "months": {
+            "January": "January", "February": "February", "March": "March", "April": "April", "May": "May", "June": "June", 
+            "July": "July", "August": "August", "September": "September", "October": "October", "November": "November", "December": "December"
+        },
         "club_performances_overview_tab_label": "🏆 Club Performances",
         "select_discipline_for_ranking": "Select discipline for ranking:",
         "podium_header": "🏆 Podium",
@@ -207,6 +211,12 @@ TRANSLATIONS = {
         "all_sessions_option": "All Sessions",
         "all_instructors_option": "All Instructors",
         "all_disciplines_option": "All Disciplines",
+        "filter_by_year_label": "Filter by Year:",
+        "filter_by_month_label": "Filter by Month:",
+        "filter_by_place_label": "Filter by Place:",
+        "all_years_option": "All Years",
+        "all_months_option": "All Months",
+        "all_places_option": "All Places",
         "no_feedbacks_match_filters": "No feedbacks match the current filters.",
         "enter_access_code_prompt": "Enter access code:",
         "unlock_button_label": "Unlock Privileged Access",
@@ -282,6 +292,10 @@ TRANSLATIONS = {
             "Depth (CWT/FIM)": "Profondeur (CWT/FIM)",
             "Profondeur (VWT/NLT)": "Profondeur (VWT/NLT)",
             "16x25m Speed Endurance": "16x25m Vitesse Endurance"
+        },
+        "months": {
+            "January": "Janvier", "February": "Février", "March": "Mars", "April": "Avril", "May": "Mai", "June": "Juin", 
+            "July": "Juillet", "August": "Août", "September": "Septembre", "October": "Octobre", "November": "Novembre", "December": "Décembre"
         },
         "club_performances_overview_tab_label": "🏆 Performances du Club",
         "select_discipline_for_ranking": "Sélectionnez la discipline pour le classement :",
@@ -397,6 +411,12 @@ TRANSLATIONS = {
         "all_sessions_option": "Toutes les Sessions",
         "all_instructors_option": "Tous les Instructeurs",
         "all_disciplines_option": "Toutes les Disciplines",
+        "filter_by_year_label": "Filtrer par Année :",
+        "filter_by_month_label": "Filtrer par Mois :",
+        "filter_by_place_label": "Filtrer par Lieu :",
+        "all_years_option": "Toutes les Années",
+        "all_months_option": "Tous les Mois",
+        "all_places_option": "Tous les Lieux",
         "no_feedbacks_match_filters": "Aucun feedback ne correspond aux filtres actuels.",
         "enter_access_code_prompt": "Entrez le code d'accès :",
         "unlock_button_label": "Déverrouiller Accès Privilégié",
@@ -473,6 +493,10 @@ TRANSLATIONS = {
             "Profondeur (VWT/NLT)": "Diepte (VWT/NLT)",
             "16x25m Speed Endurance": "16x25m Snelheid Uithouding"
         },
+        "months": {
+            "January": "Januari", "February": "Februari", "March": "Maart", "April": "April", "May": "Mei", "June": "Juni", 
+            "July": "Juli", "August": "Augustus", "September": "September", "October": "Oktober", "November": "November", "December": "December"
+        },
         "club_performances_overview_tab_label": "🏆 Clubprestaties",
         "select_discipline_for_ranking": "Selecteer discipline voor klassement:",
         "podium_header": "🏆 Podium",
@@ -535,7 +559,7 @@ TRANSLATIONS = {
         "freedivers_updated_success": "Vrijduikergegevens succesvol bijgewerkt.", 
         "freediver_name_conflict_error": "Fout: Naam '{new_name}' is al in gebruik door een andere vrijduiker. Kies een unieke naam.", 
         "original_name_col_editor_hidden": "originele_naam",
-        "freediver_certification_summary_header": "🔢 Vrijduikers per Certificatieniveau", 
+        "freediver_certification_summary_header": "� Vrijduikers per Certificatieniveau", 
         "count_col": "Aantal",
         "training_log_tab_title": "📅 Trainingslogboek",
         "log_training_header_sidebar": "🏋️ Nieuwe Trainingssessie Loggen",
@@ -586,6 +610,12 @@ TRANSLATIONS = {
         "all_sessions_option": "Alle Sessies",
         "all_instructors_option": "Alle Instructeurs",
         "all_disciplines_option": "Alle Disciplines",
+        "filter_by_year_label": "Filter op Jaar:",
+        "filter_by_month_label": "Filter op Maand:",
+        "filter_by_place_label": "Filter op Plaats:",
+        "all_years_option": "Alle Jaren",
+        "all_months_option": "Alle Maanden",
+        "all_places_option": "Alle Plaatsen",
         "no_feedbacks_match_filters": "Geen feedbacks komen overeen met de huidige filters.",
         "enter_access_code_prompt": "Voer toegangscode in:",
         "unlock_button_label": "Ontgrendel Bevoorrechte Toegang",
@@ -1145,7 +1175,7 @@ def main():
                         st.rerun()
                         
     # --- Sidebar: Language Selector (Moved to bottom) ---
-    st.sidebar.markdown("---") 
+    st.sidebar.markdown("") 
     language_options = {"English": "en", "Français": "fr", "Nederlands": "nl"}
     current_lang_display_name = [k_disp for k_disp, v_code in language_options.items() if v_code == lang][0]
     
@@ -1215,7 +1245,7 @@ def main():
                             elif val_tab == "N/A": 
                                 st.caption(_("no_record_yet_caption", lang))
                 
-                st.markdown("---")
+                st.markdown("")
                 
                 sub_tab_titles_user = [_("disciplines." + key, lang) for key in discipline_keys]
                 sub_tabs_user = st.tabs(sub_tab_titles_user)
@@ -1343,7 +1373,7 @@ def main():
                             elif val_club == "N/A":
                                 st.caption(_("no_record_yet_caption", lang))
 
-                st.markdown("---")
+                st.markdown("")
                 
                 ranking_sub_tab_titles = [_("disciplines." + key, lang) for key in discipline_keys]
                 ranking_sub_tabs = st.tabs(ranking_sub_tab_titles)
@@ -1475,10 +1505,40 @@ def main():
                     if not training_log_loaded:
                         st.info(_("no_training_sessions_logged", lang))
                     else:
-                        for entry in sorted(training_log_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True):
-                            expander_title = f"**{entry.get('date', 'N/A')} - {entry.get('place', 'N/A')}**"
-                            with st.expander(expander_title, expanded=True):
-                                st.markdown(entry.get('description', _("no_description_available", lang)))
+                        # --- Filters ---
+                        years = sorted(list(set(datetime.fromisoformat(entry['date']).year for entry in training_log_loaded if entry.get('date'))), reverse=True)
+                        places = sorted(list(set(entry['place'] for entry in training_log_loaded if entry.get('place'))))
+                        months_en = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+                        months_translated = [_("months." + m, lang) for m in months_en]
+                        
+                        col1, col2, col3 = st.columns(3)
+                        with col1:
+                            selected_year = st.selectbox(_("filter_by_year_label", lang), [_("all_years_option", lang)] + years, key="training_year_filter")
+                        with col2:
+                            selected_month_name = st.selectbox(_("filter_by_month_label", lang), [_("all_months_option", lang)] + months_translated, key="training_month_filter")
+                        with col3:
+                            selected_place = st.selectbox(_("filter_by_place_label", lang), [_("all_places_option", lang)] + places, key="training_place_filter")
+                        
+                        # --- Filtering logic ---
+                        filtered_logs = training_log_loaded
+                        if selected_year != _("all_years_option", lang):
+                            filtered_logs = [log for log in filtered_logs if log.get('date') and datetime.fromisoformat(log['date']).year == selected_year]
+                        
+                        if selected_month_name != _("all_months_option", lang):
+                            month_number = months_translated.index(selected_month_name) + 1
+                            filtered_logs = [log for log in filtered_logs if log.get('date') and datetime.fromisoformat(log['date']).month == month_number]
+                        
+                        if selected_place != _("all_places_option", lang):
+                            filtered_logs = [log for log in filtered_logs if log.get('place') == selected_place]
+                        
+                        # --- Display logs ---
+                        if not filtered_logs:
+                            st.info("No training sessions match the selected filters.")
+                        else:
+                            for entry in sorted(filtered_logs, key=lambda x: x.get('date', '1900-01-01'), reverse=True):
+                                expander_title = f"**{entry.get('date', 'N/A')} - {entry.get('place', 'N/A')}**"
+                                with st.expander(expander_title, expanded=True):
+                                    st.markdown(entry.get('description', _("no_description_available", lang)))
 
                 with sub_tab_sessions_edit:
                     st.subheader(_("training_log_table_header", lang))
