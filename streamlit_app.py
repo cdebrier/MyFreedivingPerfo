@@ -4,6 +4,7 @@ import json
 from datetime import datetime, date, time
 import uuid # Added for unique record IDs
 import altair as alt # Added for advanced charting
+import re
 
 RECORDS_FILE = "freediving_records.json"
 USER_PROFILES_FILE = "user_profiles.json"
@@ -180,6 +181,10 @@ TRANSLATIONS = {
         "save_all_performances_button": "💾 Save Performance Log Changes",
         "all_performances_updated_success": "Performance log updated successfully.",
         "feedback_log_tab_label": "💬 Feedback Log",
+        "my_feedback_tab_label": "My Feedback",
+        "generate_feedback_summary_button": "Generate Feedback Summary",
+        "feedback_summary_header": "Feedback Summary",
+        "no_feedback_to_summarize": "No feedback to summarize yet.",
         "feedbacks_overview_tab_label": "💬 Feedbacks",
         "edit_feedbacks_sub_tab_label": "📝 Edit Feedbacks",
         "log_feedback_header_sidebar": "📝 Log Instructor Feedback",
@@ -381,6 +386,10 @@ TRANSLATIONS = {
         "save_all_performances_button": "💾 Sauvegarder les Modifications du Journal",
         "all_performances_updated_success": "Journal des performances mis à jour avec succès.",
         "feedback_log_tab_label": "💬 Journal des Feedbacks", 
+        "my_feedback_tab_label": "Mon Feedback",
+        "generate_feedback_summary_button": "Générer le résumé des feedbacks",
+        "feedback_summary_header": "Résumé des feedbacks",
+        "no_feedback_to_summarize": "Aucun feedback à résumer pour le moment.",
         "feedbacks_overview_tab_label": "💬 Feedbacks", 
         "edit_feedbacks_sub_tab_label": "📝 Modifier Feedbacks", 
         "log_feedback_header_sidebar": "📝 Enregistrer Feedback Instructeur",
@@ -1208,6 +1217,7 @@ def main():
 
     # --- Main Display Area ---
     tab_label_personal = _("personal_records_tab_label", lang)
+    tab_label_feedback = _("my_feedback_tab_label", lang)
     tab_label_main_feedback_log = _("feedback_log_tab_label", lang)
     tab_label_club_performances = _("club_performances_overview_tab_label", lang)
     tab_label_freedivers = _("freedivers_tab_title", lang) 
@@ -1217,7 +1227,7 @@ def main():
     if not current_user:
         st.info(_("select_user_prompt", lang))
     else:
-        tabs_to_display_names_main = [tab_label_personal, tab_label_club_performances]
+        tabs_to_display_names_main = [tab_label_personal, tab_label_feedback, tab_label_club_performances]
         if is_admin_view_authorized:
             tabs_to_display_names_main.extend([
                 tab_label_freedivers, 
@@ -1371,7 +1381,150 @@ def main():
                                 else:
                                     st.info("No changes detected.")
 
-        with tab_objects_main[1]: # Club Performances
+        with tab_objects_main[1]: # My Feedback
+            st.subheader(_("my_feedback_tab_label", lang))
+            user_feedback = [fb for fb in instructor_feedback_loaded if fb.get('diver_name') == current_user]
+            
+            if not user_feedback:
+                st.info(_("no_feedback_to_summarize", lang))
+            else:
+                if st.button(_("generate_feedback_summary_button", lang)):
+                    with st.spinner("Génération du résumé..."):
+                        all_feedback_text = "\n".join([f"- {fb['feedback_text']}" for fb in user_feedback])
+
+                        coach_spirit = '''
+
+                        - tous les moniteurs ont tjrs raison selon eux... Le sport évolue beaucoup. Rester ouvert. Fonctionnement par chapitre, on travaille les chapitres un par un, et tant que c'est pas passé, on travaille le chapitre en question. Sur le moment on ne demande jamais pourquoi on nous donne une instruction, mais on peut en discuter une fois sorti de l'eau. On donne ce qui est nécessaire comme explication avant l'exercice si nécessaire.
+                        - longe si on ne voit rien (sans masque, myope, mauvaise visi) ou si descend au delà de 30m.
+                        - pas de rendez-vous syncopal des 7m. Prouvé que ça n'existe pas. Beaucoup de syncopes au départ ces dernières années. L'histoire des pressions partielles n'existe pas.
+                        - les muscles ne fonctionnent que dans un sens. Il a un tjrs un muscle pour un sens, et un autre pour l'autre sens.
+                        - on travaille d'abord la décontraction : vérifier les crispations naturelles et qu'on est droit. Ça va nous permettre d'être détendu et donc de pouvoir aller chercher de l'air dans les poumons car le diaphragme peut bouger.
+                        - on peut se ventiler au tuba, l'espace mort fait quelques centilitres, rien par rapport à notre volume inspiré avant la Descente 4-5 l, ou même 1.5-2 l Durant la ventilation. Cette règle vient de la nage avec palmes.
+                        - Poser son pied à plat sur la table et l'incliner vers l'avant. Certains nageurs savent toucher avec les orteils sur la table. La majorité non, et à besoin d'une inclinaison de la palme, pour avoir un bon plié avant et arrière. En piscine, c'est différent, car il ne faut pas que la palme remonte en surface, on est plus sur 2/3 bas 1/3 descente. 
+                        - exercice pour moi : d'abord à la corde, puis statique à 10 m pour checker le lestage, puis freefall et on palme juste après, puis Michael Jackson doigt anus..., puis on continue. Ma palme cressi a un noyau dur. Pas adapté. Va me donner des autres palmes.
+
+                        - séance hypoxie, plus en relâchement 
+                        - pas de situation où on est 100% détendu, on tend vers ça, mais pas être perfectionniste
+                        - personne n'a aucun échecs, apprendre a gérer les échecs
+                        - concentration / attention : ramener l'attention sur quelque chose de choisi.  Ça nécessite aussi de l'entraînement.
+                        - important de rester dans l'observation 
+                        - peur : qu'une peur soit vraie ou pas, important de déterminer si cette peur est utile pour moi là maintenant 
+                        - État de flow : état où on est vmt dans le moment présent. On ne recherche pas l'état de floW. Il arrive quand on s'y attend pas. On est pas dans l'après. On est dans l'instant présent. On peut se concentrer sur certaines choses pour ramener notre attention dans l'instant présent.
+                        - "anapana" important pour se recentrer, ressentir les micro-sensations. On peut même le faire à la bouée avec le masque. Se concentrer sur la zone entre la base du nez et la lèvre supérieure. 
+                        - mot choisi : "confiance"
+                        - phrase choisie : "je peux le faire"
+                        - grosse discussion sur les peurs, les peurs indirectes comme la famille, etc. En gros, l'apnée c'est une méditation sous l'eau. On va voir les repères qui nous permettent de dire s'il y a un risque syncopal. La syncope hypoxique n'arrive que pour les champions, et ça se travaille. Pour les autres, une syncope (malaise) peut arriver plus tôt dû à des facteurs parasites. Il faut à tout prix éviter la génération d'adrénaline, qui arrive quand on est pris dans un train de pensées. Même ceux qui descendent profonds peuvent avoir des plongées compliquées mentalement, d'où l'idée d'arriver à se recentrer. 
+                        - sans sortir de sa zone de confort, on ne grandit pas. Allons-y petit à petit 
+                        - très peu d'accidents en apnée. 
+
+                        - Il n'y a aucun accident en apnée encadrée, à part un, un jour, qui a fait un squeeze, et à quand même replongé le lendemain, a craché du sang et c'est noyé dedans.
+                        - plusieurs morts en apnée libre par contre. Mais c'était pas encadré, peu organisé, lié à des erreurs, ... 
+                        - discussion sur la sécurité, important de donner confiance aux gens, on peut accompagner au début, mais rapidement mettre en confiance. Au final, il ne faut pas projeter nos anxiétés sur l'autre. Pas nécessaire de mettre des sécurités pour des problèmes inexistants (longe, sécu à 5-10 m, accompagner l'apnéiste à chaque descente, rester en permanence à côté, etc) NDLR : comme la parentalité :)
+                        - important de mettre un cadre, et de mettre des règles strictes par contre, sur le fait de rester dans sa zone de confort. 
+                        - important de rester droit, pour décontracter les muscles, surtout que tout diminue en volume avec la pression. 
+                        - échauffement : statique à 10 m, puis descente en FIM et on palme après le FIM pour être certain qu'on élimine le risque de 'spoiler' (aileron, qui nous ferait dévier de notre trajectoire)
+
+                        - avant 100 m en dyn et 4 min d'apnée, c'est essentiellement les spasmes qu'il faut travailler. La vasoconstriction, les grésillements dans les jambes, etc. n'arrivent qu'après.
+                        - exercice sur le diaphragme, on rentre son diaphragme. Est-ce que c'est les abdos, non. On fait pareil mais on mime l'ouverture de la poitrine : le diaphragme remonte. Pareil mais on serre les fesses : on voit que serrer les abdos fait redescendre le diaphragme. 
+                        - au niveau du ressenti des contractions, certaines personnes ne ressentent en effet pas les contractions. Mais ils en ont quand même. On peut leur faire ressentir en mettant notre main sur leur ventre.
+                        - en tant qu'instructeur, c'est important de pouvoir hyperventiler pour repartir rapidement sous l'eau. Mais rester bien en delà de sa limite d'apnée. 
+                        - au niveau des syncopes (perte de conscience), seulement 10% dont des syncopes hypoxiques. Les autres sont des pertes de connaissances autres (malaise vagal, ...)
+                        - l'ensemble de l'air dans l'oreille va subir la pression ambiante car elle baigne dans de l'air, qui qui change de volume, et donc qui aspire le tympan vers l'intérieur.
+                        - exercice à la corde pour le FIM : important de tirer avec les muscles du dos pour ne pas tendre les abdos. Il faut donc attraper la corde en l'entourant et en plaçant la main devant soi. Ensuite on tire et on attend bien que la première main soit en bas avant d'envoyer l'autre main, et on profite bien de la glisse. On peut même faire une rotation et regarder sur le côté quand on tire pour être certain d'utiliseres muscles du dos (comme sur les vidéos de compet).
+                        - 7-8 m tête en bas, 15-20 m tête en haut
+                        - Frenzel min 50m, voir plus, en fonction de la souplesse de la cage thoracique 
+                        - exercices a gonfler ses voiles de nez avec les doigts sous le nez, puis on fait des fuites d'air. On ne fait pas forcément Frenzel si on compense bouche ouverte (à rediscuter).
+                        - 3 raisons pour lesquelles un Frenzel ne marche pas : pas détendu, pousser par le ventre, pas droit (donc être droit, être relax et gèrer le masque)
+                        - après le freefall environ (àpd 15m), ou apd 28m pour Pascal (il est déjà en chute libre mais c'est sa dernière charge), on pince le nez et on ne le lâche plus. Ça permet d'éviter que l'air du masque ne soit pas aspiré et avec l'effet de suction que le voile du palais remonte et qu'on ne puisse plus compenser et descendre plus bas. 
+                        - au niveau de la compensation, pas moyen de contrôler directement la glotte et le voile du palais, ils sont contrôlés pas l'envie d'inspirer ou expirer.
+                        - pour sentir le voile du palais, on inspire pr le nez puis on expire par la bouche, et inversement.
+                        - pour sentir sa glotte, on lâche de l'air par à-coups bouche ouverte.
+                        - explication pelizarri démontée : on peut tjrs prendre de l'air dans les poumons en frenzel. On ne stocke pas de l'air dans la bouche avec une charge pour du Frenzel. Car on ne saurait pas l'utiliser sans mouvement de langue. De la même manière, l'ottovent ne sert à rien (à part pour entraîner son mouthfill)
+                        - BTV : n'existe qu'en français. En anglais c'est hands-free. L'idée c'est que l'on peut pas gérer ses trompes d'Eustache volontairement. Par contre, un nombre très réduit d'apnéistes a des facilités. Comme pelizarri, nox, ...
+
+                        - Étude de 2006-2007 qui démontre que la baisse d'oxygène est inexistante chez des apnéistes de l'équipe de France. Trouver la publication. 
+                        - motivation : discipline où il y a encore des changements et des nouvelles découvertes, et l'âge n'a pas d'importance, on ne se sent pas vieillir :)
+                        - nouvelle explication avec l'analogie du soufflet pour le Frenzel. On démonte le fait qu'il faille bloquer la glotte pour faire du Frenzel. En fait on l'ouvre automatiquement à chaque fois qu'on compense en allant chercher de l'air dans les poumons.
+                        - l'apnée est un sport, donc une discipline où l'on cherche constamment à se mesurer par rapport à soi-même. Contrairement à d'autres sport, on est en en compétition avec soi même uniquement.
+                        - impossible de tout contrôler, donc on se fixe des jalons, des choses que l'on aimerait qui se passent bien. La différence entre un athlète loisir et et un athlète pro, c'est le perfectionnisme. Le perfectionnisme ça tue la vie. Ça fait qu'on est tjrs insatisfait. Rien n'est parfait. Progresser, s'ameliorer c'est bien. Viser à être parfait c'est pas bien. Un athlète pro sait que sans bien faire, il y arrive quand même. 
+                        - on va fixer une longueur de corde. Ne pas se concentrer sur l'objectif. Se concentrer sur les gestes à travailler. On évite l'auto sabotage, qui peut même être inconscient.
+                        - Guy boux. Champion mais fait essentiellement du sauna comme entraînement... Donc en gros, c'est important qu'on soit essentiellement relax.
+                        - échauffement : c'est un véritable effort dans les autres sports. En apnée, on fait des apnées faciles mais qui sont très rapidement inconfortables. On en fait généralement trois, et on voit qu'elles sont de moins en moins inconfortables.
+                        - circulation sanguine avec débit qui diminue avec la vasoconstriction, battements du cœur qui diminuent, ... lors d'un no warmup. On profite du réflexe d'immersion. Mais ! ... C'est accompagné de tout un tas de sensations. On doit donc gérer tout un tas de sensations liées au fait que le corps est en train de faire tout ce qui faut pour rester en vie, que c'est gravé en nous quelque part dans notre ADN. On note que les réflexes d'immersion reviennent après plusieurs apnées, mais genre 1h plus tard. Donc, dans les faits, on note une différence de 10 BPM entre la première apnée avec réflexes d'immersion et la troisième. Mais après une heure, on tombe à niveau aux BPM de la première apnée. En compet', certains font du bon warmup, et d'autres font des grosses apnées, genre 4min poumons vides, pour raccourcir la période d'une heure, et être avec un bon BPM lors de la perf. Par contre, on est plus relax si on en fait plusieurs. Donc, il faut trouver ce que nous convient le plus. Pour être certain d'avoir une bonne echauf, il faut accepter les sensations que l'on va sentir pendant l'échauffement, c'est désagréable, mais c'est ok. Plus on accepte ses sensations pendant les premières échauff, plus on va évoluer.
+                        - discussion sur différences entre production de l'adrénaline souvent associée à la peur, et les sensations. Les sensations sont associées à la production d'un tas d'autres hormones. C'est normal de rechercher des sensations, mais il faut tout de même limiter ses peurs (?). Il faut des peurs, car c'est ça qui nous retient à la vie. Mais c'est important des les apprivoiser. 
+
+                        - quand on a eu une grosse peur, on est sous l'effet d'hormones qui nous disent : réagis, et alors le cerveau se met naturellement en mode automatique. Cela nous empêche de faire les choses de manières raisonnée. C'est important de rester en mode contrôle. Il ne faut pas accuser l'oreille de tous les maux, il faut chercher les clés de la compensation ailleurs. On peut avoir de manière ponctuelle une présence de mucus qui nous empêche de compenser. Mais c'est souvent aussi des problèmes de ventre, d'être droit, etc.
+                        - La peur de la réussite est plus fréquente et insidieuse que la peur de ne pas y arriver, car elle présente plus de conséquences. La peur de réussir, est associée au syndrome du second, un syndrome qui fait qu'on s'autosabote pour ne pas porter le poids de la réussite et du statut et conséquences sociales qui en découlent. 
+                        - un contrôlant ne se confond pas avec un perfectionniste. On nous incite depuis petit à être perfectionniste, à réussir, à faire les choses bien, à être un bon élève, un bon enfant, un bon citoyen, etc. Un perfectionniste cherche à maîtriser les circonstances.
+                        - le pire qui peut nous arriver c'est une syncope, mais les conséquences sont nulles. A part pour l'ego, ou la relation aux copains, etc. Pour le reste, on récupère très bien. Il y a aucun impact.
+                        - "La confiance en soi" ne se construit pas du jour au lendemain. Elle se construit par les conséquences de nos actions. Si on coache quelqu'un, il faut faire en sorte de créer des environnements dans lesquels la personne puisse réussir. 
+                        - attention avec trop de sécurité, car ça instaure une notion de danger, et le fait de surprotéger d'autonomise par la personne et ne lui donne pas confiance en elle.
+
+                        - pour juger l'étape d'après, on juge l'étape d'hier. 1) est-ce que j'ai atteint la profondeur ? Non. Je change rien. J'ai eu mal à l'oreille. Non. C'était pas facile mais ok point de vue compensation. Alors oui, je sors de ma zone de confort. Est-ce que je suis remonté en mode panique. Si ça allait à peu près, alors oui je sors de la zone de confort. Est-ce que quand tu étais en surface tu t'es dit c'est chaud mais tu as déjà connu pire dans ta vie comme effort. Alors oui, je peux augmenter. Est-ce que j'ai respecté la consigne qu'on m'a donné hier. Si non, alors non. 
+                        - "armure de l'apnée", le corps se transforme pour se mettre en mode apnée, il fait plein de mécanismes qu'on peut pas vraiment contrôler, mais qui nous aident. Il faut donc accepter que l'on est dans de bonnes dispositions. 
+                        - conseil de Pascal pour la remontée, faire un bodys
+
+                        2 causes les plus fréquentes de syncopes : 1) pas de ventilation suffisante après l'apnée et à cause de la vasoconstriction, le cerveau n'est plus suffisamment irrigué et donc on fait une hypoxie cérébrale. 2) malaise vagal. Le nerf vague est comprimé et on perd connaissance. On fait une démo à sec, je me remplis les poumons à fond. Et Pascal appuie fortement sur le bas ventre pendant quelques secondes, et je tombe dans les vapes. Confirmation de Vincent. J'ai voté perdu connaissance quelques secondes.
+
+                        - Ne pas se laisser emporter pas ses émotions. Garder le contrôle, et rester concentré sur les consignes, la technique. On peut faire l'anapana pour se recentrer. Le cerveau nous donne énormément d'informations à la seconde, l'apnée nous donne l'occasion de pouvoir de recentrer, se refocaliser.
+                        - On peut se surcharger en oxygène. Pas le sang, mais ailleurs dans le corps. Hyperventiler permet de diminuer la concentration de CO2, on est plus confort, moins de spasme, mais on enclenche pas les mécanismes d'économie d'énergie. Donc il faut bien se connaître et rester dans des apnées peu engagées (ça dépend de chacun, Pascal, 70 m c'est pas engagé). 
+                        - Pour la dernière inspiration, c'est pas nécessaire de prendre une longue inspi avec claviculaire et tout le bazar, ça sert a rien. L'important c'est de se sentir bien, ou alors bien se remplir, mais prendre quelques secondes pour se relaxer avant de partir. Le plus efficace, c'est la carpe, parce que c'est la seule manière de remplir plus ses poumons, jusqu'à 3l. Bien remplir le bas ventre, ne pas lever les épaules pour remplir le haut. Ce qui est important c'est de remplir bas, sur le côté, et derrière.
+                        - Avec la vasoconstriction, le corps retire le sang des organes inutiles, pour le rediriger vers les organes nobles. Pour se faire, le corps prends le sang là où il y en a le plus, dans les cuisses. D'où l'impression de cuisses qui chauffent. Picotement dans les doigts ? Pareil, manque de sang. 
+                        - Tous ces signes que l'on appelait signes présyncopaux, sont en fait des signes que l'on fait des apnées engagées. C'est normal, c'est de l'apnée. Et l'apnée, c'est savoir gérer ses sensations.
+                        - On s'est demandé si ce ne sont pas des syncopes hypoxiques, alors qu'est-ce c'est. Par exemple une des plus fréquentes, est le malaise vagal. Ça arrive par exemple sur les syncopes de départs. Ça ne peut pas être hypoxique. Donc il y a probablement d'autres causes. Le nerf vague. Qui traverse la colonne vertébrale. Et se trouve entre la colonne vertébrale, et les poumons. Dès que l'on a les poumons pleins, et qu'on a des spasmes étant tendus, on risque de se pincer le nerf vague. Important donc de ne pas associer syncope et limite hypoxique. Le champion branco petrovic carpe pendant 1min30 125 carpes... donc les signes de syncopes c'est le côté tendu qui lutte. Si qqun est dans le plaisir, pas de souci. Si quelqu'un est dans le dur, il faut intervenir. Il est pas détendu et risque le malaise vagal.
+                        - Si on est dans la lutte, c'est pas bon. On va pas à chaque fois aller plus profond en tirant un peu plus sur la corde à chaque fois. On va plutôt travailler sur la détente, les différents gestes techniques, pour augmenter progressivement sa profondeur, en se sentant bien à chaque palier. 
+                        - Malaise vagal > lié à la tension. Si quelqu'un est tendu, on ne le fait pas progresser. Ce n'est pas avec la capacité de tenir la résistance, qu'on va progresser.
+                        - Deuxième cause la plus fréquente de syncope. L'hypoxie cérébrale, où syncope hypoxique cérébrale. S'il y a des peurs, du stress, ... On libère de l'adrénaline. Cette adrénaline va faire augmenter le rythme cardiaque, et amener le sang vers les muscles de fuites, donc pas le cerveau. Du coup, syncope hypoxique cérébrale. 
+                        - Pour un débutant, préférer un sur lestage, pour qu'il ne galére pas trop à descendre. Par après, si on veut travailler la technique, alors on sous leste. Au début, on cherche l'équilibre à 10 m en étant bien rempli en surface.
+                        - Quand on commence vers les 40-50m, alors on commence à attaquer les apnées hypoxiques. C'est donc important  de bien se ventiler à la sortie. Il ne faut pas trop expirer, on chie son CO2, ça fait du bien... Mais bien inspirer, rapidement. On met de l'air, on met de l'air. Il faut bien 4-5 inspirations avant que l'apnée soit considérée comme terminée. On attrape quand même bien la bouée à la sortie. 
+
+                        - La présence de CO2 va changer l'acidité du sang, et va enclencher tout un tas de phénomènes. L'augmentation du cycle respiratoire est une conséquence d'une augmentation de l'effort. Et on a besoin d'évacuer le CO2. L'élimination du CO2 est un réflexe expiratoire. Deux zones avec lesquelles on peut jouer. Poitrine et ventre. Il faut absolument desserrer les muscles expiratoires pour mieux vivre les spasmes. Valable aussi en statique et en dynamique.
+                        - Exercice : serrer le périnée et desserrer l'anus. Pas possible. Serrer la nuque et desserrer les épaules. Pas possible. 
+                        - On commence d'abord à faire plein de longueurs où on est bien. Puis on passe à la gestion des spasmes. Puis à l'entraînement physique.
+                        - Exercice : on travaille sur le premier spasme. Et on malaxe le ventre pour faciliter la gestion des prochains spasmes. Pours s'entraîner, faire un auto-massage du bas ventre, et s'entrainer à être relax et sortir au premier spasme. Faire ça régulièrement pour imprimer cette habitude. 
+
+                        '''
+                        
+                        prompt = f"Voici une série de feedbacks pour un apnéiste. Tu es un coach d'apnée bienveillant, constructif, qui met avant les points forts et les axes d'amélioration principaux. Tu dois fournir un paragraphe encourageant, qui peux faire référence à des feedbacks précis, mais exprimés de manière confortante. Tu peux consulter des sites de références sur le web ainsi que des méthodes sur le coaching et la communication non violente. Voici de la théorie d'un coach que tu peux utiliser pour ton feedback: \n{coach_spirit}. Ne mentionne pas d'évènement spécifique qui pourrait être traumatisant. Feedbacks:\n{all_feedback_text}"
+                        
+                        try:
+                            # This is a placeholder for the actual API call
+                            # In a real environment, you would use a library like `requests`
+                            # to make an asynchronous call to the Gemini API.
+                            
+                            # Placeholder response for demonstration
+                            # simulated_response = {
+                            #     "candidates": [{
+                            #         "content": {
+                            #             "parts": [{"text": "D'après les feedbacks, tu montres une excellente progression en dynamique, avec une bonne technique de palmage. Pour continuer à t'améliorer, pense à te concentrer sur la relaxation avant tes apnées statiques. Continue comme ça, c'est super !"}],
+                            #             "role": "model"
+                            #         }
+                            #     }]
+                            # }
+                            # summary_text = simulated_response["candidates"][0]["content"]["parts"][0]["text"]
+
+                            from google import genai
+
+                            client = genai.Client(api_key="AIzaSyDWDXQ655NsNIFMHgAwCp7PP9-3Au0tVaQ")
+
+                            summary_text = client.models.generate_content(
+                                model="gemini-2.0-flash",
+                                contents= prompt + ': ' + all_feedback_text,
+                            )
+
+                            # print(response.text)
+
+                            st.session_state['feedback_summary'] = summary_text.text
+
+                        except Exception as e:
+                            st.error(f"Erreur lors de la génération du résumé : {e}")
+
+                if 'feedback_summary' in st.session_state:
+                    # st.subheader(_("feedback_summary_header", lang))
+                    st.write(st.session_state['feedback_summary'])
+
+        
+        with tab_objects_main[2]: # Club Performances
             if not all_records_loaded:
                 st.info(_("no_ranking_data", lang))
             else:
@@ -1441,8 +1594,9 @@ def main():
                                 })
                             st.dataframe(pd.DataFrame(ranking_table_data), use_container_width=True, hide_index=True)
 
+        
         if is_admin_view_authorized:
-            admin_tabs_start_index = 2
+            admin_tabs_start_index = 3
             with tab_objects_main[admin_tabs_start_index]: # Freedivers
                 st.subheader(_("edit_freedivers_header", lang))
                 
