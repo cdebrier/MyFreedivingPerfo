@@ -222,5 +222,29 @@
         "instructor_name": "Philippe K.",
         "feedback_text": "Petit feedback sur la perte d’équilibre de Théo.\nHier après une compensation dans la grande profondeur, il a eu la tête qui tourne.  Il a mis un temps avant de récupérer son équilibre.  \nIl faudra le surveiller à Némo si il a encore ce problème à l’oreille droite.",
         "training_session_id": null
+    },
+    {
+        "id": "dd9ce3c70f514c21b7991c09b9574cde",
+        "feedback_date": "2025-06-08",
+        "diver_name": "Eric M.",
+        "instructor_name": "Vincent C.",
+        "feedback_text": "Eric descend assez à l'aise. Petit problème d'oreille à un moment (nez encombré,..), mais c'est passé. Ne semble pas pousser pour faire des chiffres, mais profiter des descentes. Il assure bien la sécu (reste près de son binôme, prêt à intervenir)",
+        "training_session_id": null
+    },
+    {
+        "id": "03ca06d06223411cb59df6b386e9a6fc",
+        "feedback_date": "2025-06-08",
+        "diver_name": "Xavier M.",
+        "instructor_name": "Vincent C.",
+        "feedback_text": "Xavier H: aussi à l'aise. Pousse souvent la corde en descendant, en particulier quand il fait la sécurité. Besoin de refaire des exercices de canard, et de départ en free (sur le dos ou le ventre, mais sans donner des coups de palme aux autres ;) ). Descendu plusieurs fois à 20m, en étant à l'aise. Xavier doit aussi apprendre à rester plus dans la zone de sabouée. Il dévie très souvent à côté, au risque de gêner les autres apnéistes.",
+        "training_session_id": null
+    },
+    {
+        "id": "e9432b77a2f84f7b975a35f86c578c02",
+        "feedback_date": "2025-06-08",
+        "diver_name": "Grégoire L.",
+        "instructor_name": "Vincent C.",
+        "feedback_text": "Grégoire L: à une capacité pour de longues apnées, touche le fond sans problème. Pourrais maintenant travailler sur le style: il descend jambe +- écartées, redonne des coups de palmes pendant la chute (alors qu'il n'est pas pressé),... Grégoire doit aussi apprendre à rester plus dans la zone de sabouée. Il dévie très souvent à côté, au risque de gêner les autres apnéistes.",
+        "training_session_id": null
     }
 ]

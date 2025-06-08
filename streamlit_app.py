@@ -64,6 +64,7 @@ TRANSLATIONS = {
         "performance_evolution_subheader": "📈 Performance Evolution",
         "seconds_unit": "seconds",
         "meters_unit": "meters",
+        "minutes_unit": "minutes",
         "history_table_subheader": "📜 History Table (Editable)",
         "full_history_subheader": "📜 Full History",
         "history_event_name_col": "Event Name",
@@ -264,6 +265,7 @@ TRANSLATIONS = {
         "performance_evolution_subheader": "📈 Évolution des Performances",
         "seconds_unit": "secondes",
         "meters_unit": "mètres",
+        "minutes_unit": "minutes",
         "history_table_subheader": "📜 Tableau de l'Historique (Modifiable)",
         "full_history_subheader": "📜 Historique Complet",
         "history_event_name_col": "Nom Événement",
@@ -464,6 +466,7 @@ TRANSLATIONS = {
         "performance_evolution_subheader": "📈 Prestatie-evolutie",
         "seconds_unit": "seconden",
         "meters_unit": "meter",
+        "minutes_unit": "minuten",
         "history_table_subheader": "📜 Geschiedenistabel (Bewerkbaar)",
         "full_history_subheader": "📜 Volledige Geschiedenis",
         "history_event_name_col": "Naam Evenement",
@@ -825,6 +828,19 @@ def get_training_session_details(session_id, training_logs):
             }
     return {"event_date": None, "event_name": "Session Not Found"}
 
+def style_feedback_text(text):
+    """Styles specific tags in feedback text with colors and bold."""
+    tags_colors = {
+        "#apnée/marche": "#4CAF50",      # Green
+        "#apnée/stretching": "#2196F3", # Blue
+        "#apnée/statique": "#FFC107",    # Amber
+        "#apnée/dynamique": "#f44336"    # Red
+    }
+    for tag, color in tags_colors.items():
+        replacement = f'<strong style="color:{color};">{tag}</strong>'
+        text = text.replace(tag, replacement)
+    return text
+
 # --- Main App ---
 def main():
     # Initialize session state variables
@@ -1127,7 +1143,7 @@ def main():
                     key="feedback_for_user_selectbox_key_in_form"
                 )
                 
-                training_session_options_fb_form = {log['id']: f"{log['date']} - {log['place']}" for log in sorted(training_log_loaded, key=lambda x: x['date'], reverse=True)}
+                training_session_options_fb_form = {log['id']: f"{log.get('date', '')} - {log.get('place', '')}" for log in sorted(training_log_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True)}
                 training_session_options_display_fb_form = [_("select_training_prompt", lang)] + list(training_session_options_fb_form.values())
                 
                 default_fb_ts_idx = 0
@@ -1267,11 +1283,24 @@ def main():
                         st.markdown(f"#### {_('performance_evolution_subheader', lang)}")
                         if chart_data_list:
                             chart_df = pd.DataFrame(chart_data_list)
-                            y_axis_title = _("performance_value", lang) + (f" ({_('seconds_unit', lang)})" if is_time_based_discipline(disc_key_sub_tab_user) else f" ({_('meters_unit', lang)})")
+                            
+                            y_axis_title = _("performance_value", lang)
+                            tooltip_list = ['Event Date:T', 'Event Name:N']
+                            
+                            if is_time_based_discipline(disc_key_sub_tab_user):
+                                chart_df['PerformanceValueMinutes'] = chart_df['PerformanceValue'] / 60
+                                y_axis_title += f" ({_('minutes_unit', lang)})"
+                                y_encoding_field = 'PerformanceValueMinutes:Q'
+                                tooltip_list.insert(1, alt.Tooltip('PerformanceValueMinutes:Q', title=_('performance_value', lang) + f" ({_('minutes_unit', lang)})", format=".2f"))
+                            else:
+                                y_axis_title += f" ({_('meters_unit', lang)})"
+                                y_encoding_field = 'PerformanceValue:Q'
+                                tooltip_list.insert(1, alt.Tooltip('PerformanceValue:Q', title=_('performance_value', lang) + f" ({_('meters_unit', lang)})"))
+
                             chart = alt.Chart(chart_df).mark_line(point=True).encode(
                                 x=alt.X('Event Date:T', title=_("history_event_date_col", lang)), 
-                                y=alt.Y('PerformanceValue:Q', title=y_axis_title, scale=alt.Scale(zero=False)),
-                                tooltip=['Event Date:T', 'PerformanceValue:Q', 'Event Name:N']
+                                y=alt.Y(y_encoding_field, title=y_axis_title, scale=alt.Scale(zero=False)),
+                                tooltip=tooltip_list
                             ).interactive()
                             st.altair_chart(chart, use_container_width=True)
                         else:
@@ -1373,7 +1402,7 @@ def main():
                             elif val_club == "N/A":
                                 st.caption(_("no_record_yet_caption", lang))
 
-                st.markdown("")
+                st.markdown("---")
                 
                 ranking_sub_tab_titles = [_("disciplines." + key, lang) for key in discipline_keys]
                 ranking_sub_tabs = st.tabs(ranking_sub_tab_titles)
@@ -1545,7 +1574,7 @@ def main():
                     if not training_log_loaded:
                         st.info(_("no_training_sessions_logged", lang))
                     
-                    training_log_display = [{"id": entry.get("id"), _("training_date_label", lang): entry.get("date"), _("training_place_label", lang): entry.get("place"), _("training_description_label", lang): entry.get("description"), _("history_delete_col_editor", lang): False} for entry in sorted(training_log_loaded, key=lambda x: x['date'], reverse=True)]
+                    training_log_display = [{"id": entry.get("id"), _("training_date_label", lang): entry.get("date"), _("training_place_label", lang): entry.get("place"), _("training_description_label", lang): entry.get("description"), _("history_delete_col_editor", lang): False} for entry in sorted(training_log_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True)]
                     training_df_for_editor = pd.DataFrame(training_log_display)
                     if not training_df_for_editor.empty:
                         training_date_col_name = _("training_date_label", lang)
@@ -1563,43 +1592,28 @@ def main():
                             hide_index=True, key="training_log_editor", num_rows="dynamic"
                         )
                         if st.button(_("save_training_log_changes_button", lang)):
-                            changes_made = False
-                            new_training_log = []
-                            original_logs_dict = {log['id']: log for log in training_log_loaded}
-                            edited_ids = set()
+                            original_log_df = pd.DataFrame(training_log_loaded)
+                            edited_log_df_copy = edited_training_df.copy()
+                            edited_log_df_copy[_("training_date_label", lang)] = pd.to_datetime(edited_log_df_copy[_("training_date_label", lang)]).dt.strftime('%Y-%m-%d')
+                            
+                            original_log_json_str = json.dumps(sorted(original_log_df.to_dict('records'), key=lambda x: x.get('id', '')), sort_keys=True)
+                            edited_log_json_str = json.dumps(sorted(edited_log_df_copy[edited_log_df_copy[_("history_delete_col_editor", lang)] == False].drop(columns=[_("history_delete_col_editor", lang)]).to_dict('records'), key=lambda x: x.get('id', '')), sort_keys=True)
 
-                            for row in edited_training_df.to_dict('records'):
-                                log_id = row.get('id')
-                                edited_ids.add(log_id)
+                            if original_log_json_str != edited_log_json_str:
+                                new_log_list = edited_log_df_copy[edited_log_df_copy[_("history_delete_col_editor", lang)] == False].drop(columns=[_("history_delete_col_editor", lang)]).to_dict('records')
+                                deleted_ids = set(original_log_df['id']) - set(r['id'] for r in new_log_list if r.get('id'))
                                 
-                                if row[_("history_delete_col_editor", lang)]:
-                                    continue
-                                
-                                log_date = row[_("training_date_label", lang)]
-                                current_row_data = {
-                                    "id": log_id or uuid.uuid4().hex,
-                                    "date": log_date.isoformat() if isinstance(log_date, (date, datetime)) else str(log_date),
-                                    "place": str(row[_("training_place_label", lang)]).strip(),
-                                    "description": str(row[_("training_description_label", lang)]).strip()
-                                }
-                                new_training_log.append(current_row_data)
-
-                            # Simple comparison to check for any changes
-                            if json.dumps(training_log_loaded, sort_keys=True) != json.dumps(new_training_log, sort_keys=True):
-                                changes_made = True
-
-                            if changes_made:
-                                deleted_ids = set(original_logs_dict.keys()) - {log['id'] for log in new_training_log}
                                 for rec in all_records_loaded:
                                     if rec.get('linked_training_session_id') in deleted_ids:
                                         rec['linked_training_session_id'] = None
                                 
-                                save_training_log(new_training_log)
+                                save_training_log(new_log_list)
                                 save_records(all_records_loaded)
                                 st.success(_("training_log_updated_success", lang))
                                 st.rerun()
                             else:
                                 st.info("No changes detected in the training log.")
+            
             with tab_objects_main[admin_tabs_start_index + 2]: # Performance Log
                 overview_sub_tab, edit_sub_tab = st.tabs([
                     _("performances_overview_tab_label", lang),
@@ -1712,7 +1726,7 @@ def main():
                     with col1:
                         filter_user = st.selectbox(_("filter_by_freediver_label", lang), [_("all_freedivers_option", lang)] + all_known_users_list, key="fb_overview_user")
                     with col2:
-                        session_options = {s['id']: f"{s['date']} - {s['place']}" for s in training_log_loaded}
+                        session_options = {s['id']: f"{s.get('date', 'N/A')} - {s.get('place', 'N/A')}" for s in training_log_loaded}
                         filter_session_id = st.selectbox(_("filter_by_training_session_label", lang), [_("all_sessions_option", lang)] + list(session_options.keys()), format_func=lambda x: session_options.get(x, x), key="fb_overview_session")
                     with col3:
                         instructors = sorted(list(set(fb['instructor_name'] for fb in instructor_feedback_loaded)))
@@ -1729,10 +1743,11 @@ def main():
                     if not filtered_feedbacks:
                         st.info(_("no_feedbacks_match_filters", lang))
                     else:
-                        for fb in sorted(filtered_feedbacks, key=lambda x: x['feedback_date'], reverse=True):
+                        for fb in sorted(filtered_feedbacks, key=lambda x: x.get('feedback_date', '1900-01-01'), reverse=True):
                             with st.container(border=True):
                                 st.markdown(f"**{_('feedback_for_freediver_label', lang)}** {fb['diver_name']} | **{_('instructor_name_label', lang)}** {fb['instructor_name']} | **Date:** {fb['feedback_date']}")
-                                st.markdown(fb['feedback_text'])
+                                styled_text = style_feedback_text(fb['feedback_text'])
+                                st.markdown(styled_text, unsafe_allow_html=True)
 
                 with fb_edit_tab:
                     st.subheader(_("feedback_log_table_header", lang))
