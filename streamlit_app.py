@@ -1505,7 +1505,9 @@ def main():
 
                             from google import genai
 
-                            client = genai.Client(api_key="AIzaSyDWDXQ655NsNIFMHgAwCp7PP9-3Au0tVaQ")
+                            api_key = st.secrets["genai"]["key"]
+
+                            client = genai.Client(api_key=api_key)
 
                             summary_text = client.models.generate_content(
                                 model="gemini-2.0-flash",
