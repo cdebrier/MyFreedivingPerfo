@@ -1371,12 +1371,14 @@ def main():
     tab_label_main_training_log = _("training_log_tab_title", lang)
     tab_label_performance_log = _("performance_log_tab_label", lang)
     tab_label_main_feedback_log = _("feedback_log_tab_label", lang)
+    tab_label_portraits = "Portraits du club"  # Ajout du nouvel onglet
+
 
     if not current_user:
         st.info(_("select_user_prompt", lang))
     else:
         # Define tabs for all users
-        tabs_to_display_names_main = [tab_label_personal, tab_label_feedback, tab_label_level_performances]
+        tabs_to_display_names_main = [tab_label_personal, tab_label_feedback, tab_label_level_performances, tab_label_portraits]
 
         # Define tabs for admin users
         admin_tabs = []
@@ -1741,9 +1743,47 @@ def main():
         with tab_objects_main[2]:
             display_level_performance_tab(all_records_loaded, user_profiles, discipline_keys, lang)
 
+        # Onglet Portraits du club
+        import random
+        with tab_objects_main[3]:
+            st.subheader("Portraits du club")
+            # Récupérer tous les textes de portrait
+            portraits = []
+            for user, profile in user_profiles.items():
+                text = profile.get("portrait_photo_text", "").strip()
+                if text:
+                    display_name = get_display_name(user, user_profiles, lang)
+                    portraits.append({"user": display_name, "text": text})
+
+            if not portraits:
+                st.info("Aucun portrait renseigné pour le moment.")
+            else:
+                # Palette de couleurs pastel
+                colors = [
+                    "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF",
+                    "#D5BAFF", "#FFC6FF", "#B5FFD9", "#FFF5BA", "#BAFFD9"
+                ]
+                random.shuffle(portraits)
+                n_cols = 3
+                rows = [portraits[i:i+n_cols] for i in range(0, len(portraits), n_cols)]
+                for row in rows:
+                    cols = st.columns(n_cols)
+                    for idx, portrait in enumerate(row):
+                        color = random.choice(colors)
+                        with cols[idx]:
+                            st.markdown(
+                                f"""
+                                <div style="background-color:{color};padding:1.2em 1em 1em 1em;border-radius:18px;min-height:120px;box-shadow:0 2px 8px #0001;">
+                                    <b style="font-size:1.1em;">{portrait['user']}</b>
+                                    <div style="margin-top:0.7em;white-space:pre-line;">{portrait['text']}</div>
+                                </div>
+                                """,
+                                unsafe_allow_html=True
+                            )
+
         # Admin Tabs
         if is_admin_view_authorized:
-            admin_tabs_start_index = 3
+            admin_tabs_start_index = 4
 
             # Tab 4: Club Rankings (Admin Only)
             with tab_objects_main[admin_tabs_start_index]:
