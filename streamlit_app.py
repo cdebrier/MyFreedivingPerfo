@@ -1852,7 +1852,7 @@ def main():
                         st.success(_("freedivers_updated_success", lang))
                         st.rerun()
 
-            with tab_objects_main[admin_tabs_start_index + 1]: # Training Log
+            with tab_objects_main[admin_tabs_start_index + 2]: # Training Log
                 sub_tab_sessions_view, sub_tab_sessions_edit = st.tabs([_("training_sessions_sub_tab_label", lang), _("edit_training_sessions_sub_tab_label", lang)])
 
                 with sub_tab_sessions_view:
@@ -1940,7 +1940,7 @@ def main():
                             else:
                                 st.info("No changes detected in the training log.")
             
-            with tab_objects_main[admin_tabs_start_index + 2]: # Performance Log
+            with tab_objects_main[admin_tabs_start_index + 3]: # Performance Log
                 overview_sub_tab, edit_sub_tab = st.tabs([
                     _("performances_overview_tab_label", lang),
                     _("edit_performances_sub_tab_label", lang)
@@ -2044,7 +2044,7 @@ def main():
                             st.success(_("all_performances_updated_success", lang))
                             st.rerun()
 
-            with tab_objects_main[admin_tabs_start_index + 3]: # Feedback Log
+            with tab_objects_main[admin_tabs_start_index + 4]: # Feedback Log
                 fb_overview_tab, fb_edit_tab = st.tabs([_("feedbacks_overview_tab_label", lang), _("edit_feedbacks_sub_tab_label", lang)])
                 with fb_overview_tab:
                     st.subheader(_("feedbacks_overview_tab_label", lang))
