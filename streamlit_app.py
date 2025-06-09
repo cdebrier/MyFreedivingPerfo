@@ -36,7 +36,7 @@ TRANSLATIONS = {
         "add_new_user_option": "✨ Add New Freediver...",
         "existing_user_selected": "Freediver **{user}** confirmed.",
         "log_performance_header": "✏️ Log New Performance",
-        "profile_header_sidebar": "🪪 Freediver Profile",
+        "profile_header_sidebar": "👤 Freediver Profile",
         "select_user_first_warning": "Confirm or add a freediver first to log performances.",
         "logging_for": "Logging for: **{user}**",
         "link_training_session_label": "Training Session",
@@ -242,7 +242,7 @@ TRANSLATIONS = {
         "add_new_user_option": "✨ Ajouter un nouvel apnéiste...",
         "existing_user_selected": "Apnéiste **{user}** confirmé.",
         "log_performance_header": "✏️ Enregistrer une nouvelle performance",
-        "profile_header_sidebar": "🪪 Profil Apnéiste",
+        "profile_header_sidebar": "👤 Profil Apnéiste",
         "select_user_first_warning": "Confirmez ou ajoutez d'abord un apnéiste pour enregistrer des performances.",
         "logging_for": "Enregistrement pour : **{user}**",
         "link_training_session_label": "Session d'Entraînement",
@@ -268,7 +268,7 @@ TRANSLATIONS = {
         "achieved_at_event_on_date_caption": "Par {user} à {event_name} le {event_date}",
         "achieved_on_event_caption": "Réalisé à {event_name} le : {event_date}",
         "no_record_yet_caption": "Aucun record pour l'instant",
-        "performance_evolution_subheader": "� Évolution des Performances",
+        "performance_evolution_subheader": "📈 Évolution des Performances",
         "seconds_unit": "secondes",
         "meters_unit": "mètres",
         "minutes_unit": "minutes",
@@ -448,7 +448,7 @@ TRANSLATIONS = {
         "add_new_user_option": "✨ Nieuwe vrijduiker toevoegen...",
         "existing_user_selected": "Vrijduiker **{user}** bevestigd.",
         "log_performance_header": "✏️ Log Nieuwe Prestatie",
-        "profile_header_sidebar": "🪪 Vrijduiker Profiel",
+        "profile_header_sidebar": "👤 Vrijduiker Profiel",
         "select_user_first_warning": "Bevestig of voeg eerst een vrijduiker toe om prestaties te loggen.",
         "logging_for": "Loggen voor: **{user}**",
         "link_training_session_label": "Trainingssessie",
@@ -1546,14 +1546,12 @@ def main():
             else:
                 if st.button(_("generate_feedback_summary_button", lang)):
                     with st.spinner("Génération du résumé..."):
+
                         all_feedback_text = "\n".join([f"- {fb['feedback_text']}" for fb in user_feedback])
 
                         adeps_coaching_instructions = '''
-                        
                         À partir de maintenant, et pour toute notre conversation, tu vas agir en tant que moniteur sportif initiateur formé par l'Adeps. Ton rôle et tes réponses doivent être scrupuleusement basés sur la philosophie, la méthodologie et les principes décrits dans le document de formation "Didactique et méthodologie - Module 2 : Ma séance/mon intervention".
-
                         Voici les instructions précises que tu dois suivre pour incarner ce rôle :
-
                         1. Mission principale :
                         Tes objectifs généraux sont toujours : Animer, Initier, et Fidéliser. Ton but ultime est de faire découvrir une discipline dans un climat positif pour encourager une pratique du sport à long terme.
                         2. Style d'intervention :
@@ -1581,12 +1579,10 @@ def main():
                         Tu dois toujours chercher à instaurer et maintenir un climat positif et bienveillant.
                         Ton rôle est d'être un animateur : tu vis la séance avec les participants, tu encourages, tu relances l'activité et tu motives.
                         Pour la gestion des problèmes, tu privilégies la prévention en créant un environnement de travail positif et en valorisant les bons comportements.
-                        En résumé, tu es un coach pédagogue, structuré, motivant et bienveillant. Chacune de tes réponses doit refléter cette approche et s'appuyer sur les concepts du document fourni.
-                        
+                        En résumé, tu es un coach pédagogue, structuré, motivant et bienveillant. Chacune de tes réponses doit refléter cette approche et s'appuyer sur les concepts du document fourni.                        
                         '''
 
                         huron_spirit = '''
-
                         - tous les moniteurs ont tjrs raison selon eux... Le sport évolue beaucoup. Rester ouvert. Fonctionnement par chapitre, on travaille les chapitres un par un, et tant que c'est pas passé, on travaille le chapitre en question. Sur le moment on ne demande jamais pourquoi on nous donne une instruction, mais on peut en discuter une fois sorti de l'eau. On donne ce qui est nécessaire comme explication avant l'exercice si nécessaire.
                         - longe si on ne voit rien (sans masque, myope, mauvaise visi) ou si descend au delà de 30m.
                         - pas de rendez-vous syncopal des 7m. Prouvé que ça n'existe pas. Beaucoup de syncopes au départ ces dernières années. L'histoire des pressions partielles n'existe pas.
@@ -1595,7 +1591,6 @@ def main():
                         - on peut se ventiler au tuba, l'espace mort fait quelques centilitres, rien par rapport à notre volume inspiré avant la Descente 4-5 l, ou même 1.5-2 l Durant la ventilation. Cette règle vient de la nage avec palmes.
                         - Poser son pied à plat sur la table et l'incliner vers l'avant. Certains nageurs savent toucher avec les orteils sur la table. La majorité non, et à besoin d'une inclinaison de la palme, pour avoir un bon plié avant et arrière. En piscine, c'est différent, car il ne faut pas que la palme remonte en surface, on est plus sur 2/3 bas 1/3 descente. 
                         - exercice pour moi : d'abord à la corde, puis statique à 10 m pour checker le lestage, puis freefall et on palme juste après, puis Michael Jackson doigt anus..., puis on continue. Ma palme cressi a un noyau dur. Pas adapté. Va me donner des autres palmes.
-
                         - séance hypoxie, plus en relâchement 
                         - pas de situation où on est 100% détendu, on tend vers ça, mais pas être perfectionniste
                         - personne n'a aucun échecs, apprendre a gérer les échecs
@@ -1609,14 +1604,12 @@ def main():
                         - grosse discussion sur les peurs, les peurs indirectes comme la famille, etc. En gros, l'apnée c'est une méditation sous l'eau. On va voir les repères qui nous permettent de dire s'il y a un risque syncopal. La syncope hypoxique n'arrive que pour les champions, et ça se travaille. Pour les autres, une syncope (malaise) peut arriver plus tôt dû à des facteurs parasites. Il faut à tout prix éviter la génération d'adrénaline, qui arrive quand on est pris dans un train de pensées. Même ceux qui descendent profonds peuvent avoir des plongées compliquées mentalement, d'où l'idée d'arriver à se recentrer. 
                         - sans sortir de sa zone de confort, on ne grandit pas. Allons-y petit à petit 
                         - très peu d'accidents en apnée. 
-
                         - Il n'y a aucun accident en apnée encadrée, à part un, un jour, qui a fait un squeeze, et à quand même replongé le lendemain, a craché du sang et c'est noyé dedans.
                         - plusieurs morts en apnée libre par contre. Mais c'était pas encadré, peu organisé, lié à des erreurs, ... 
                         - discussion sur la sécurité, important de donner confiance aux gens, on peut accompagner au début, mais rapidement mettre en confiance. Au final, il ne faut pas projeter nos anxiétés sur l'autre. Pas nécessaire de mettre des sécurités pour des problèmes inexistants (longe, sécu à 5-10 m, accompagner l'apnéiste à chaque descente, rester en permanence à côté, etc) NDLR : comme la parentalité :)
                         - important de mettre un cadre, et de mettre des règles strictes par contre, sur le fait de rester dans sa zone de confort. 
                         - important de rester droit, pour décontracter les muscles, surtout que tout diminue en volume avec la pression. 
                         - échauffement : statique à 10 m, puis descente en FIM et on palme après le FIM pour être certain qu'on élimine le risque de 'spoiler' (aileron, qui nous ferait dévier de notre trajectoire)
-
                         - avant 100 m en dyn et 4 min d'apnée, c'est essentiellement les spasmes qu'il faut travailler. La vasoconstriction, les grésillements dans les jambes, etc. n'arrivent qu'après.
                         - exercice sur le diaphragme, on rentre son diaphragme. Est-ce que c'est les abdos, non. On fait pareil mais on mime l'ouverture de la poitrine : le diaphragme remonte. Pareil mais on serre les fesses : on voit que serrer les abdos fait redescendre le diaphragme. 
                         - au niveau du ressenti des contractions, certaines personnes ne ressentent en effet pas les contractions. Mais ils en ont quand même. On peut leur faire ressentir en mettant notre main sur leur ventre.
@@ -1634,7 +1627,6 @@ def main():
                         - pour sentir sa glotte, on lâche de l'air par à-coups bouche ouverte.
                         - explication pelizarri démontée : on peut tjrs prendre de l'air dans les poumons en frenzel. On ne stocke pas de l'air dans la bouche avec une charge pour du Frenzel. Car on ne saurait pas l'utiliser sans mouvement de langue. De la même manière, l'ottovent ne sert à rien (à part pour entraîner son mouthfill)
                         - BTV : n'existe qu'en français. En anglais c'est hands-free. L'idée c'est que l'on peut pas gérer ses trompes d'Eustache volontairement. Par contre, un nombre très réduit d'apnéistes a des facilités. Comme pelizarri, nox, ...
-
                         - Étude de 2006-2007 qui démontre que la baisse d'oxygène est inexistante chez des apnéistes de l'équipe de France. Trouver la publication. 
                         - motivation : discipline où il y a encore des changements et des nouvelles découvertes, et l'âge n'a pas d'importance, on ne se sent pas vieillir :)
                         - nouvelle explication avec l'analogie du soufflet pour le Frenzel. On démonte le fait qu'il faille bloquer la glotte pour faire du Frenzel. En fait on l'ouvre automatiquement à chaque fois qu'on compense en allant chercher de l'air dans les poumons.
@@ -1645,20 +1637,16 @@ def main():
                         - échauffement : c'est un véritable effort dans les autres sports. En apnée, on fait des apnées faciles mais qui sont très rapidement inconfortables. On en fait généralement trois, et on voit qu'elles sont de moins en moins inconfortables.
                         - circulation sanguine avec débit qui diminue avec la vasoconstriction, battements du cœur qui diminuent, ... lors d'un no warmup. On profite du réflexe d'immersion. Mais ! ... C'est accompagné de tout un tas de sensations. On doit donc gérer tout un tas de sensations liées au fait que le corps est en train de faire tout ce qui faut pour rester en vie, que c'est gravé en nous quelque part dans notre ADN. On note que les réflexes d'immersion reviennent après plusieurs apnées, mais genre 1h plus tard. Donc, dans les faits, on note une différence de 10 BPM entre la première apnée avec réflexes d'immersion et la troisième. Mais après une heure, on tombe à niveau aux BPM de la première apnée. En compet', certains font du bon warmup, et d'autres font des grosses apnées, genre 4min poumons vides, pour raccourcir la période d'une heure, et être avec un bon BPM lors de la perf. Par contre, on est plus relax si on en fait plusieurs. Donc, il faut trouver ce que nous convient le plus. Pour être certain d'avoir une bonne echauf, il faut accepter les sensations que l'on va sentir pendant l'échauffement, c'est désagréable, mais c'est ok. Plus on accepte ses sensations pendant les premières échauff, plus on va évoluer.
                         - discussion sur différences entre production de l'adrénaline souvent associée à la peur, et les sensations. Les sensations sont associées à la production d'un tas d'autres hormones. C'est normal de rechercher des sensations, mais il faut tout de même limiter ses peurs (?). Il faut des peurs, car c'est ça qui nous retient à la vie. Mais c'est important des les apprivoiser. 
-
                         - quand on a eu une grosse peur, on est sous l'effet d'hormones qui nous disent : réagis, et alors le cerveau se met naturellement en mode automatique. Cela nous empêche de faire les choses de manières raisonnée. C'est important de rester en mode contrôle. Il ne faut pas accuser l'oreille de tous les maux, il faut chercher les clés de la compensation ailleurs. On peut avoir de manière ponctuelle une présence de mucus qui nous empêche de compenser. Mais c'est souvent aussi des problèmes de ventre, d'être droit, etc.
                         - La peur de la réussite est plus fréquente et insidieuse que la peur de ne pas y arriver, car elle présente plus de conséquences. La peur de réussir, est associée au syndrome du second, un syndrome qui fait qu'on s'autosabote pour ne pas porter le poids de la réussite et du statut et conséquences sociales qui en découlent. 
                         - un contrôlant ne se confond pas avec un perfectionniste. On nous incite depuis petit à être perfectionniste, à réussir, à faire les choses bien, à être un bon élève, un bon enfant, un bon citoyen, etc. Un perfectionniste cherche à maîtriser les circonstances.
                         - le pire qui peut nous arriver c'est une syncope, mais les conséquences sont nulles. A part pour l'ego, ou la relation aux copains, etc. Pour le reste, on récupère très bien. Il y a aucun impact.
                         - "La confiance en soi" ne se construit pas du jour au lendemain. Elle se construit par les conséquences de nos actions. Si on coache quelqu'un, il faut faire en sorte de créer des environnements dans lesquels la personne puisse réussir. 
                         - attention avec trop de sécurité, car ça instaure une notion de danger, et le fait de surprotéger d'autonomise par la personne et ne lui donne pas confiance en elle.
-
                         - pour juger l'étape d'après, on juge l'étape d'hier. 1) est-ce que j'ai atteint la profondeur ? Non. Je change rien. J'ai eu mal à l'oreille. Non. C'était pas facile mais ok point de vue compensation. Alors oui, je sors de ma zone de confort. Est-ce que je suis remonté en mode panique. Si ça allait à peu près, alors oui je sors de la zone de confort. Est-ce que quand tu étais en surface tu t'es dit c'est chaud mais tu as déjà connu pire dans ta vie comme effort. Alors oui, je peux augmenter. Est-ce que j'ai respecté la consigne qu'on m'a donné hier. Si non, alors non. 
                         - "armure de l'apnée", le corps se transforme pour se mettre en mode apnée, il fait plein de mécanismes qu'on peut pas vraiment contrôler, mais qui nous aident. Il faut donc accepter que l'on est dans de bonnes dispositions. 
-                        - conseil de Pascal pour la remontée, faire un bodys
-
-                        2 causes les plus fréquentes de syncopes : 1) pas de ventilation suffisante après l'apnée et à cause de la vasoconstriction, le cerveau n'est plus suffisamment irrigué et donc on fait une hypoxie cérébrale. 2) malaise vagal. Le nerf vague est comprimé et on perd connaissance. On fait une démo à sec, je me remplis les poumons à fond. Et Pascal appuie fortement sur le bas ventre pendant quelques secondes, et je tombe dans les vapes. Confirmation de Vincent. J'ai voté perdu connaissance quelques secondes.
-
+                        - conseil de Pascal pour la remontée, faire un bodyscan
+                        - deux causes les plus fréquentes de syncopes : 1) pas de ventilation suffisante après l'apnée et à cause de la vasoconstriction, le cerveau n'est plus suffisamment irrigué et donc on fait une hypoxie cérébrale. 2) malaise vagal. Le nerf vague est comprimé et on perd connaissance. On fait une démo à sec, je me remplis les poumons à fond. Et Pascal appuie fortement sur le bas ventre pendant quelques secondes, et je tombe dans les vapes. Confirmation de Vincent. J'ai voté perdu connaissance quelques secondes.
                         - Ne pas se laisser emporter pas ses émotions. Garder le contrôle, et rester concentré sur les consignes, la technique. On peut faire l'anapana pour se recentrer. Le cerveau nous donne énormément d'informations à la seconde, l'apnée nous donne l'occasion de pouvoir de recentrer, se refocaliser.
                         - On peut se surcharger en oxygène. Pas le sang, mais ailleurs dans le corps. Hyperventiler permet de diminuer la concentration de CO2, on est plus confort, moins de spasme, mais on enclenche pas les mécanismes d'économie d'énergie. Donc il faut bien se connaître et rester dans des apnées peu engagées (ça dépend de chacun, Pascal, 70 m c'est pas engagé). 
                         - Pour la dernière inspiration, c'est pas nécessaire de prendre une longue inspi avec claviculaire et tout le bazar, ça sert a rien. L'important c'est de se sentir bien, ou alors bien se remplir, mais prendre quelques secondes pour se relaxer avant de partir. Le plus efficace, c'est la carpe, parce que c'est la seule manière de remplir plus ses poumons, jusqu'à 3l. Bien remplir le bas ventre, ne pas lever les épaules pour remplir le haut. Ce qui est important c'est de remplir bas, sur le côté, et derrière.
@@ -1673,10 +1661,43 @@ def main():
                         - Exercice : serrer le périnée et desserrer l'anus. Pas possible. Serrer la nuque et desserrer les épaules. Pas possible. 
                         - On commence d'abord à faire plein de longueurs où on est bien. Puis on passe à la gestion des spasmes. Puis à l'entraînement physique.
                         - Exercice : on travaille sur le premier spasme. Et on malaxe le ventre pour faciliter la gestion des prochains spasmes. Pours s'entraîner, faire un auto-massage du bas ventre, et s'entrainer à être relax et sortir au premier spasme. Faire ça régulièrement pour imprimer cette habitude. 
-
                         '''
+
+                        comparatif_brevets = '''
+                        | **Brevet** | **Âge min.** | **Brevet requis**     | **CFPS** | **Théorie (QCM)**         | **Piscine (techniques)**                                                                            | **Profondeur (techniques)**                                                                 | **Expérience milieu naturel**          | **Encadrement possible**                |
+                        |------------|--------------|------------------------|----------|----------------------------|------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|----------------------------------------|-----------------------------------------|
+                        | A1         | 14           | Aucun                  | Non      | 25 QCM (20/25)             | STA 1'15, DYN 30m, 4×25m/1'30, 100m surface                                                          | CWT -10m, FIM -10m, DYN -5m (20m), remontée -7m                                              | 2 sorties validées                     | Non                                     |
+                        | A2         | 16           | A1                     | Oui      | 35 QCM (28/35)             | STA 2'30, DYN 50m, DNF 25m, 4×25m/1'00, 200m surface                                                 | CWT -20m, FIM -20m, DYN -5m (30m), remontée -10m                                             | 4 sorties post-A1                      | Non                                     |
+                        | A3         | 18           | A2                     | Oui      | 50 QCM (35/50)             | Éval. avancée statique & dynamique                                                                  | Expertise complète + CWT ≥20m, encadrement de sorties                                       | 8 sorties ≥15m post-A2                 | Oui (sous conditions)                   |
+                        | I1         | 19           | A3 (1 an)              | Oui      | 1h30 cours théorique (éval. I2/I3) | Formation groupes A1-A3                                                                              | CWT 30m, 4×15m (15-10-5s), sauvetage 15m + 200m remorquage                                  | 4 encadr. + 5 plongées à 30m           | Oui (A1–A3, sauf stage mer)             |
+                        | I2         | 20           | I1 (1 an)              | Oui      | 5 cours dispensés          | Formation + éval. candidats A1-A3                                                                   | CWT 35m, 4×15m, sauvetage 15m + 200m                                                        | 20 sorties (5 ≥30m) post-I1            | Oui (y compris stage mer)               |
+                        | I3         | 21           | I2 (1 an)              | Oui      | 5 cours + exposé validé    | Formation tous niveaux + validation de 2 I1                                                          | CWT 40m, 4×15m, sauvetage 15m + 200m                                                        | (non précisé, mais 40 validations requises) | Tous niveaux + validation d’instructeurs |
+                                                
+                        '''
+
                         
-                        prompt = f"Voici une série de feedbacks pour un apnéiste. Tu es un coach d'apnée bienveillant tel que décrit ici \n{adeps_coaching_instructions}. Tu dois fournir un paragraphe encourageant, qui peux faire référence à des feedbacks précis, mais exprimés de manière confortante. Tu peux consulter des sites de références sur le web ainsi que des méthodes sur le coaching et la communication non violente. Voici de la théorie d'un coach que tu peux utiliser pour ton feedback: {huron_spirit}. Ne mentionne pas d'évènement spécifique qui pourrait être traumatisant. Le niveau actual de l'apnéiste est le suivant : {current_cert_index_sidebar}. Feedbacks:\n{all_feedback_text}"
+                        motivations_text = user_profile_data_sidebar.get("motivations", "")
+                        obectifs_text = user_profile_data_sidebar.get("projection_3_ans", "")
+                        vision_text = user_profile_data_sidebar.get("portrait_photo_text", "")
+
+
+                        prompt = f"Voici une série de feedbacks pour un apnéiste données par d'autres apnéistes et instructeurs. \
+                            Tu es un coach d'apnée tel que décrit ici \n{adeps_coaching_instructions}. \
+                            Tu dois analyser ces feedbacks et en tirer un résumé constructif de maximum 10 phrases pour l'apnéiste afin qu'il puisse s'améliorer. \
+                            Tu dois prendre en compte le niveau actuel de l'apnéiste qui est le suivant : {current_cert_index_sidebar}.  \
+                            Tu dois également prendre en compte ses motivations à pratiquer l'apnée : {motivations_text}. \
+                            Ainsi que ses objectifs de progression : {obectifs_text}. \
+                            Et sa vision de l'apnée : {vision_text}. \
+                            Il faut aussi que tu prenned en comptes les attentes pour chaque niveau d'apnée listées ici pour établir où se trouve l'apnéiste dans son parcours : {comparatif_brevets}. \
+                            Voici de la théorie d'un coach que tu peux utiliser pour enrichir ton feedback: {huron_spirit}. \
+                            Ne fais pas référence à un évènement spécifique qui pourrait être traumatisant, comme des soucis de santé.  \
+                            Feedbacks:\n{all_feedback_text}. \
+                            Reste concis, bienveillant, constructif et factuel. N'utilises pas de bullet lists. \
+                            Tu peux mettre les recoemmndations clés en gras. \
+                            Une fois ton texte prêt, vérifie plusieurs fois pour être cetain que tu as bien appliqué les consignes ci-dessus, sinon modifie ton texte."
+
+
+
                         
                         try:
                             # This is a placeholder for the actual API call
