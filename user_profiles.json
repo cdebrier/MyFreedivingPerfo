@@ -166,5 +166,11 @@
         "certification_date": "2022-03-04",
         "lifras_id": "29525",
         "anonymize_results": true
+    },
+    "Xavier H.": {
+        "certification": "A1",
+        "certification_date": null,
+        "lifras_id": "None",
+        "anonymize_results": true
     }
 }

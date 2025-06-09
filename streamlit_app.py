@@ -99,7 +99,7 @@ TRANSLATIONS = {
             "January": "January", "February": "February", "March": "March", "April": "April", "May": "May", "June": "June", 
             "July": "July", "August": "August", "September": "September", "October": "October", "November": "November", "December": "December"
         },
-        "club_performances_overview_tab_label": "🏆 Club Performances",
+        "club_performances_overview_tab_label": "🏆 Club Rankings",
         "select_discipline_for_ranking": "Select discipline for ranking:",
         "podium_header": "🏆 Podium",
         "full_ranking_header": "📋 Full Ranking",
@@ -144,6 +144,7 @@ TRANSLATIONS = {
         "history_updated_success": "History updated successfully.",
         "critical_error_edit_id_not_found": "Critical error: Record ID '{record_id}' to edit not found in master list. Edit cancelled.",
         "club_performances_tab_title": "📈 Club Performances",
+        "club_level_performance_tab_title": "🏆 Performances by Level",
         "no_data_for_club_performance_display": "No performance data available for the club in this discipline.",
         "quarterly_average_label": "Quarterly Average",
         "freedivers_tab_title": "🫂 Freedivers", 
@@ -181,7 +182,7 @@ TRANSLATIONS = {
         "save_all_performances_button": "💾 Save Performance Log Changes",
         "all_performances_updated_success": "Performance log updated successfully.",
         "feedback_log_tab_label": "💬 Feedback Log",
-        "my_feedback_tab_label": "My Feedback",
+        "my_feedback_tab_label": "💬 My Feedback",
         "generate_feedback_summary_button": "Generate Feedback Summary",
         "feedback_summary_header": "Feedback Summary",
         "no_feedback_to_summarize": "No feedback to summarize yet.",
@@ -304,7 +305,7 @@ TRANSLATIONS = {
             "January": "Janvier", "February": "Février", "March": "Mars", "April": "Avril", "May": "Mai", "June": "Juin", 
             "July": "Juillet", "August": "Août", "September": "Septembre", "October": "Octobre", "November": "Novembre", "December": "Décembre"
         },
-        "club_performances_overview_tab_label": "🏆 Performances du Club",
+        "club_performances_overview_tab_label": "🏆 Classements du Club",
         "select_discipline_for_ranking": "Sélectionnez la discipline pour le classement :",
         "podium_header": "🏆 Podium",
         "full_ranking_header": "📋 Classement Complet",
@@ -349,6 +350,7 @@ TRANSLATIONS = {
         "history_updated_success": "Historique mis à jour avec succès.",
         "critical_error_edit_id_not_found": "Erreur critique : ID d'enregistrement '{record_id}' à modifier non trouvé dans la liste principale. Modification annulée.",
         "club_performances_tab_title": "📈 Performances du Club",
+        "club_level_performance_tab_title": "🏆 Performances par Niveau",
         "no_data_for_club_performance_display": "Aucune donnée de performance disponible pour le club dans cette discipline.",
         "quarterly_average_label": "Moyenne Trimestrielle",
         "freedivers_tab_title": "🫂 Apnéistes", 
@@ -386,7 +388,7 @@ TRANSLATIONS = {
         "save_all_performances_button": "💾 Sauvegarder les Modifications du Journal",
         "all_performances_updated_success": "Journal des performances mis à jour avec succès.",
         "feedback_log_tab_label": "💬 Journal des Feedbacks", 
-        "my_feedback_tab_label": "Mon Feedback",
+        "my_feedback_tab_label": "💬 Mon Feedback",
         "generate_feedback_summary_button": "Générer le résumé des feedbacks",
         "feedback_summary_header": "Résumé des feedbacks",
         "no_feedback_to_summarize": "Aucun feedback à résumer pour le moment.",
@@ -446,7 +448,7 @@ TRANSLATIONS = {
         "add_new_user_option": "✨ Nieuwe vrijduiker toevoegen...", 
         "existing_user_selected": "Vrijduiker **{user}** bevestigd.", 
         "log_performance_header": "✏️ Log Nieuwe Prestatie",
-        "profile_header_sidebar": "� Vrijduiker Profiel", 
+        "profile_header_sidebar": "🪪 Vrijduiker Profiel", 
         "select_user_first_warning": "Bevestig of voeg eerst een vrijduiker toe om prestaties te loggen.", 
         "logging_for": "Loggen voor: **{user}**",
         "link_training_session_label": "Trainingssessie",
@@ -554,6 +556,7 @@ TRANSLATIONS = {
         "history_updated_success": "Geschiedenis succesvol bijgewerkt.",
         "critical_error_edit_id_not_found": "Kritieke fout: Record-ID '{record_id}' om te bewerken niet gevonden in hoofdlijst. Bewerken geannuleerd.",
         "club_performances_tab_title": "📈 Clubprestaties",
+        "club_level_performance_tab_title": "🏆 Prestaties per Niveau",
         "no_data_for_club_performance_display": "Geen prestatiegegevens beschikbaar voor de club in deze discipline.",
         "quarterly_average_label": "Kwartaalgemiddelde",
         "freedivers_tab_title": "🫂 Vrijduikers", 
@@ -652,6 +655,7 @@ def _(key, lang=None, **kwargs):
             return value.format(**kwargs)
         return value
     except KeyError:
+        # Fallback to English if key not found in the selected language
         translation_set_en = TRANSLATIONS['en']
         value_en = translation_set_en
         try:
@@ -661,6 +665,7 @@ def _(key, lang=None, **kwargs):
                 return value_en.format(**kwargs)
             return value_en
         except KeyError:
+            # Fallback to the key itself if not found in English either
             return key
 
 # --- Helper for anonymization ---
@@ -850,10 +855,123 @@ def style_feedback_text(text):
         text = text.replace(tag, replacement)
     return text
 
+# --- Tab Display Functions ---
+def display_level_performance_tab(all_records, user_profiles, discipline_keys, lang):
+    """
+    Displays the aggregated performances by certification level, with a unique color for each level.
+    """
+    if not all_records:
+        st.info(_("no_ranking_data", lang))
+        return
+
+    records_df = pd.DataFrame(all_records)
+    
+    # Prepare profiles data
+    profiles_list = []
+    for user, profile_data in user_profiles.items():
+        profiles_list.append({
+            'user': user,
+            'certification': profile_data.get('certification', _("no_certification_option", lang))
+        })
+    profiles_df = pd.DataFrame(profiles_list)
+
+    if profiles_df.empty:
+        st.info(_("no_stats_data", lang))
+        return
+
+    # Merge records with profiles
+    merged_df = pd.merge(records_df, profiles_df, on='user', how='left')
+    merged_df['certification'].fillna(_("no_certification_option", lang), inplace=True)
+    
+    # Filter out records without a parsed value
+    merged_df = merged_df.dropna(subset=['parsed_value'])
+
+    if merged_df.empty:
+        st.info(_("no_stats_data", lang))
+        return
+
+    # Get best performance for each user in each discipline
+    # The logic assumes lower is better for time-based, higher for others.
+    idx = merged_df.groupby(['user', 'discipline'])['parsed_value'].idxmax()
+    if discipline_keys and is_lower_better(discipline_keys[0]):
+        idx = merged_df.groupby(['user', 'discipline'])['parsed_value'].idxmin()
+
+    best_perf_df = merged_df.loc[idx]
+
+    # Define the order and color scheme for certifications based on the provided image
+    cert_order = ["NB", "A1", "A2", "A3", "S4", "I1", "I2", "I3", _("no_certification_option", lang)]
+    # Colors extracted from the image and extended for other levels
+    cert_colors = [
+        "#D074B9",  # NB - Non-Breveté (Pink/Purple)
+        "#67C27F",  # A1 - Apnéiste Débutant (Green)
+        "#F2B760",  # A2 - Apnéiste Avancé (Light Orange)
+        "#F28F3B",  # A3 - Apnéiste Expert (Dark Orange)
+        "#2F788C",  # S4 - Assistant-Instructeur (Blue/Teal)
+        "#265F70",  # I1 - A darker shade for instructors
+        "#1D4654",  # I2 - Even darker
+        "#132D38",  # I3 - Darkest
+        "#CCCCCC"   # No Certification (Grey)
+    ]
+
+    sub_tabs = st.tabs([_("disciplines." + key, lang) for key in discipline_keys])
+
+    for i, disc_key in enumerate(discipline_keys):
+        with sub_tabs[i]:
+            st.subheader(f"{_('certification_stats_header', lang)} - {_('disciplines.' + disc_key, lang)}")
+            
+            discipline_df = best_perf_df[best_perf_df['discipline'] == disc_key]
+
+            if discipline_df.empty:
+                st.info(_("no_stats_data", lang))
+                continue
+
+            # Aggregate data: calculate mean for each certification level
+            agg_df = discipline_df.groupby('certification')['parsed_value'].mean().reset_index()
+            agg_df['certification'] = pd.Categorical(agg_df['certification'], categories=cert_order, ordered=True)
+            agg_df = agg_df.sort_values('certification')
+            
+            # Prepare data for chart
+            if is_time_based_discipline(disc_key):
+                y_axis_title = f"{_('avg_performance_col', lang)} ({_('seconds_unit', lang)})"
+                agg_df['formatted_perf'] = agg_df['parsed_value'].apply(format_seconds_to_static_time)
+            else:
+                y_axis_title = f"{_('avg_performance_col', lang)} ({_('meters_unit', lang)})"
+                agg_df['formatted_perf'] = agg_df['parsed_value'].apply(lambda x: f"{int(x)}m")
+
+            # Create the bar chart
+            chart = alt.Chart(agg_df).mark_bar().encode(
+                x=alt.X('certification:N', title=_("certification_level_col", lang), sort=cert_order),
+                y=alt.Y('parsed_value:Q', title=y_axis_title, scale=alt.Scale(zero=False)),
+                # --- Color mapping added here ---
+                color=alt.Color('certification:N',
+                                scale=alt.Scale(domain=cert_order, range=cert_colors),
+                                legend=None  # Hide the legend as colors map directly to x-axis labels
+                               ),
+                tooltip=[
+                    alt.Tooltip('certification', title=_("certification_level_col", lang)),
+                    alt.Tooltip('formatted_perf', title=_("avg_performance_col", lang))
+                ]
+            ).properties(
+                width=alt.Step(40)  # controls width of bars
+            )
+            
+            # Add text labels on bars
+            text = chart.mark_text(
+                align='center',
+                baseline='bottom',
+                dy=-5,  # Nudges text up so it doesn't overlap with the bar
+                color='black' # Ensure text is readable
+            ).encode(
+                text='formatted_perf:N'
+            )
+            
+            st.altair_chart(chart + text, use_container_width=True)
+
+
 # --- Main App ---
 def main():
     # Initialize session state variables
-    if 'language' not in st.session_state: st.session_state.language = 'en'
+    if 'language' not in st.session_state: st.session_state.language = 'fr'
     if 'initiate_clear_training_inputs' not in st.session_state: st.session_state.initiate_clear_training_inputs = False
     if 'initiate_clear_feedback_inputs' not in st.session_state: st.session_state.initiate_clear_feedback_inputs = False
     if 'privileged_user_authenticated' not in st.session_state: st.session_state.privileged_user_authenticated = False
@@ -866,7 +984,7 @@ def main():
     if 'training_desc_buffer' not in st.session_state: st.session_state.training_desc_buffer = ""
     
     # Initialize feedback form buffers carefully
-    default_lang_for_init = st.session_state.get('language', 'en')
+    default_lang_for_init = st.session_state.get('language', 'fr')
     if 'feedback_for_user_buffer' not in st.session_state: 
         st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", default_lang_for_init)
     if 'feedback_training_session_buffer' not in st.session_state: 
@@ -1218,27 +1336,35 @@ def main():
     # --- Main Display Area ---
     tab_label_personal = _("personal_records_tab_label", lang)
     tab_label_feedback = _("my_feedback_tab_label", lang)
-    tab_label_main_feedback_log = _("feedback_log_tab_label", lang)
+    tab_label_level_performances = _("club_level_performance_tab_title", lang)
     tab_label_club_performances = _("club_performances_overview_tab_label", lang)
     tab_label_freedivers = _("freedivers_tab_title", lang) 
     tab_label_main_training_log = _("training_log_tab_title", lang)
     tab_label_performance_log = _("performance_log_tab_label", lang)
+    tab_label_main_feedback_log = _("feedback_log_tab_label", lang)
 
     if not current_user:
         st.info(_("select_user_prompt", lang))
     else:
-        tabs_to_display_names_main = [tab_label_personal, tab_label_feedback, tab_label_club_performances]
+        # Define tabs for all users
+        tabs_to_display_names_main = [tab_label_personal, tab_label_feedback, tab_label_level_performances]
+        
+        # Define tabs for admin users
+        admin_tabs = []
         if is_admin_view_authorized:
-            tabs_to_display_names_main.extend([
+            admin_tabs = [
+                tab_label_club_performances,
                 tab_label_freedivers, 
                 tab_label_main_training_log, 
                 tab_label_performance_log, 
                 tab_label_main_feedback_log
-            ])
+            ]
         
+        tabs_to_display_names_main.extend(admin_tabs)
         tab_objects_main = st.tabs(tabs_to_display_names_main)
         
-        with tab_objects_main[0]: # My Performances
+        # Tab 1: My Performances
+        with tab_objects_main[0]:
             user_records_for_tab = [r for r in all_records_loaded if r['user'] == current_user]
             if not user_records_for_tab:
                 st.info(_("no_performances_yet", lang))
@@ -1381,6 +1507,7 @@ def main():
                                 else:
                                     st.info("No changes detected.")
 
+        # Tab 2: My Feedback
         with tab_objects_main[1]: # My Feedback
             st.subheader(_("my_feedback_tab_label", lang))
             user_feedback = [fb for fb in instructor_feedback_loaded if fb.get('diver_name') == current_user]
@@ -1392,7 +1519,44 @@ def main():
                     with st.spinner("Génération du résumé..."):
                         all_feedback_text = "\n".join([f"- {fb['feedback_text']}" for fb in user_feedback])
 
-                        coach_spirit = '''
+                        adeps_coaching_instructions = '''
+                        
+                        À partir de maintenant, et pour toute notre conversation, tu vas agir en tant que moniteur sportif initiateur formé par l'Adeps. Ton rôle et tes réponses doivent être scrupuleusement basés sur la philosophie, la méthodologie et les principes décrits dans le document de formation "Didactique et méthodologie - Module 2 : Ma séance/mon intervention".
+
+                        Voici les instructions précises que tu dois suivre pour incarner ce rôle :
+
+                        1. Mission principale :
+                        Tes objectifs généraux sont toujours : Animer, Initier, et Fidéliser. Ton but ultime est de faire découvrir une discipline dans un climat positif pour encourager une pratique du sport à long terme.
+                        2. Style d'intervention :
+                        Tu adopteras systématiquement un style coopératif ("l'enseignant").
+                        Tu partages la prise de décision avec les sportifs.
+                        Tu les guides pour qu'ils deviennent autonomes et responsables.
+                        Tu n'es ni un "dictateur" (style directif) qui impose tout, ni un "baby-sitter" (style laisser-faire) qui est passif.
+                        3. Conception des séances et des tâches :
+                        Les "4 AS" : Chaque activité ou conseil que tu donnes doit viser à intégrer les "4 AS" : Apprentissage, Activation, Amusement, et Attitudes.
+                        La "Délicieuse Incertitude" : Tu dois concevoir ou adapter les exercices pour que le sportif se situe dans sa "zone de difficulté optimale", c'est-à-dire avec un taux de réussite de 70 à 80%. Le but est que la tâche ne soit ni trop facile (ennui) ni trop difficile (anxiété, découragement).
+                        Structure de séance : Toute séance que tu décris ou proposes doit respecter la structure en trois parties :
+                        Partie préparatoire (échauffement).
+                        Partie fondamentale (corps de la séance).
+                        Partie finale (retour au calme et débriefing).
+                        Adaptabilité : Tu dois être capable de simplifier ou de complexifier une tâche pour l'adapter au niveau du pratiquant.
+                        4. Communication et Feedback :
+                        Clarté : Ton langage doit être simple et tes phrases courtes. "Ce qui s'énonce simplement se comprend facilement".
+                        Feedback constructif : Lorsque tu donnes un feedback, tu dois :
+                        Prioriser le renforcement positif. Le rapport doit être d'environ 3 à 4 réactions positives pour 1 négative.
+                        Être spécifique et non général. Explique pourquoi une action était bonne.
+                        Corriger l'erreur primaire, pas seulement ses conséquences.
+                        Ne pas donner d'informations redondantes (par exemple, dire qu'une balle est dans le filet si le joueur le voit déjà).
+                        Questionnement : Utilise des questions ouvertes pour stimuler la réflexion du sportif sur sa propre pratique.
+                        5. Gestion de groupe et attitude :
+                        Tu dois toujours chercher à instaurer et maintenir un climat positif et bienveillant.
+                        Ton rôle est d'être un animateur : tu vis la séance avec les participants, tu encourages, tu relances l'activité et tu motives.
+                        Pour la gestion des problèmes, tu privilégies la prévention en créant un environnement de travail positif et en valorisant les bons comportements.
+                        En résumé, tu es un coach pédagogue, structuré, motivant et bienveillant. Chacune de tes réponses doit refléter cette approche et s'appuyer sur les concepts du document fourni.
+                        
+                        '''
+
+                        huron_spirit = '''
 
                         - tous les moniteurs ont tjrs raison selon eux... Le sport évolue beaucoup. Rester ouvert. Fonctionnement par chapitre, on travaille les chapitres un par un, et tant que c'est pas passé, on travaille le chapitre en question. Sur le moment on ne demande jamais pourquoi on nous donne une instruction, mais on peut en discuter une fois sorti de l'eau. On donne ce qui est nécessaire comme explication avant l'exercice si nécessaire.
                         - longe si on ne voit rien (sans masque, myope, mauvaise visi) ou si descend au delà de 30m.
@@ -1485,7 +1649,7 @@ def main():
 
                         '''
                         
-                        prompt = f"Voici une série de feedbacks pour un apnéiste. Tu es un coach d'apnée bienveillant, constructif, qui met avant les points forts et les axes d'amélioration principaux. Tu dois fournir un paragraphe encourageant, qui peux faire référence à des feedbacks précis, mais exprimés de manière confortante. Tu peux consulter des sites de références sur le web ainsi que des méthodes sur le coaching et la communication non violente. Voici de la théorie d'un coach que tu peux utiliser pour ton feedback: \n{coach_spirit}. Ne mentionne pas d'évènement spécifique qui pourrait être traumatisant. Feedbacks:\n{all_feedback_text}"
+                        prompt = f"Voici une série de feedbacks pour un apnéiste. Tu es un coach d'apnée bienveillant tel que décrit ici \n{adeps_coaching_instructions}. Tu dois fournir un paragraphe encourageant, qui peux faire référence à des feedbacks précis, mais exprimés de manière confortante. Tu peux consulter des sites de références sur le web ainsi que des méthodes sur le coaching et la communication non violente. Voici de la théorie d'un coach que tu peux utiliser pour ton feedback: {huron_spirit}. Ne mentionne pas d'évènement spécifique qui pourrait être traumatisant. Le niveau actual de l'apnéiste est le suivant : {current_cert_index_sidebar}. Feedbacks:\n{all_feedback_text}"
                         
                         try:
                             # This is a placeholder for the actual API call
@@ -1525,81 +1689,87 @@ def main():
                     # st.subheader(_("feedback_summary_header", lang))
                     st.write(st.session_state['feedback_summary'])
 
-        
-        with tab_objects_main[2]: # Club Performances
-            if not all_records_loaded:
-                st.info(_("no_ranking_data", lang))
-            else:
-                with st.container(border=True):
-                    st.subheader(_("club_bests_subheader", lang))
-                    club_pbs = {}
-                    for disc_key_club_pb in discipline_keys:
-                        club_disc_records = [r for r in all_records_loaded if r['discipline'] == disc_key_club_pb and r.get('parsed_value') is not None]
-                        if not club_disc_records: 
-                            club_pbs[disc_key_club_pb] = ("N/A", None, None, None)
-                            continue
-                        
-                        best_club_record = min(club_disc_records, key=lambda x: x['parsed_value']) if is_lower_better(disc_key_club_pb) else max(club_disc_records, key=lambda x: x['parsed_value'])
-                        club_pb_value_formatted = format_seconds_to_static_time(best_club_record['parsed_value']) if is_time_based_discipline(disc_key_club_pb) else f"{int(best_club_record['parsed_value'])}m"
-                        session_details = get_training_session_details(best_club_record.get('linked_training_session_id'), training_log_loaded)
-                        club_pbs[disc_key_club_pb] = (club_pb_value_formatted, best_club_record['user'], session_details['event_name'], session_details['event_date'])
+        # Tab 3: Performances by Level
+        with tab_objects_main[2]:
+            display_level_performance_tab(all_records_loaded, user_profiles, discipline_keys, lang)
 
-                    cols_club_pb = st.columns(len(discipline_keys))
-                    for i, disc_key_club_pb_col in enumerate(discipline_keys):
-                        val_club, user_club, event_name_club, event_date_club = club_pbs.get(disc_key_club_pb_col)
-                        with cols_club_pb[i]:
-                            translated_full_disc_name_club = _("disciplines." + disc_key_club_pb_col, lang)
-                            short_disc_name_club = translated_full_disc_name_club.split('(')[0].strip() or translated_full_disc_name_club
-                            display_user_club = get_display_name(user_club, user_profiles, lang) if user_club else _("anonymous_freediver_name", lang) 
-                            st.metric(label=_("club_best_label", lang, discipline_short_name=short_disc_name_club), value=val_club)
-                            if user_club and event_date_club:
-                                st.caption(_("achieved_at_event_on_date_caption", lang, user=display_user_club, event_name=event_name_club, event_date=event_date_club))
-                            elif val_club == "N/A":
-                                st.caption(_("no_record_yet_caption", lang))
-
-                st.markdown("---")
-                
-                ranking_sub_tab_titles = [_("disciplines." + key, lang) for key in discipline_keys]
-                ranking_sub_tabs = st.tabs(ranking_sub_tab_titles)
-                for i_rank_sub_tab, selected_discipline_ranking_key in enumerate(discipline_keys):
-                    with ranking_sub_tabs[i_rank_sub_tab]:
-                        user_pbs_for_discipline_ranking = []
-                        for u_rank_tab in all_known_users_list:
-                            user_specific_discipline_records_ranking = [r for r in all_records_loaded if r['user'] == u_rank_tab and r['discipline'] == selected_discipline_ranking_key and r.get('parsed_value') is not None]
-                            if user_specific_discipline_records_ranking:
-                                best_record_for_user_ranking = min(user_specific_discipline_records_ranking, key=lambda x: x['parsed_value']) if is_lower_better(selected_discipline_ranking_key) else max(user_specific_discipline_records_ranking, key=lambda x: x['parsed_value'])
-                                session_details = get_training_session_details(best_record_for_user_ranking.get('linked_training_session_id'), training_log_loaded)
-                                user_pbs_for_discipline_ranking.append({
-                                    "user": u_rank_tab, 
-                                    "parsed_value": best_record_for_user_ranking['parsed_value'], 
-                                    "event_date": session_details['event_date'], 
-                                    "event_name": session_details['event_name']
-                                })
-                        
-                        sort_reverse_ranking = not is_lower_better(selected_discipline_ranking_key)
-                        sorted_rankings_tab = sorted(user_pbs_for_discipline_ranking, key=lambda x: x['parsed_value'], reverse=sort_reverse_ranking)
-
-                        if not sorted_rankings_tab:
-                            st.info(_("no_ranking_data", lang))
-                        else:
-                            # Full Ranking Table
-                            st.subheader(_("full_ranking_header", lang))
-                            ranking_table_data = []
-                            for rank_idx, rank_item in enumerate(sorted_rankings_tab):
-                                perf_display = format_seconds_to_static_time(rank_item['parsed_value']) if is_time_based_discipline(selected_discipline_ranking_key) else f"{int(rank_item['parsed_value'])}m"
-                                ranking_table_data.append({
-                                    _("rank_col", lang): rank_idx + 1,
-                                    _("user_col", lang): get_display_name(rank_item['user'], user_profiles, lang),
-                                    _("best_performance_col", lang): perf_display,
-                                    _("event_col", lang): rank_item.get('event_name', "N/A"),
-                                    _("date_achieved_col", lang): rank_item.get('event_date', "N/A")
-                                })
-                            st.dataframe(pd.DataFrame(ranking_table_data), use_container_width=True, hide_index=True)
-
-        
+        # Admin Tabs
         if is_admin_view_authorized:
             admin_tabs_start_index = 3
-            with tab_objects_main[admin_tabs_start_index]: # Freedivers
+            
+            # Tab 4: Club Rankings (Admin Only)
+            with tab_objects_main[admin_tabs_start_index]: 
+                if not all_records_loaded:
+                    st.info(_("no_ranking_data", lang))
+                else:
+                    with st.container(border=True):
+                        st.subheader(_("club_bests_subheader", lang))
+                        club_pbs = {}
+                        for disc_key_club_pb in discipline_keys:
+                            club_disc_records = [r for r in all_records_loaded if r['discipline'] == disc_key_club_pb and r.get('parsed_value') is not None]
+                            if not club_disc_records: 
+                                club_pbs[disc_key_club_pb] = ("N/A", None, None, None)
+                                continue
+                            
+                            best_club_record = min(club_disc_records, key=lambda x: x['parsed_value']) if is_lower_better(disc_key_club_pb) else max(club_disc_records, key=lambda x: x['parsed_value'])
+                            club_pb_value_formatted = format_seconds_to_static_time(best_club_record['parsed_value']) if is_time_based_discipline(disc_key_club_pb) else f"{int(best_club_record['parsed_value'])}m"
+                            session_details = get_training_session_details(best_club_record.get('linked_training_session_id'), training_log_loaded)
+                            club_pbs[disc_key_club_pb] = (club_pb_value_formatted, best_club_record['user'], session_details['event_name'], session_details['event_date'])
+
+                        cols_club_pb = st.columns(len(discipline_keys))
+                        for i, disc_key_club_pb_col in enumerate(discipline_keys):
+                            val_club, user_club, event_name_club, event_date_club = club_pbs.get(disc_key_club_pb_col)
+                            with cols_club_pb[i]:
+                                translated_full_disc_name_club = _("disciplines." + disc_key_club_pb_col, lang)
+                                short_disc_name_club = translated_full_disc_name_club.split('(')[0].strip() or translated_full_disc_name_club
+                                display_user_club = get_display_name(user_club, user_profiles, lang) if user_club else _("anonymous_freediver_name", lang) 
+                                st.metric(label=_("club_best_label", lang, discipline_short_name=short_disc_name_club), value=val_club)
+                                if user_club and event_date_club:
+                                    st.caption(_("achieved_at_event_on_date_caption", lang, user=display_user_club, event_name=event_name_club, event_date=event_date_club))
+                                elif val_club == "N/A":
+                                    st.caption(_("no_record_yet_caption", lang))
+
+                    st.markdown("---")
+                    
+                    ranking_sub_tab_titles = [_("disciplines." + key, lang) for key in discipline_keys]
+                    ranking_sub_tabs = st.tabs(ranking_sub_tab_titles)
+                    for i_rank_sub_tab, selected_discipline_ranking_key in enumerate(discipline_keys):
+                        with ranking_sub_tabs[i_rank_sub_tab]:
+                            user_pbs_for_discipline_ranking = []
+                            for u_rank_tab in all_known_users_list:
+                                user_specific_discipline_records_ranking = [r for r in all_records_loaded if r['user'] == u_rank_tab and r['discipline'] == selected_discipline_ranking_key and r.get('parsed_value') is not None]
+                                if user_specific_discipline_records_ranking:
+                                    best_record_for_user_ranking = min(user_specific_discipline_records_ranking, key=lambda x: x['parsed_value']) if is_lower_better(selected_discipline_ranking_key) else max(user_specific_discipline_records_ranking, key=lambda x: x['parsed_value'])
+                                    session_details = get_training_session_details(best_record_for_user_ranking.get('linked_training_session_id'), training_log_loaded)
+                                    user_pbs_for_discipline_ranking.append({
+                                        "user": u_rank_tab, 
+                                        "parsed_value": best_record_for_user_ranking['parsed_value'], 
+                                        "event_date": session_details['event_date'], 
+                                        "event_name": session_details['event_name']
+                                    })
+                            
+                            sort_reverse_ranking = not is_lower_better(selected_discipline_ranking_key)
+                            sorted_rankings_tab = sorted(user_pbs_for_discipline_ranking, key=lambda x: x['parsed_value'], reverse=sort_reverse_ranking)
+
+                            if not sorted_rankings_tab:
+                                st.info(_("no_ranking_data", lang))
+                            else:
+                                # Full Ranking Table
+                                st.subheader(_("full_ranking_header", lang))
+                                ranking_table_data = []
+                                for rank_idx, rank_item in enumerate(sorted_rankings_tab):
+                                    perf_display = format_seconds_to_static_time(rank_item['parsed_value']) if is_time_based_discipline(selected_discipline_ranking_key) else f"{int(rank_item['parsed_value'])}m"
+                                    ranking_table_data.append({
+                                        _("rank_col", lang): rank_idx + 1,
+                                        _("user_col", lang): get_display_name(rank_item['user'], user_profiles, lang),
+                                        _("best_performance_col", lang): perf_display,
+                                        _("event_col", lang): rank_item.get('event_name', "N/A"),
+                                        _("date_achieved_col", lang): rank_item.get('event_date', "N/A")
+                                    })
+                                st.dataframe(pd.DataFrame(ranking_table_data), use_container_width=True, hide_index=True)
+
+            # Tab 5: Freedivers (Admin Only)
+            with tab_objects_main[admin_tabs_start_index + 1]: 
                 st.subheader(_("edit_freedivers_header", lang))
                 
                 freedivers_data_for_editor = [] 
