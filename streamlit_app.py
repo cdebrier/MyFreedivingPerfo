@@ -1106,11 +1106,12 @@ def main():
             
     # --- Sidebar: Profile Section ---
     if current_user: 
+        # Recharger le profil utilisateur à chaque changement d'utilisateur pour afficher les bons champs
+        user_profile_data_sidebar = user_profiles.get(current_user, {})
+
         with st.sidebar.expander(_("profile_header_sidebar", lang)):
             with st.form(key="profile_form_sidebar_main", border=False): 
-                
-                user_profile_data_sidebar = user_profiles.get(current_user, {})
-                
+                # Pré-remplir les champs avec les valeurs du profil utilisateur
                 current_certification_sidebar = user_profile_data_sidebar.get("certification", _("no_certification_option", lang))
                 cert_level_keys_from_dict_sidebar = list(TRANSLATIONS[lang]["certification_levels"].keys())
                 actual_selectbox_options_sidebar = [_("no_certification_option", lang)] + cert_level_keys_from_dict_sidebar
@@ -1139,6 +1140,27 @@ def main():
                 st.checkbox(
                     _("anonymize_results_label", lang), value=user_profile_data_sidebar.get("anonymize_results", False), key="anonymize_profile_form_sb" 
                 )
+
+                # Champ motivations
+                st.text_area(
+                    "Motivations à faire de l'apnée :", 
+                    value=user_profile_data_sidebar.get("motivations", ""), 
+                    key="motivations_profile_form_sb"
+                )
+
+                # Champ projection à 3 ans
+                st.text_area(
+                    "Où vous imaginez vous dans votre pratique de l'apnée dans 3 ans ?",
+                    value=user_profile_data_sidebar.get("projection_3_ans", ""),
+                    key="projection_3_ans_profile_form_sb"
+                )
+
+                # Champ texte pour le portrait photo
+                st.text_area(
+                    "Texte pour le portrait  photo",
+                    value=user_profile_data_sidebar.get("portrait_photo_text", ""),
+                    key="portrait_photo_text_profile_form_sb"
+                )
                 
                 submitted_save_profile = st.form_submit_button(_("save_profile_button", lang))
 
@@ -1149,6 +1171,9 @@ def main():
                     user_profiles[current_user]["certification_date"] = cert_date_val.isoformat() if cert_date_val else None
                     user_profiles[current_user]["lifras_id"] = st.session_state.lifras_id_profile_form_sb.strip()
                     user_profiles[current_user]["anonymize_results"] = st.session_state.anonymize_profile_form_sb
+                    user_profiles[current_user]["motivations"] = st.session_state.motivations_profile_form_sb.strip()
+                    user_profiles[current_user]["projection_3_ans"] = st.session_state.projection_3_ans_profile_form_sb.strip()
+                    user_profiles[current_user]["portrait_photo_text"] = st.session_state.portrait_photo_text_profile_form_sb.strip()
                     save_user_profiles(user_profiles)
                     st.success(_("profile_saved_success", lang, user=current_user))
                     st.rerun()
@@ -1304,13 +1329,22 @@ def main():
                     sel_fb_training_id = None
                     if sel_fb_training_disp != _("select_training_prompt", lang):
                         for log_id, display_str in training_session_options_fb_form.items():
-                            if display_str == sel_fb_training_disp: sel_fb_training_id = log_id; break
+                            if display_str == sel_fb_training_disp:
+                                sel_fb_training_id = log_id
+                                break
                     
                     if sel_fb_for_user == _("select_freediver_prompt", lang): st.error("Please select a freediver for the feedback.") 
                     elif not current_user: st.error("Instructor not identified.") 
                     elif not sel_fb_text: st.error(_("feedback_text_empty_error", lang))
                     else:
-                        new_feedback = {"id": uuid.uuid4().hex, "feedback_date": date.today().isoformat(), "diver_name": sel_fb_for_user, "training_session_id": sel_fb_training_id, "instructor_name": current_user, "feedback_text": sel_fb_text}
+                        new_feedback = {
+                            "id": uuid.uuid4().hex,
+                            "feedback_date": date.today().isoformat(),
+                            "diver_name": sel_fb_for_user,
+                            "training_session_id": sel_fb_training_id,  # <-- Correction ici
+                            "instructor_name": current_user,
+                            "feedback_text": sel_fb_text
+                        }
                         instructor_feedback_loaded.append(new_feedback)
                         save_instructor_feedback(instructor_feedback_loaded)
                         st.success(_("feedback_saved_success", lang))

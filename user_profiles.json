@@ -33,7 +33,10 @@
         "certification": "S4",
         "certification_date": "2024-05-13",
         "lifras_id": "54041",
-        "anonymize_results": false
+        "anonymize_results": false,
+        "motivations": "Pour partager une passion avec d'autres personnes, m'améliorer dans une pratique que j'aime, rencontrer de nouvelles personnes\t\nFavoriser le développement de l'apnée à Rixensart et alentours. Aider à créer un groupe d'apnéistes soudés et motivés à vivre leur passion.",
+        "projection_3_ans": "Instructeur",
+        "portrait_photo_text": "Ferme les yeux. Imagine...\n\nQuelques minutes suspendues. \nHors du temps. \nUn moment intime avec toi-même. \nUne méditation aquatique. \nUn sport qui ancre, qui canalise.\nQui t'invite à respirer autrement. \nUne communauté bienveillante.\nDes rencontres sincères. \nUne connexion simple à la nature. \nUne pratique variée.\nUn moment de partage.\nDe la nouveauté.\n\nPuis tu glisses. \nTu ressens la pression de l'eau qui t’enveloppe. \nTu te questionnes. \nTu sors de ta zone de confort. \nTu repousses tes limites. \nTa confiance en toi grandit. \nEt tu te découvres finalement plus vivant. \n\nCharles, apnéiste curieux\n\n\nPs: et accessoirement, tu as remanié \u0003100x ton texte et tu t'étonnes d'avoir \u0003gardé le plus introspectif, le plus long,\u0003et le moins comique :). Bref, tu te surprends, \net te dis que c'est bien de pratiquer \u0003une discipline pour canaliser tes idées.\nTu te dis aussi qu'il semble tout de même y \navoir un effet Dahab derrière tout cela."
     },
     "Charles D.T.": {
         "certification": "A1",
@@ -45,7 +48,10 @@
         "certification": "A2",
         "certification_date": null,
         "lifras_id": "",
-        "anonymize_results": true
+        "anonymize_results": true,
+        "motivations": "La genèse du bien-être. \n\nImplication en fonction des opportunités.",
+        "projection_3_ans": "Brevet S3",
+        "portrait_photo_text": "Je n'ai pas eu besoin de l'astrologie chinoise pour savoir que mon élément est l'eau. \nAprès la natation, la voile, le snorkeling et la plongée bouteille, l'apnée est comme le graal."
     },
     "Déborah L.": {
         "certification": "A1",
@@ -81,13 +87,19 @@
         "certification": "A3",
         "certification_date": "2024-07-02",
         "lifras_id": "54925",
-        "anonymize_results": true
+        "anonymize_results": true,
+        "motivations": "Le plaisir de la détente, d'être dans l'eau, de plonger en mer et de sentir le free fall\t\n\nLe plaisir de partager une passion, l'échange, la bonne humeur, et je me vois S3 candidat S4 qui encadre de nouveaux passionnés ou des pas si nouveaux",
+        "projection_3_ans": "Plonger plus souvent en mer, descendre à 50m, encadrer des apneistes en formation",
+        "portrait_photo_text": ""
     },
     "Grégoire L.": {
         "certification": "A2",
         "certification_date": null,
         "lifras_id": "",
-        "anonymize_results": true
+        "anonymize_results": true,
+        "motivations": "Épanouissement personnel, détente, pratiquer une activité plus physique avec la partie dynamique, et éventuellement faire quelques bonnes performances 😊\n\nJ'espère dès que possible pouvoir apporter mon aide et partager mes acquis",
+        "projection_3_ans": "J'espère que j'encadrerai dans mon club mais je resterai affilié aux Macareux pour progresser",
+        "portrait_photo_text": ""
     },
     "Lauranne P.": {
         "certification": "A1",
@@ -99,7 +111,10 @@
         "certification": "A1",
         "certification_date": "2021-09-14",
         "lifras_id": "53721",
-        "anonymize_results": true
+        "anonymize_results": true,
+        "motivations": "Pouvoir explorer le milieu marin sans trop de contingence techniques (bouteilles etc.), m'y sentir le plus libre et autonome possible. Pas nécessairement aller le plus profond possible.",
+        "projection_3_ans": "J'espère continuer a progresser.",
+        "portrait_photo_text": ""
     },
     "Martin V.": {
         "certification": "A1",
@@ -123,19 +138,28 @@
         "certification": "A2",
         "certification_date": "2022-04-08",
         "lifras_id": "30689",
-        "anonymize_results": true
+        "anonymize_results": true,
+        "motivations": "Améliorer mon mental et rencontrer des gens sympa\n\naide ponctuelle en cas d'activités sociale. Aide aux débutants",
+        "projection_3_ans": "nager avec les cachalots comme on a vu dans une vidéo",
+        "portrait_photo_text": ""
     },
     "Philippe K.": {
         "certification": "I1",
         "certification_date": "2023-12-01",
         "lifras_id": "10194",
-        "anonymize_results": true
+        "anonymize_results": true,
+        "motivations": "Calme et sérénité",
+        "projection_3_ans": "Plus  chef d'école mais back up de l'un de vous.",
+        "portrait_photo_text": ""
     },
     "Rémy L.": {
         "certification": "A3",
         "certification_date": "2022-02-21",
         "lifras_id": "43187",
-        "anonymize_results": true
+        "anonymize_results": true,
+        "motivations": "L'apnée comme philosophie de vie, une approche holistique de la découverte de soi (Le corps et l'esprit plus le bien être que procure l'élément eau) et le partage avec les autres. L'esprit club lifras est très important pour moi car j'ai commencé avec la plongée bouteille à la lifras et j'ai tout de suite adhéré à ses valeurs.\t\n\nParticiper au partage d'une passion et quelque part pouvoir transmettre ce que j'ai reçu",
+        "projection_3_ans": "\"J'aimerais que les 5min puissent être dans ma zone de confort, dépasser les 100m, améliorer mon aquacité, maîtriser la compensation pour dépasser les 30m avec confort...et puis être en mesure d'encadrer de manière plus régulière.",
+        "portrait_photo_text": ""
     },
     "Sébastien L.": {
         "certification": "NB",
@@ -153,6 +177,15 @@
         "certification": "S4",
         "certification_date": "2023-12-01",
         "lifras_id": "38397",
+        "anonymize_results": true,
+        "motivations": "Faire du sport et me détendre\t\n\nAider à l'enseignement théorique et pratique",
+        "projection_3_ans": "Dans l'eau ;)",
+        "portrait_photo_text": "Quand la respiration s'arrête l'espace d'un silence,\nQue la raison se met en pause le temps d'une apnée,\nJe peux retrouver une partie de moi, souvent masquée,\nUn fragment mal aimé, au bord de la conscience.\n\nApaiser la voix intérieure qui dit \"non\",\nEcouter son corps qui veut souffler,\nRelaxer son organisme et, doucement, glisser,\nS'enfoncer dans le calme, et se re-connaître, au fond.\n\nPlonger en apnée, c'est gérer ses sensations,\nObserver son corps, décider de ses réactions,\nVivre le moment présent, sans illusion de danger,\nEt accepter de se confier, à soi, pour changer.\n\nPerceptions, informations et alertes sont démêlées.\nLe processus peut, lentement, se dérouler,\nPour qu'enfin j'intègre l'indéniable évidence:\nLa performance est une conséquence."
+    },
+    "Xavier H.": {
+        "certification": "A1",
+        "certification_date": null,
+        "lifras_id": "None",
         "anonymize_results": true
     },
     "Xavier M.": {
@@ -165,12 +198,18 @@
         "certification": "A2",
         "certification_date": "2022-03-04",
         "lifras_id": "29525",
-        "anonymize_results": true
+        "anonymize_results": true,
+        "motivations": "Comme dit plusieurs fois, mon but dans l'apnée.. c'est.. l'amélioration de la technique (palmage, statique, compensation..) pour apporter cela du coté obscur de la force, la plongée bouteille :-)\t20 ans de plongée (bouteille), 1000 plongées... je connais le fonctionnement d'un club sportif. J'aime bien partager ma passion.. et je suis à l'écoute (enfin j'espère) des autres... \n\nSuper Charles ! Tu fais un top boulot ! Merci pour tout le monde !",
+        "projection_3_ans": "75 m en dynamique :-)",
+        "portrait_photo_text": ""
     },
-    "Xavier H.": {
-        "certification": "A1",
+    "Stéphane D.": {
+        "certification": "NB",
         "certification_date": null,
         "lifras_id": "None",
-        "anonymize_results": true
+        "anonymize_results": true,
+        "motivations": "Communion avec la nature. Photographie sous marine, plus \"sportif\" que bouteille...\tJe m 'investis deja dans plusieurs associations, c'est normal et indispensable pour moi. Mais je manque de temps. \n\nJe suis prêt à m'investir si je peux gérer cette contrainte temps ( redaction d'articles, coup de main ponctuel, etc...)",
+        "projection_3_ans": "Dans le blue hole ( joke evidemment)",
+        "portrait_photo_text": "Plongeur bouteille et photographe, j’ai toujours aimé explorer les fonds marins, appareil en main, à la recherche de moments uniques, comme je le fais sur terre. Aujourd’hui, j’aspire à plus de légèreté : ne plus être qu’un souffle, une présence discrète dans l’univers silencieux de l’eau. Juste moi, mon appareil, et le vivant. L’apnée m’impose une autre forme de maîtrise, plus intime, plus instinctive. Le chemin est exigeant, surtout avec mes difficultés actuelles à compenser mes oreilles. Mais ce défi me pousse à avancer. L’apnée me rapproche des animaux marins, dans un respect total de leur monde. Pour moi, c’est une façon de fusionner avec la nature."
     }
 }
