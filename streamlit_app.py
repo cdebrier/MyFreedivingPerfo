@@ -1371,7 +1371,7 @@ def main():
     tab_label_main_training_log = _("training_log_tab_title", lang)
     tab_label_performance_log = _("performance_log_tab_label", lang)
     tab_label_main_feedback_log = _("feedback_log_tab_label", lang)
-    tab_label_portraits = "Portraits du club"  # Ajout du nouvel onglet
+    tab_label_portraits = "👤 Portraits du club"  # Ajout du nouvel onglet
 
 
     if not current_user:
@@ -1759,12 +1759,24 @@ def main():
                 st.info("Aucun portrait renseigné pour le moment.")
             else:
                 # Palette de couleurs pastel
+                # colors = [
+                #     "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF",
+                #     "#D5BAFF", "#FFC6FF", "#B5FFD9", "#FFF5BA", "#BAFFD9"
+                # ]
                 colors = [
-                    "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF",
-                    "#D5BAFF", "#FFC6FF", "#B5FFD9", "#FFF5BA", "#BAFFD9"
+                    "#E3F2FD",  # Bleu très clair
+                    "#BBDEFB",  # Bleu clair
+                    # "#90CAF9",  # Bleu moyen clair
+                    # "#64B5F6",  # Bleu moyen
+                    # "#42A5F5",  # Bleu
+                    # "#2196F3",  # Bleu vif
+                    # "#1E88E5",  # Bleu un peu plus foncé
+                    # "#1976D2",  # Bleu foncé
+                    # "#1565C0",  # Bleu encore plus foncé
+                    # "#0D47A1"   # Bleu très foncé
                 ]
                 random.shuffle(portraits)
-                n_cols = 3
+                n_cols = 2
                 rows = [portraits[i:i+n_cols] for i in range(0, len(portraits), n_cols)]
                 for row in rows:
                     cols = st.columns(n_cols)
