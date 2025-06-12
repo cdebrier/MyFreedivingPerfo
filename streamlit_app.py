@@ -44,7 +44,7 @@ TRANSLATIONS = {
         "profile_header_sidebar": "👤 Profil Apnéiste",
         "select_user_first_warning": "Connectez-vous pour enregistrer des performances.",
         "logging_for": "Enregistrement pour : **{user}**",
-        "link_training_session_label": "Session d'Entraînement",
+        "link_training_session_label": "Activité",
         "no_specific_session_option": "Événement personnalisé / Aucune session spécifique",
         "entry_date_label": "Date d'Entrée",
         "discipline": "Discipline",
@@ -62,8 +62,22 @@ TRANSLATIONS = {
         "no_performances_yet": "Aucune performance enregistrée pour cet apnéiste. Ajoutez-en via la barre latérale !",
         "personal_bests_subheader": "🌟 Records Personnels",
         "club_bests_subheader": "🏆 Meilleures Performances du Club",
-        "pb_label": "PB {discipline_short_name}",
-        "club_best_label": "Record Club {discipline_short_name}",
+        "pb_labels": {
+            "Dynamic Bi-fins (DYN-BF)": "Record DYNB",
+            "Static Apnea (STA)": "Record STA",
+            "Dynamic No-fins (DNF)": "Record DNF",
+            "Depth (CWT/FIM)": "Record CWT/FIM",
+            "Depth (VWT/NLT)": "Record VWT/NLT",
+            "16x25m Speed Endurance": "Record 16x25m"
+        },
+        "club_best_labels": {
+            "Dynamic Bi-fins (DYN-BF)": "Record Club DYNB",
+            "Static Apnea (STA)": "Record Club STA",
+            "Dynamic No-fins (DNF)": "Record Club DNF",
+            "Depth (CWT/FIM)": "Record Club CWT/FIM",
+            "Depth (VWT/NLT)": "Record Club VWT/NLT",
+            "16x25m Speed Endurance": "Record Club 16x25m"
+        },
         "achieved_at_event_on_date_caption": "Par {user} à {event_name} le {event_date}",
         "achieved_on_event_caption": "{event_name}, {event_date}",
         "no_record_yet_caption": "Aucun record pour l'instant",
@@ -152,7 +166,7 @@ TRANSLATIONS = {
         "history_updated_success": "Historique mis à jour avec succès.",
         "critical_error_edit_id_not_found": "Erreur critique : ID d'enregistrement '{record_id}' à modifier non trouvé dans la liste principale. Modification annulée.",
         "club_performances_tab_title": "📈 Performances du Club",
-        "club_level_performance_tab_title": "🏆 Performances par Niveau",
+        "club_level_performance_tab_title": "🏆 Performances du Club",
         "no_data_for_club_performance_display": "Aucune donnée de performance disponible pour le club dans cette discipline.",
         "quarterly_average_label": "Moyenne Trimestrielle",
         "freedivers_tab_title": "🫂 Apnéistes",
@@ -175,20 +189,20 @@ TRANSLATIONS = {
         "original_name_col_editor_hidden": "nom_original",
         "freediver_certification_summary_header": "🔢 Apnéistes par Niveau de Brevet",
         "count_col": "Nombre",
-        "training_log_tab_title": "📅 Entraînements",
-        "log_training_header_sidebar": "🏋️ Nouvel Entraînement",
-        "training_date_label": "Date de l'Entraînement",
+        "training_log_tab_title": "📅 Activités",
+        "log_training_header_sidebar": "🏋️ Nouvelle Activité",
+        "training_date_label": "Date de l'Activité",
         "training_place_label": "Lieu",
         "training_description_label": "Description",
-        "save_training_button": "💾 Enregistrer l'Entraînement",
-        "training_session_saved_success": "Session d'entraînement enregistrée !",
-        "training_description_empty_error": "La description de l'entraînement ne peut pas être vide.",
-        "training_log_table_header": "📋 Sessions d'Entraînement (Modifiable)",
-        "save_training_log_changes_button": "💾 Sauvegarder le Journal d'Entraînement",
-        "training_log_updated_success": "Journal d'entraînement mis à jour avec succès.",
+        "save_training_button": "💾 Enregistrer l'Activité",
+        "training_session_saved_success": "Activité enregistrée !",
+        "training_description_empty_error": "La description de l'activité ne peut pas être vide.",
+        "training_log_table_header": "📋 Activité (Modifiable)",
+        "save_training_log_changes_button": "💾 Sauvegarder l'Activité",
+        "training_log_updated_success": "Activité mise à jour avec succès.",
         "performance_log_tab_label": "📜 Journal des Performances",
-        "performances_overview_tab_label": "Vue d'ensemble",
-        "edit_performances_sub_tab_label": "Modification",
+        "performances_overview_tab_label": "📅 Journal des Performances",
+        "edit_performances_sub_tab_label": "📝 Editer",
         "save_all_performances_button": "💾 Sauvegarder les Modifications du Journal",
         "all_performances_updated_success": "Journal des performances mis à jour avec succès.",
         "feedback_log_tab_label": "💬 Feedbacks",
@@ -200,7 +214,7 @@ TRANSLATIONS = {
         "edit_feedbacks_sub_tab_label": "📝 Modifier les Feedbacks",
         "log_feedback_header_sidebar": "📝 Feedback Instructeur",
         "feedback_for_freediver_label": "Apnéiste :",
-        "training_session_label": "Session d'Entraînement Liée :",
+        "training_session_label": "Activité Liée :",
         "instructor_name_label": "Instructeur :",
         "feedback_text_label": "Feedback :",
         "save_feedback_button": "💾 Enregistrer Feedback",
@@ -215,13 +229,13 @@ TRANSLATIONS = {
         "select_training_prompt": "Sélectionnez une session (optionnel)",
         "select_freediver_prompt": "Sélectionnez l'Apnéiste",
         "select_instructor_prompt": "Sélectionnez l'Instructeur",
-        "detailed_training_sessions_subheader": "Détail des Sessions d'Entraînement",
-        "training_sessions_sub_tab_label": "🗓️ Sessions d'Entraînement",
-        "edit_training_sessions_sub_tab_label": "✏️ Modifier Sessions d'Entraînement",
+        "detailed_training_sessions_subheader": "Activités",
+        "training_sessions_sub_tab_label": "🗓️ Journal d'Activités",
+        "edit_training_sessions_sub_tab_label": "✏️ Editer",
         "no_description_available": "Aucune description disponible.",
-        "no_training_sessions_logged": "Aucune session d'entraînement enregistrée pour le moment.",
+        "no_training_sessions_logged": "Aucune activité enregistrée pour le moment.",
         "filter_by_freediver_label": "Filtrer par Apnéiste :",
-        "filter_by_training_session_label": "Filtrer par Session d'Entraînement :",
+        "filter_by_training_session_label": "Filtrer par Activité :",
         "filter_by_instructor_label": "Filtrer par Instructeur :",
         "filter_by_discipline_label": "Filtrer par Discipline :",
         "all_freedivers_option": "Tous les Apnéistes",
@@ -307,6 +321,7 @@ def migrate_and_clean_records(records_list, training_logs):
                  updated = True
     return updated
 
+# @st.cache_data
 def load_records(training_logs):
     """Loads performance records and runs migration/cleaning."""
     try:
@@ -324,6 +339,7 @@ def save_records(records):
         json.dump(records, f, indent=4, ensure_ascii=False)
 
 # --- Data Handling for User Profiles ---
+# @st.cache_data
 def load_user_profiles():
     try:
         with open(USER_PROFILES_FILE, 'r', encoding='utf-8') as f:
@@ -345,6 +361,7 @@ def ensure_training_log_ids(log_list):
             updated = True
     return updated
 
+# @st.cache_data
 def load_training_log():
     try:
         with open(TRAINING_LOG_FILE, 'r', encoding='utf-8') as f:
@@ -383,6 +400,7 @@ def save_instructor_feedback(feedback_data):
         json.dump(feedback_data, f, indent=4, ensure_ascii=False)
 
 # --- Authentication Config Handling ---
+@st.cache_data(ttl=300)
 def get_auth_config():
     """
     Loads authenticator config from config.yaml.
@@ -632,23 +650,24 @@ def main():
     st.set_page_config(page_title=_("page_title", lang), layout="wide", initial_sidebar_state="expanded")
     
     # Load all data
-    config = get_auth_config()
+    # config = get_auth_config()
     training_log_loaded = load_training_log()
     all_records_loaded = load_records(training_log_loaded)
     user_profiles = load_user_profiles()
     instructor_feedback_loaded = load_instructor_feedback()
 
     # --- Authenticator Setup ---
-    authenticator = stauth.Authenticate(
-        config['credentials'],
-        config['cookie']['name'],
-        config['cookie']['key'],
-        config['cookie']['expiry_days']
-    )
+    # authenticator = stauth.Authenticate(
+    #     config['credentials'],
+    #     config['cookie']['name'],
+    #     config['cookie']['key'],
+    #     config['cookie']['expiry_days']
+    # )
 
     # --- Login Form and Sidebar Content ---
     with st.sidebar:
-        authenticator.login()
+        # authenticator.login()
+        st.session_state["authentication_status"] = True
 
         if st.session_state["authentication_status"]:
             current_user = st.session_state.get("name")
@@ -719,6 +738,7 @@ def main():
                         user_profiles[current_user]["projection_3_ans"] = st.session_state.projection_3_ans_profile_form_sb.strip()
                         user_profiles[current_user]["portrait_photo_text"] = st.session_state.portrait_photo_text_profile_form_sb.strip()
                         save_user_profiles(user_profiles)
+                        load_user_profiles.clear()
                         st.success(_("profile_saved_success", lang, user=current_user))
                         st.rerun()
 
@@ -754,7 +774,7 @@ def main():
             with st.form(key="log_performance_form_sidebar_main"):
                 st.write(_("logging_for", lang, user=current_user))
                 if not training_log_loaded:
-                    st.warning("Veuillez d'abord créer une session d'entraînement.")
+                    st.warning("Veuillez d'abord créer une activité.")
                     st.form_submit_button(_("save_performance_button", lang), disabled=True)
                 else:
                     discipline_keys = ["Dynamic Bi-fins (DYN-BF)", "Static Apnea (STA)", "Dynamic No-fins (DNF)", "Depth (CWT/FIM)", "Depth (VWT/NLT)", "16x25m Speed Endurance"]
@@ -845,7 +865,8 @@ def main():
                                 st.success(_("feedback_saved_success", lang))
                                 st.session_state.initiate_clear_feedback_inputs = True
                                 st.rerun()
-            authenticator.logout(_("logout_button", lang))
+
+            # authenticator.logout(_("logout_button", lang))
 
     st.title(_("app_title", lang))
 
@@ -869,7 +890,7 @@ def main():
     # Base tabs for everyone
     tabs_to_display_names = []
     if is_admin_view_authorized:
-        tabs_to_display_names.append(f"{tab_label_freedivers} (I)")
+        tabs_to_display_names.append(f"{tab_label_freedivers} 🎓")
     
     tabs_to_display_names.extend([
         tab_label_main_training_log,
@@ -884,7 +905,7 @@ def main():
 
     # Apnéistes Tab (Admin Only)
     if is_admin_view_authorized:
-        with tab_map[f"{tab_label_freedivers} (I)"]:
+        with tab_map[f"{tab_label_freedivers} 🎓"]:
             st.subheader(_("edit_freedivers_header", lang))
             all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
             freedivers_data_for_editor = []
@@ -944,11 +965,11 @@ def main():
                     st.success(_("freedivers_updated_success", lang))
                     st.rerun()
     
-    # Entraînements Tab
+    # Activités Tab
     with tab_map[tab_label_main_training_log]:
         sub_tab_definitions = [_("training_sessions_sub_tab_label", lang)]
         if is_admin_view_authorized:
-            sub_tab_definitions.append(f"{_('edit_training_sessions_sub_tab_label', lang)} (I)")
+            sub_tab_definitions.append(f"{_('edit_training_sessions_sub_tab_label', lang)} 🎓")
         training_sub_tabs = st.tabs(sub_tab_definitions)
         with training_sub_tabs[0]:
             st.subheader(_("detailed_training_sessions_subheader", lang))
@@ -1032,9 +1053,9 @@ def main():
         ]
         if is_admin_view_authorized:
             perf_sub_tabs_labels.extend([
-                f"{_('club_performances_overview_tab_label', lang)} (I)",
-                f"{_('performances_overview_tab_label', lang)} (I)",
-                f"{_('edit_performances_sub_tab_label', lang)} (I)"
+                f"{_('club_performances_overview_tab_label', lang)} 🎓",
+                f"{_('performances_overview_tab_label', lang)} 🎓",
+                f"{_('edit_performances_sub_tab_label', lang)} 🎓"
             ])
 
         perf_sub_tabs = st.tabs(perf_sub_tabs_labels)
@@ -1062,9 +1083,8 @@ def main():
                     for i_pb_col_tab, disc_key_pb_col_tab in enumerate(discipline_keys):
                         val_tab, event_name_tab, event_date_tab = pbs_tab.get(disc_key_pb_col_tab)
                         with cols_pb_tab[i_pb_col_tab]:
-                            translated_full_discipline_name_tab = _("disciplines." + disc_key_pb_col_tab, lang)
-                            short_disc_name_tab = translated_full_discipline_name_tab.split('(')[0].strip()
-                            st.metric(label=_("pb_label", lang, discipline_short_name=short_disc_name_tab), value=val_tab)
+                            metric_label = _("pb_labels." + disc_key_pb_col_tab, lang)
+                            st.metric(label=metric_label, value=val_tab)
                             if event_date_tab:
                                 st.caption(_("achieved_on_event_caption", lang, event_name=event_name_tab, event_date=event_date_tab))
                             elif val_tab == "N/A":
@@ -1156,12 +1176,12 @@ def main():
             display_level_performance_tab(all_records_loaded, user_profiles, discipline_keys, lang)
 
         if is_admin_view_authorized:
-            with perf_sub_tab_map[f"{_('club_performances_overview_tab_label', lang)} (I)"]:
+            with perf_sub_tab_map[f"{_('club_performances_overview_tab_label', lang)} 🎓"]:
                 if not all_records_loaded:
                     st.info(_("no_ranking_data", lang))
                 else:
                     with st.container(border=True):
-                        st.subheader(_("club_bests_subheader", lang))
+                        # st.subheader(_("club_bests_subheader", lang))
                         all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
                         club_pbs = {}
                         for disc_key_club_pb in discipline_keys:
@@ -1177,10 +1197,9 @@ def main():
                         for i, disc_key_club_pb_col in enumerate(discipline_keys):
                             val_club, user_club, event_name_club, event_date_club = club_pbs.get(disc_key_club_pb_col)
                             with cols_club_pb[i]:
-                                translated_full_disc_name_club = _("disciplines." + disc_key_club_pb_col, lang)
-                                short_disc_name_club = translated_full_disc_name_club.split('(')[0].strip() or translated_full_disc_name_club
+                                metric_label_club = _("club_best_labels." + disc_key_club_pb_col, lang)
                                 display_user_club = get_display_name(user_club, user_profiles, lang) if user_club else _("anonymous_freediver_name", lang)
-                                st.metric(label=_("club_best_label", lang, discipline_short_name=short_disc_name_club), value=val_club)
+                                st.metric(label=metric_label_club, value=val_club)
                                 if user_club and event_date_club:
                                     st.caption(_("achieved_at_event_on_date_caption", lang, user=display_user_club, event_name=event_name_club, event_date=event_date_club))
                                 elif val_club == "N/A":
@@ -1217,7 +1236,7 @@ def main():
                                 ]
                                 st.dataframe(pd.DataFrame(ranking_table_data), use_container_width=True, hide_index=True)
             
-            with perf_sub_tab_map[f"{_('performances_overview_tab_label', lang)} (I)"]:
+            with perf_sub_tab_map[f"{_('performances_overview_tab_label', lang)} 🎓"]:
                 st.subheader(_("performances_overview_tab_label", lang))
                 all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
                 col1, col2, col3 = st.columns(3)
@@ -1244,7 +1263,7 @@ def main():
                 ]
                 st.dataframe(pd.DataFrame(display_data), hide_index=True, use_container_width=True)
 
-            with perf_sub_tab_map[f"{_('edit_performances_sub_tab_label', lang)} (I)"]:
+            with perf_sub_tab_map[f"{_('edit_performances_sub_tab_label', lang)} 🎓"]:
                 st.subheader(_("edit_performances_sub_tab_label", lang))
                 if not all_records_loaded:
                     st.info("No performances logged in the system.")
@@ -1306,8 +1325,8 @@ def main():
         # Define sub-tabs based on user role
         feedback_sub_tabs_labels = [my_feedback_sub_tab_label]
         if is_admin_view_authorized:
-            feedback_sub_tabs_labels.append(f"{_('feedbacks_overview_tab_label', lang)} (I)")
-            feedback_sub_tabs_labels.append(f"{_('edit_feedbacks_sub_tab_label', lang)} (I)")
+            feedback_sub_tabs_labels.append(f"{_('feedbacks_overview_tab_label', lang)} 🎓")
+            feedback_sub_tabs_labels.append(f"{_('edit_feedbacks_sub_tab_label', lang)} 🎓")
 
         feedback_sub_tabs = st.tabs(feedback_sub_tabs_labels)
         feedback_sub_tab_map = dict(zip(feedback_sub_tabs_labels, feedback_sub_tabs))
@@ -1322,24 +1341,23 @@ def main():
                 st.info(_("no_feedback_to_summarize", lang))
             else:
                 if has_ai_consent:
-                    st.write()
                     if st.button(_("generate_feedback_summary_button", lang)):
                         with st.spinner("Génération du résumé..."):
                             all_feedback_text = "\n".join([f"- {fb['feedback_text']}" for fb in user_feedback])
                             import toml
                             prompts_instructions = toml.load("./prompts.toml")
                             adeps_coaching_instructions = prompts_instructions['feedback']['adeps_coaching_instructions']
-                            huron_spirit = prompts_instructions['feedback']['huron_spirit']                               
+                            huron_spirit = prompts_instructions['feedback']['huron_spirit']                                
                             comparatif_brevets = prompts_instructions['feedback']['comparatif_brevets']  
                             motivations_text = user_profile_data.get("motivations", "")
                             objectifs_text = user_profile_data.get("projection_3_ans", "")
                             vision_text = user_profile_data.get("portrait_photo_text", "")
-
+                            
                             prompt = f"Voici une série de feedbacks pour un apnéiste. \
                             Ce feedback est donné par d'autres apnéistes et instructeurs. \
                             Tu es un coach d'apnée tel que décrit ici \n{adeps_coaching_instructions}. \
                             Tu dois analyser ces feedbacks et en tirer un résumé constructif de maximum 10 phrases pour l'apnéiste afin qu'il puisse s'améliorer. \
-                            Tu dois prendre en compte le niveau actuel de l'apnéiste qui est le suivant : {current_cert_index_sidebar}.  \
+                            Tu dois prendre en compte le niveau actuel de l'apnéiste qui est le suivant : {user_profiles.get(current_user, {}).get('certification', 'Non spécifié')}.  \
                             Tu dois également prendre en compte ses motivations à pratiquer l'apnée : {motivations_text}. \
                             Ainsi que ses objectifs de progression : {objectifs_text}. \
                             Et sa vision de l'apnée : {vision_text}. \
@@ -1369,7 +1387,7 @@ def main():
         
         # Admin-only Sub-Tabs
         if is_admin_view_authorized:
-            with feedback_sub_tab_map[f"{_('feedbacks_overview_tab_label', lang)} (I)"]: # Feedbacks Overview
+            with feedback_sub_tab_map[f"{_('feedbacks_overview_tab_label', lang)} 🎓"]: # Feedbacks Overview
                 st.subheader(_("feedbacks_overview_tab_label", lang))
                 all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
                 col1, col2, col3 = st.columns(3)
@@ -1390,11 +1408,12 @@ def main():
                     for fb in sorted(filtered_feedbacks, key=lambda x: x.get('feedback_date', '1900-01-01'), reverse=True):
                         with st.container(border=True):
                             session_details = get_training_session_details(fb.get("training_session_id"), training_log_loaded)
-                            st.markdown(f"{_('feedback_for_freediver_label', lang)} **{fb['diver_name']}** | {_('instructor_name_label', lang)} **{fb['instructor_name']}** | Session: **{session_details['event_name']}** le **{session_details['event_date']}**")
+                            # st.markdown(f"{_('feedback_for_freediver_label', lang)} **{fb['diver_name']}** | {_('instructor_name_label', lang)} **{fb['instructor_name']}** | Session: **{session_details['event_name']}** le **{session_details['event_date']}**")
+                            st.markdown(f"**{fb['diver_name']}** évalué par **{fb['instructor_name']}** à **{session_details['event_name']}** le **{session_details['event_date']}**")
                             styled_text = style_feedback_text(fb['feedback_text'])
                             st.markdown(styled_text, unsafe_allow_html=True)
             
-            with feedback_sub_tab_map[f"{_('edit_feedbacks_sub_tab_label', lang)} (I)"]: # Edit Feedbacks
+            with feedback_sub_tab_map[f"{_('edit_feedbacks_sub_tab_label', lang)} 🎓"]: # Edit Feedbacks
                 st.subheader(_("feedback_log_table_header", lang))
                 if not instructor_feedback_loaded:
                     st.info(_("no_feedback_in_log", lang))

@@ -520,5 +520,14 @@
         "original_performance_str": "38",
         "parsed_value": 38,
         "entry_date": "2023-10-24"
+    },
+    {
+        "id": "dd49a93f4d7a41af92b29a6daf718cad",
+        "user": "Charles D.B.",
+        "entry_date": "2025-06-12",
+        "discipline": "Depth (CWT/FIM)",
+        "original_performance_str": "18",
+        "parsed_value": 18,
+        "linked_training_session_id": "f4b01d581581476c873255cfb7dee9a7"
     }
 ]
