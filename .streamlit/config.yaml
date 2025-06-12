@@ -1,0 +1,128 @@
+cookie:
+  expiry_days: 30
+  key: a_secret_key
+  name: freediving_cookie
+credentials:
+  usernames:
+    alaink:
+      email: alaink@example.com
+      name: Alain K.
+      password: changeme
+    arnaudb:
+      email: arnaudb@example.com
+      name: Arnaud B.
+      password: changeme
+    "aur\xE9lieb":
+      email: "aur\xE9lieb@example.com"
+      name: "Aur\xE9lie B."
+      password: changeme
+    bernardvh:
+      email: bernardvh@example.com
+      name: Bernard V.H.
+      password: changeme
+    charlesd:
+      email: charlesd@example.com
+      name: Charles D.
+      password: changeme
+    charlesdb:
+      email: charlesdb@example.com
+      name: Charles D.B.
+      password: changeme
+    charlesdt:
+      email: charlesdt@example.com
+      name: Charles D.T.
+      password: changeme
+    donalds:
+      email: donalds@example.com
+      name: Donald S.
+      password: changeme
+    "d\xE9borahl":
+      email: "d\xE9borahl@example.com"
+      name: "D\xE9borah L."
+      password: changeme
+    emmanuelh:
+      email: emmanuelh@example.com
+      name: Emmanuel H.
+      password: changeme
+    ericm:
+      email: ericm@example.com
+      name: Eric M.
+      password: changeme
+    florences:
+      email: florences@example.com
+      name: Florence S.
+      password: changeme
+    "fran\xE7oisb":
+      email: "fran\xE7oisb@example.com"
+      name: "Fran\xE7ois B."
+      password: changeme
+    gregoryd:
+      email: gregoryd@example.com
+      name: Gregory D.
+      password: changeme
+    "gr\xE9goirel":
+      email: "gr\xE9goirel@example.com"
+      name: "Gr\xE9goire L."
+      password: changeme
+    laurannep:
+      email: laurannep@example.com
+      name: Lauranne P.
+      password: changeme
+    lucd:
+      email: lucd@example.com
+      name: Luc D.
+      password: changeme
+    martinv:
+      email: martinv@example.com
+      name: Martin V.
+      password: changeme
+    michelf:
+      email: michelf@example.com
+      name: Michel F.
+      password: changeme
+    perrinem:
+      email: perrinem@example.com
+      name: Perrine M.
+      password: changeme
+    philipped:
+      email: philipped@example.com
+      name: Philippe D.
+      password: changeme
+    philippek:
+      email: philippek@example.com
+      name: Philippe K.
+      password: changeme
+    "r\xE9myl":
+      email: "r\xE9myl@example.com"
+      name: "R\xE9my L."
+      password: changeme
+    "st\xE9phaned":
+      email: "st\xE9phaned@example.com"
+      name: "St\xE9phane D."
+      password: changeme
+    "s\xE9bastienl":
+      email: "s\xE9bastienl@example.com"
+      name: "S\xE9bastien L."
+      password: changeme
+    "th\xE9og":
+      email: "th\xE9og@example.com"
+      name: "Th\xE9o G."
+      password: changeme
+    vincentc:
+      email: vincentc@example.com
+      name: Vincent C.
+      password: changeme
+    xavierh:
+      email: xavierh@example.com
+      name: Xavier H.
+      password: changeme
+    xavierm:
+      email: xavierm@example.com
+      name: Xavier M.
+      password: changeme
+    yvesg:
+      email: yvesg@example.com
+      name: Yves G.
+      password: changeme
+preauthorized:
+  emails: []
