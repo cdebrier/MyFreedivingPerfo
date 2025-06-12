@@ -7,7 +7,7 @@ import altair as alt
 import pathlib
 import yaml
 from yaml.loader import SafeLoader
-import streamlit_authenticator as stauth
+import bcrypt
 
 # --- File Configuration ---
 RECORDS_FILE = "freediving_records.json"
@@ -214,6 +214,7 @@ TRANSLATIONS = {
         "edit_feedbacks_sub_tab_label": "📝 Modifier les Feedbacks",
         "log_feedback_header_sidebar": "📝 Feedback Instructeur",
         "feedback_for_freediver_label": "Apnéiste :",
+        "feedback_log_tab_title" : "💬 Feedbacks",
         "training_session_label": "Activité Liée :",
         "instructor_name_label": "Instructeur :",
         "feedback_text_label": "Feedback :",
@@ -249,8 +250,8 @@ TRANSLATIONS = {
         "all_months_option": "Tous les Mois",
         "all_places_option": "Tous les Lieux",
         "no_feedbacks_match_filters": "Aucun feedback ne correspond aux filtres actuels.",
-        "login_error": "Le nom d'utilisateur ou le mot de passe est incorrect",
-        "login_welcome": "Veuillez entrer votre nom d'utilisateur et votre mot de passe",
+        "login_error": "Nom d'utilisateur ou mot de passe incorrect.",
+        "login_welcome": "Veuillez vous connecter pour continuer.",
         "logout_button": "Déconnexion"
     }
 }
@@ -321,7 +322,7 @@ def migrate_and_clean_records(records_list, training_logs):
                  updated = True
     return updated
 
-# @st.cache_data
+@st.cache_data
 def load_records(training_logs):
     """Loads performance records and runs migration/cleaning."""
     try:
@@ -339,7 +340,7 @@ def save_records(records):
         json.dump(records, f, indent=4, ensure_ascii=False)
 
 # --- Data Handling for User Profiles ---
-# @st.cache_data
+@st.cache_data
 def load_user_profiles():
     try:
         with open(USER_PROFILES_FILE, 'r', encoding='utf-8') as f:
@@ -361,7 +362,7 @@ def ensure_training_log_ids(log_list):
             updated = True
     return updated
 
-# @st.cache_data
+@st.cache_data
 def load_training_log():
     try:
         with open(TRAINING_LOG_FILE, 'r', encoding='utf-8') as f:
@@ -385,6 +386,7 @@ def ensure_feedback_ids(feedback_list):
             updated = True
     return updated
 
+@st.cache_data
 def load_instructor_feedback():
     try:
         with open(INSTRUCTOR_FEEDBACK_FILE, 'r', encoding='utf-8') as f:
@@ -405,23 +407,42 @@ def get_auth_config():
     """
     Loads authenticator config from config.yaml.
     If it doesn't exist, it creates a default one from existing user profiles.
+    This function is cached to avoid reading the file on every interaction.
     """
     config_path = pathlib.Path(CONFIG_FILE)
     if not config_path.exists():
-        user_profiles = load_user_profiles()
-        all_records = load_records(load_training_log())
-        all_users = sorted(list(set(r['user'] for r in all_records).union(set(user_profiles.keys()))))
+        # Temporarily load data *without* using the main cached functions
+        # to avoid polluting the main cache state during this one-off setup.
+        try:
+            with open(TRAINING_LOG_FILE, 'r', encoding='utf-8') as f:
+                training_logs = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            training_logs = []
+        try:
+            with open(RECORDS_FILE, 'r', encoding='utf-8') as f:
+                records = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            records = []
+        try:
+            with open(USER_PROFILES_FILE, 'r', encoding='utf-8') as f:
+                profiles = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            profiles = {}
+        
+        all_users = sorted(list(set(r['user'] for r in records).union(set(profiles.keys()))))
         
         credentials = {'usernames': {}}
-        # default_password = "changeme"  # Users should be told to change this
-        # hashed_password = stauth.Hasher([default_password]).generate()[0]
-
+        default_password = "changeme"  # Users should be told to change this
+        password_bytes = default_password.encode('utf-8')
+        salt = bcrypt.gensalt()
+        hashed_password_bytes = bcrypt.hashpw(password_bytes, salt)
+        
         for user_name in all_users:
             username_key = ''.join(filter(str.isalnum, user_name)).lower()
             credentials['usernames'][username_key] = {
                 "email": f"{username_key}@example.com",
                 "name": user_name,
-                "password": hashed_password
+                "password": hashed_password_bytes.decode('utf-8') # Store as string
             }
 
         config = {
@@ -435,6 +456,12 @@ def get_auth_config():
         config = yaml.load(f, Loader=SafeLoader)
     
     return config
+
+def verify_password(plain_password, hashed_password):
+    """Verifies a plain password against a hashed one."""
+    plain_password_bytes = plain_password.encode('utf-8')
+    hashed_password_bytes = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(plain_password_bytes, hashed_password_bytes)
 
 # --- Performance Parsing and Formatting ---
 def is_time_based_discipline(discipline_key):
@@ -613,284 +640,262 @@ def display_level_performance_tab(all_records, user_profiles, discipline_keys, l
             st.altair_chart(chart + text, use_container_width=True)
 
 
-# --- Main App ---
-def main():
-    # Initialize session state variables
-    if 'language' not in st.session_state: st.session_state.language = 'fr'
-    if 'initiate_clear_training_inputs' not in st.session_state: st.session_state.initiate_clear_training_inputs = False
-    if 'initiate_clear_feedback_inputs' not in st.session_state: st.session_state.initiate_clear_feedback_inputs = False
+def display_login_form(config, lang):
+    """Displays the login form and handles authentication."""
+    with st.sidebar:
+        st.title("Connexion")
+        username = st.text_input("Nom d'utilisateur")
+        password = st.text_input("Mot de passe", type="password")
+        if st.button("Se connecter"):
+            user_data = config['credentials']['usernames'].get(username.lower())
+            if user_data and verify_password(password, user_data['password']):
+                st.session_state['authentication_status'] = True
+                st.session_state['name'] = user_data['name']
+                st.rerun()
+            else:
+                st.error(_("login_error", lang))
 
-    # Buffers for form resets
-    if 'log_perf_input_buffer' not in st.session_state: st.session_state.log_perf_input_buffer = ""
-    if 'training_place_buffer' not in st.session_state: st.session_state.training_place_buffer = "Blocry"
-    if 'training_desc_buffer' not in st.session_state: st.session_state.training_desc_buffer = ""
-
-    # Initialize feedback form buffers carefully
-    default_lang_for_init = st.session_state.get('language', 'fr')
-    if 'feedback_for_user_buffer' not in st.session_state:
-        st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", default_lang_for_init)
-    if 'feedback_training_session_buffer' not in st.session_state:
-        st.session_state.feedback_training_session_buffer = _("select_training_prompt", default_lang_for_init)
-    if 'feedback_text_buffer' not in st.session_state:
-        st.session_state.feedback_text_buffer = ""
-
-
+def main_app():
+    # --- Main Application (after successful login) ---
     lang = st.session_state.language
-
-    if st.session_state.initiate_clear_training_inputs:
-        st.session_state.training_place_buffer = "Blocry"
-        st.session_state.training_desc_buffer = ""
-        st.session_state.initiate_clear_training_inputs = False
-    if st.session_state.initiate_clear_feedback_inputs:
-        st.session_state.feedback_text_buffer = ""
-        st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
-        st.session_state.feedback_training_session_buffer = _("select_training_prompt", lang)
-        st.session_state.initiate_clear_feedback_inputs = False
-
-    st.set_page_config(page_title=_("page_title", lang), layout="wide", initial_sidebar_state="expanded")
-    
-    # Load all data
-    # config = get_auth_config()
+    # Load all data at the beginning of the script run.
+    # The @st.cache_data decorator will ensure these are read from file only when necessary.
     training_log_loaded = load_training_log()
     all_records_loaded = load_records(training_log_loaded)
     user_profiles = load_user_profiles()
     instructor_feedback_loaded = load_instructor_feedback()
 
-    # --- Authenticator Setup ---
-    # authenticator = stauth.Authenticate(
-    #     config['credentials'],
-    #     config['cookie']['name'],
-    #     config['cookie']['key'],
-    #     config['cookie']['expiry_days']
-    # )
-
-    # --- Login Form and Sidebar Content ---
-    with st.sidebar:
-        # authenticator.login()
-        st.session_state["authentication_status"] = True
-
-        if st.session_state["authentication_status"]:
-            current_user = st.session_state.get("name")
-            st.write(f"Bienvenue *{current_user}*")
-
-            # Profile Section
-            user_profile_data_sidebar = user_profiles.get(current_user, {})
-            with st.expander(_("profile_header_sidebar", lang)):
-                with st.form(key="profile_form_sidebar_main", border=False):
-                    current_certification_sidebar = user_profile_data_sidebar.get("certification", _("no_certification_option", lang))
-                    cert_level_keys_from_dict_sidebar = list(TRANSLATIONS[lang]["certification_levels"].keys())
-                    actual_selectbox_options_sidebar = [_("no_certification_option", lang)] + cert_level_keys_from_dict_sidebar
-                    try:
-                        current_cert_index_sidebar = actual_selectbox_options_sidebar.index(current_certification_sidebar)
-                    except ValueError:
-                        current_cert_index_sidebar = 0
-
-                    st.selectbox(
-                        _("certification_label", lang), options=actual_selectbox_options_sidebar,
-                        index=current_cert_index_sidebar, key="certification_select_profile_form_sb"
-                    )
-
-                    current_cert_date_str_sidebar = user_profile_data_sidebar.get("certification_date")
-                    current_cert_date_obj_sidebar = None
-                    if current_cert_date_str_sidebar:
-                        try:
-                            current_cert_date_obj_sidebar = date.fromisoformat(current_cert_date_str_sidebar)
-                        except ValueError:
-                            current_cert_date_obj_sidebar = None
-
-                    st.date_input(
-                        _("certification_date_label", lang), value=current_cert_date_obj_sidebar, key="cert_date_profile_form_sb"
-                    )
-                    st.text_input(
-                        _("lifras_id_label", lang), value=user_profile_data_sidebar.get("lifras_id", ""), key="lifras_id_profile_form_sb"
-                    )
-                    st.checkbox(
-                        _("anonymize_results_label", lang), value=user_profile_data_sidebar.get("anonymize_results", False), key="anonymize_profile_form_sb"
-                    )
-                    st.checkbox(
-                        _("consent_ai_feedback_label", lang), value=user_profile_data_sidebar.get("consent_ai_feedback", False), key="consent_ai_feedback_profile_form_sb"
-                    )
-                    st.text_area(
-                        "Motivations à faire de l'apnée :",
-                        value=user_profile_data_sidebar.get("motivations", ""),
-                        key="motivations_profile_form_sb"
-                    )
-                    st.text_area(
-                        "Où vous imaginez vous dans votre pratique de l'apnée dans 3 ans ?",
-                        value=user_profile_data_sidebar.get("projection_3_ans", ""),
-                        key="projection_3_ans_profile_form_sb"
-                    )
-                    st.text_area(
-                        "Texte pour le portrait  photo",
-                        value=user_profile_data_sidebar.get("portrait_photo_text", ""),
-                        key="portrait_photo_text_profile_form_sb"
-                    )
-
-                    if st.form_submit_button(_("save_profile_button", lang)):
-                        user_profiles.setdefault(current_user, {})
-                        user_profiles[current_user]["certification"] = st.session_state.certification_select_profile_form_sb
-                        cert_date_val = st.session_state.cert_date_profile_form_sb
-                        user_profiles[current_user]["certification_date"] = cert_date_val.isoformat() if cert_date_val else None
-                        user_profiles[current_user]["lifras_id"] = st.session_state.lifras_id_profile_form_sb.strip()
-                        user_profiles[current_user]["anonymize_results"] = st.session_state.anonymize_profile_form_sb
-                        user_profiles[current_user]["consent_ai_feedback"] = st.session_state.consent_ai_feedback_profile_form_sb
-                        user_profiles[current_user]["motivations"] = st.session_state.motivations_profile_form_sb.strip()
-                        user_profiles[current_user]["projection_3_ans"] = st.session_state.projection_3_ans_profile_form_sb.strip()
-                        user_profiles[current_user]["portrait_photo_text"] = st.session_state.portrait_photo_text_profile_form_sb.strip()
-                        save_user_profiles(user_profiles)
-                        load_user_profiles.clear()
-                        st.success(_("profile_saved_success", lang, user=current_user))
-                        st.rerun()
-
-            # --- Sidebar Logging Forms ---
-            is_admin_view_authorized = current_user in PRIVILEGED_USERS
-            is_sidebar_instructor_section_visible = False
-            if is_admin_view_authorized and current_user in user_profiles:
-                user_cert_sidebar = user_profiles[current_user].get("certification")
-                if user_cert_sidebar in INSTRUCTOR_CERT_LEVELS_FOR_LOGGING_FEEDBACK_SIDEBAR:
-                    is_sidebar_instructor_section_visible = True
-
-            if is_sidebar_instructor_section_visible:
-                st.header(_("log_training_header_sidebar", lang))
-                with st.form(key="log_training_form_sidebar"):
-                    st.date_input(_("training_date_label", lang), date.today(), key="training_date_form_key")
-                    st.text_input(_("training_place_label", lang), value=st.session_state.training_place_buffer, key="training_place_form_key")
-                    st.text_area(_("training_description_label", lang), value=st.session_state.training_desc_buffer, key="training_desc_form_key")
-                    if st.form_submit_button(_("save_training_button", lang)):
-                        desc_to_save = st.session_state.training_desc_form_key.strip()
-                        place_to_save = st.session_state.training_place_form_key.strip()
-                        date_to_save = st.session_state.training_date_form_key
-                        if not desc_to_save:
-                            st.error(_("training_description_empty_error", lang))
-                        else:
-                            new_training_entry = {"id": uuid.uuid4().hex, "date": date_to_save.isoformat(), "place": place_to_save, "description": desc_to_save}
-                            training_log_loaded.append(new_training_entry)
-                            save_training_log(training_log_loaded)
-                            st.success(_("training_session_saved_success", lang))
-                            st.session_state.initiate_clear_training_inputs = True
-                            st.rerun()
-
-            st.header(_("log_performance_header", lang))
-            with st.form(key="log_performance_form_sidebar_main"):
-                st.write(_("logging_for", lang, user=current_user))
-                if not training_log_loaded:
-                    st.warning("Veuillez d'abord créer une activité.")
-                    st.form_submit_button(_("save_performance_button", lang), disabled=True)
-                else:
-                    discipline_keys = ["Dynamic Bi-fins (DYN-BF)", "Static Apnea (STA)", "Dynamic No-fins (DNF)", "Depth (CWT/FIM)", "Depth (VWT/NLT)", "16x25m Speed Endurance"]
-                    translated_disciplines_for_display = [_("disciplines." + key, lang) for key in discipline_keys]
-                    training_session_options = {ts.get('id'): f"{ts.get('date')} - {ts.get('place', 'N/A')}" for ts in sorted(training_log_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True)}
-                    selected_training_session_id = st.selectbox(
-                        _("link_training_session_label", lang), options=list(training_session_options.keys()),
-                        format_func=lambda x: training_session_options[x], key="log_perf_session_select_widget_key"
-                    )
-                    selected_translated_discipline = st.selectbox(
-                        _("discipline", lang), translated_disciplines_for_display, key="log_discipline_perf_form_widget_key"
-                    )
-                    log_discipline_original_key_perf_form = [k for k, v in TRANSLATIONS[lang]['disciplines'].items() if v == selected_translated_discipline][0]
-                    performance_help_text_perf_form = _("sta_help", lang) if is_time_based_discipline(log_discipline_original_key_perf_form) else _("dyn_depth_help", lang)
-                    st.text_input(
-                        _("performance_value", lang), value=st.session_state.log_perf_input_buffer,
-                        help=performance_help_text_perf_form, key="log_perf_input_form_widget_key"
-                    )
-                    if st.form_submit_button(_("save_performance_button", lang)):
-                        current_log_perf_str = st.session_state.log_perf_input_form_widget_key.strip()
-                        if not current_log_perf_str:
-                            st.error(_("performance_value_empty_error", lang))
-                        else:
-                            parsed_value_for_storage = parse_static_time_to_seconds(current_log_perf_str, lang) if is_time_based_discipline(log_discipline_original_key_perf_form) else parse_distance_to_meters(current_log_perf_str, lang)
-                            if parsed_value_for_storage is not None:
-                                new_record = {
-                                    "id": uuid.uuid4().hex, "user": current_user, "entry_date": date.today().isoformat(),
-                                    "discipline": log_discipline_original_key_perf_form, "original_performance_str": current_log_perf_str,
-                                    "parsed_value": parsed_value_for_storage, "linked_training_session_id": selected_training_session_id
-                                }
-                                all_records_loaded.append(new_record)
-                                save_records(all_records_loaded)
-                                st.success(_("performance_saved_success", lang, user=current_user))
-                                st.session_state.log_perf_input_buffer = ""
-                                st.rerun()
-
-            if is_sidebar_instructor_section_visible:
-                st.header(_("log_feedback_header_sidebar", lang))
-                with st.form(key="log_feedback_form_sidebar"):
-                    all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
-                    if not all_known_users_list:
-                        st.warning("Please add freedivers before logging feedback.")
-                    else:
-                        freediver_options_for_feedback = [_("select_freediver_prompt", lang)] + all_known_users_list
-                        default_fb_user_idx = 0
-                        try:
-                            default_fb_user_idx = freediver_options_for_feedback.index(st.session_state.feedback_for_user_buffer)
-                        except (ValueError, KeyError):
-                            st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
-                        st.selectbox(
-                            _("feedback_for_freediver_label", lang), options=freediver_options_for_feedback,
-                            index=default_fb_user_idx, key="feedback_for_user_selectbox_key_in_form"
-                        )
-                        training_session_options_fb_form = {log['id']: f"{log.get('date', '')} - {log.get('place', '')}" for log in sorted(training_log_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True)}
-                        training_session_options_display_fb_form = [_("select_training_prompt", lang)] + list(training_session_options_fb_form.values())
-                        default_fb_ts_idx = 0
-                        try:
-                            default_fb_ts_idx = training_session_options_display_fb_form.index(st.session_state.feedback_training_session_buffer)
-                        except (ValueError, KeyError):
-                            st.session_state.feedback_training_session_buffer = _("select_training_prompt", lang)
-                        st.selectbox(
-                            _("training_session_label", lang), options=training_session_options_display_fb_form,
-                            index=default_fb_ts_idx, key="feedback_training_session_selectbox_key_in_form"
-                        )
-                        st.write(f"{_('instructor_name_label', lang)} {current_user}")
-                        st.text_area(
-                            _("feedback_text_label", lang), value=st.session_state.feedback_text_buffer,
-                            key="feedback_text_area_key_in_form"
-                        )
-                        if st.form_submit_button(_("save_feedback_button", lang)):
-                            sel_fb_for_user = st.session_state["feedback_for_user_selectbox_key_in_form"]
-                            sel_fb_training_disp = st.session_state["feedback_training_session_selectbox_key_in_form"]
-                            sel_fb_text = st.session_state["feedback_text_area_key_in_form"].strip()
-                            sel_fb_training_id = next((log_id for log_id, display_str in training_session_options_fb_form.items() if display_str == sel_fb_training_disp), None) if sel_fb_training_disp != _("select_training_prompt", lang) else None
-                            if sel_fb_for_user == _("select_freediver_prompt", lang):
-                                st.error("Please select a freediver for the feedback.")
-                            elif not current_user:
-                                st.error("Instructor not identified.")
-                            elif not sel_fb_text:
-                                st.error(_("feedback_text_empty_error", lang))
-                            else:
-                                new_feedback = {
-                                    "id": uuid.uuid4().hex, "feedback_date": date.today().isoformat(), "diver_name": sel_fb_for_user,
-                                    "training_session_id": sel_fb_training_id, "instructor_name": current_user, "feedback_text": sel_fb_text
-                                }
-                                instructor_feedback_loaded.append(new_feedback)
-                                save_instructor_feedback(instructor_feedback_loaded)
-                                st.success(_("feedback_saved_success", lang))
-                                st.session_state.initiate_clear_feedback_inputs = True
-                                st.rerun()
-
-            # authenticator.logout(_("logout_button", lang))
-
-    st.title(_("app_title", lang))
-
-    if st.session_state["authentication_status"] is False:
-        st.error(_("login_error", lang))
-        return
-    elif st.session_state["authentication_status"] is None:
-        st.warning(_("login_welcome", lang))
-        return
-    
-    # --- Main Application (after successful login) ---
     current_user = st.session_state.get("name")
     is_admin_view_authorized = current_user in PRIVILEGED_USERS
+    
+    with st.sidebar:
+        st.write(f"Bienvenue *{current_user}*")
+        if st.button(_("logout_button", lang)):
+            st.session_state['authentication_status'] = False
+            st.session_state['name'] = None
+            st.rerun()
+        
+        # Profile Section
+        user_profile_data_sidebar = user_profiles.get(current_user, {})
+        with st.expander(_("profile_header_sidebar", lang)):
+            with st.form(key="profile_form_sidebar_main", border=False):
+                current_certification_sidebar = user_profile_data_sidebar.get("certification", _("no_certification_option", lang))
+                cert_level_keys_from_dict_sidebar = list(TRANSLATIONS[lang]["certification_levels"].keys())
+                actual_selectbox_options_sidebar = [_("no_certification_option", lang)] + cert_level_keys_from_dict_sidebar
+                try:
+                    current_cert_index_sidebar = actual_selectbox_options_sidebar.index(current_certification_sidebar)
+                except ValueError:
+                    current_cert_index_sidebar = 0
+
+                st.selectbox(
+                    _("certification_label", lang), options=actual_selectbox_options_sidebar,
+                    index=current_cert_index_sidebar, key="certification_select_profile_form_sb"
+                )
+
+                current_cert_date_str_sidebar = user_profile_data_sidebar.get("certification_date")
+                current_cert_date_obj_sidebar = None
+                if current_cert_date_str_sidebar:
+                    try:
+                        current_cert_date_obj_sidebar = date.fromisoformat(current_cert_date_str_sidebar)
+                    except ValueError:
+                        current_cert_date_obj_sidebar = None
+
+                st.date_input(
+                    _("certification_date_label", lang), value=current_cert_date_obj_sidebar, key="cert_date_profile_form_sb"
+                )
+                st.text_input(
+                    _("lifras_id_label", lang), value=user_profile_data_sidebar.get("lifras_id", ""), key="lifras_id_profile_form_sb"
+                )
+                st.checkbox(
+                    _("anonymize_results_label", lang), value=user_profile_data_sidebar.get("anonymize_results", False), key="anonymize_profile_form_sb"
+                )
+                st.checkbox(
+                    _("consent_ai_feedback_label", lang), value=user_profile_data_sidebar.get("consent_ai_feedback", False), key="consent_ai_feedback_profile_form_sb"
+                )
+                st.text_area(
+                    "Motivations à faire de l'apnée :",
+                    value=user_profile_data_sidebar.get("motivations", ""),
+                    key="motivations_profile_form_sb"
+                )
+                st.text_area(
+                    "Où vous imaginez vous dans votre pratique de l'apnée dans 3 ans ?",
+                    value=user_profile_data_sidebar.get("projection_3_ans", ""),
+                    key="projection_3_ans_profile_form_sb"
+                )
+                st.text_area(
+                    "Texte pour le portrait  photo",
+                    value=user_profile_data_sidebar.get("portrait_photo_text", ""),
+                    key="portrait_photo_text_profile_form_sb"
+                )
+
+                if st.form_submit_button(_("save_profile_button", lang)):
+                    user_profiles.setdefault(current_user, {})
+                    user_profiles[current_user]["certification"] = st.session_state.certification_select_profile_form_sb
+                    cert_date_val = st.session_state.cert_date_profile_form_sb
+                    user_profiles[current_user]["certification_date"] = cert_date_val.isoformat() if cert_date_val else None
+                    user_profiles[current_user]["lifras_id"] = st.session_state.lifras_id_profile_form_sb.strip()
+                    user_profiles[current_user]["anonymize_results"] = st.session_state.anonymize_profile_form_sb
+                    user_profiles[current_user]["consent_ai_feedback"] = st.session_state.consent_ai_feedback_profile_form_sb
+                    user_profiles[current_user]["motivations"] = st.session_state.motivations_profile_form_sb.strip()
+                    user_profiles[current_user]["projection_3_ans"] = st.session_state.projection_3_ans_profile_form_sb.strip()
+                    user_profiles[current_user]["portrait_photo_text"] = st.session_state.portrait_photo_text_profile_form_sb.strip()
+                    save_user_profiles(user_profiles)
+                    load_user_profiles.clear()
+                    st.success(_("profile_saved_success", lang, user=current_user))
+                    st.rerun()
+
+        # --- Sidebar Logging Forms ---
+        is_sidebar_instructor_section_visible = False
+        if is_admin_view_authorized and current_user in user_profiles:
+            user_cert_sidebar = user_profiles[current_user].get("certification")
+            if user_cert_sidebar in INSTRUCTOR_CERT_LEVELS_FOR_LOGGING_FEEDBACK_SIDEBAR:
+                is_sidebar_instructor_section_visible = True
+
+        if is_sidebar_instructor_section_visible:
+            st.header(_("log_training_header_sidebar", lang))
+            with st.form(key="log_training_form_sidebar"):
+                st.date_input(_("training_date_label", lang), date.today(), key="training_date_form_key")
+                st.text_input(_("training_place_label", lang), value=st.session_state.training_place_buffer, key="training_place_form_key")
+                st.text_area(_("training_description_label", lang), value=st.session_state.training_desc_buffer, key="training_desc_form_key")
+                if st.form_submit_button(_("save_training_button", lang)):
+                    desc_to_save = st.session_state.training_desc_form_key.strip()
+                    place_to_save = st.session_state.training_place_form_key.strip()
+                    date_to_save = st.session_state.training_date_form_key
+                    if not desc_to_save:
+                        st.error(_("training_description_empty_error", lang))
+                    else:
+                        new_training_entry = {"id": uuid.uuid4().hex, "date": date_to_save.isoformat(), "place": place_to_save, "description": desc_to_save}
+                        training_log_loaded.append(new_training_entry)
+                        save_training_log(training_log_loaded)
+                        load_training_log.clear()
+                        st.success(_("training_session_saved_success", lang))
+                        # Clear buffers for next entry
+                        st.session_state.training_place_buffer = ""
+                        st.session_state.training_desc_buffer = ""
+                        st.rerun()
+
+        st.header(_("log_performance_header", lang))
+        with st.form(key="log_performance_form_sidebar_main"):
+            st.write(_("logging_for", lang, user=current_user))
+            if not training_log_loaded:
+                st.warning("Veuillez d'abord créer une activité.")
+                st.form_submit_button(_("save_performance_button", lang), disabled=True)
+            else:
+                discipline_keys = ["Dynamic Bi-fins (DYN-BF)", "Static Apnea (STA)", "Dynamic No-fins (DNF)", "Depth (CWT/FIM)", "Depth (VWT/NLT)", "16x25m Speed Endurance"]
+                translated_disciplines_for_display = [_("disciplines." + key, lang) for key in discipline_keys]
+                training_session_options = {ts.get('id'): f"{ts.get('date')} - {ts.get('place', 'N/A')}" for ts in sorted(training_log_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True)}
+                selected_training_session_id = st.selectbox(
+                    _("link_training_session_label", lang), options=list(training_session_options.keys()),
+                    format_func=lambda x: training_session_options[x], key="log_perf_session_select_widget_key"
+                )
+                selected_translated_discipline = st.selectbox(
+                    _("discipline", lang), translated_disciplines_for_display, key="log_discipline_perf_form_widget_key"
+                )
+                log_discipline_original_key_perf_form = [k for k, v in TRANSLATIONS[lang]['disciplines'].items() if v == selected_translated_discipline][0]
+                performance_help_text_perf_form = _("sta_help", lang) if is_time_based_discipline(log_discipline_original_key_perf_form) else _("dyn_depth_help", lang)
+                st.text_input(
+                    _("performance_value", lang), value=st.session_state.log_perf_input_buffer,
+                    help=performance_help_text_perf_form, key="log_perf_input_form_widget_key"
+                )
+                if st.form_submit_button(_("save_performance_button", lang)):
+                    current_log_perf_str = st.session_state.log_perf_input_form_widget_key.strip()
+                    if not current_log_perf_str:
+                        st.error(_("performance_value_empty_error", lang))
+                    else:
+                        parsed_value_for_storage = parse_static_time_to_seconds(current_log_perf_str, lang) if is_time_based_discipline(log_discipline_original_key_perf_form) else parse_distance_to_meters(current_log_perf_str, lang)
+                        if parsed_value_for_storage is not None:
+                            new_record = {
+                                "id": uuid.uuid4().hex, "user": current_user, "entry_date": date.today().isoformat(),
+                                "discipline": log_discipline_original_key_perf_form, "original_performance_str": current_log_perf_str,
+                                "parsed_value": parsed_value_for_storage, "linked_training_session_id": selected_training_session_id
+                            }
+                            all_records_loaded.append(new_record)
+                            save_records(all_records_loaded)
+                            load_records.clear()
+                            st.success(_("performance_saved_success", lang, user=current_user))
+                            st.session_state.log_perf_input_buffer = ""
+                            st.rerun()
+
+        if is_sidebar_instructor_section_visible:
+            st.header(_("log_feedback_header_sidebar", lang))
+            with st.form(key="log_feedback_form_sidebar"):
+                all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
+                if not all_known_users_list:
+                    st.warning("Please add freedivers before logging feedback.")
+                else:
+                    freediver_options_for_feedback = [_("select_freediver_prompt", lang)] + all_known_users_list
+                    default_fb_user_idx = 0
+                    try:
+                        # Ensure buffer is valid, otherwise reset
+                        if st.session_state.feedback_for_user_buffer not in freediver_options_for_feedback:
+                           st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
+                        default_fb_user_idx = freediver_options_for_feedback.index(st.session_state.feedback_for_user_buffer)
+                    except (ValueError, KeyError):
+                        st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
+
+                    st.selectbox(
+                        _("feedback_for_freediver_label", lang), options=freediver_options_for_feedback,
+                        index=default_fb_user_idx, key="feedback_for_user_selectbox_key_in_form"
+                    )
+                    
+                    training_session_options_fb_form = {log['id']: f"{log.get('date', '')} - {log.get('place', '')}" for log in sorted(training_log_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True)}
+                    training_session_options_display_fb_form = [_("select_training_prompt", lang)] + list(training_session_options_fb_form.values())
+                    default_fb_ts_idx = 0
+                    try:
+                        # Ensure buffer is valid, otherwise reset
+                        if st.session_state.feedback_training_session_buffer not in training_session_options_display_fb_form:
+                            st.session_state.feedback_training_session_buffer = _("select_training_prompt", lang)
+                        default_fb_ts_idx = training_session_options_display_fb_form.index(st.session_state.feedback_training_session_buffer)
+                    except (ValueError, KeyError):
+                        st.session_state.feedback_training_session_buffer = _("select_training_prompt", lang)
+
+                    st.selectbox(
+                        _("training_session_label", lang), options=training_session_options_display_fb_form,
+                        index=default_fb_ts_idx, key="feedback_training_session_selectbox_key_in_form"
+                    )
+                    st.write(f"{_('instructor_name_label', lang)} {current_user}")
+                    st.text_area(
+                        _("feedback_text_label", lang), value=st.session_state.feedback_text_buffer,
+                        key="feedback_text_area_key_in_form"
+                    )
+                    if st.form_submit_button(_("save_feedback_button", lang)):
+                        sel_fb_for_user = st.session_state["feedback_for_user_selectbox_key_in_form"]
+                        sel_fb_training_disp = st.session_state["feedback_training_session_selectbox_key_in_form"]
+                        sel_fb_text = st.session_state["feedback_text_area_key_in_form"].strip()
+                        sel_fb_training_id = next((log_id for log_id, display_str in training_session_options_fb_form.items() if display_str == sel_fb_training_disp), None) if sel_fb_training_disp != _("select_training_prompt", lang) else None
+                        if sel_fb_for_user == _("select_freediver_prompt", lang):
+                            st.error("Please select a freediver for the feedback.")
+                        elif not current_user:
+                            st.error("Instructor not identified.")
+                        elif not sel_fb_text:
+                            st.error(_("feedback_text_empty_error", lang))
+                        else:
+                            new_feedback = {
+                                "id": uuid.uuid4().hex, "feedback_date": date.today().isoformat(), "diver_name": sel_fb_for_user,
+                                "training_session_id": sel_fb_training_id, "instructor_name": current_user, "feedback_text": sel_fb_text
+                            }
+                            instructor_feedback_loaded.append(new_feedback)
+                            save_instructor_feedback(instructor_feedback_loaded)
+                            load_instructor_feedback.clear()
+                            st.success(_("feedback_saved_success", lang))
+                            # Clear buffers for next entry
+                            st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
+                            st.session_state.feedback_training_session_buffer = _("select_training_prompt", lang)
+                            st.session_state.feedback_text_buffer = ""
+                            st.rerun()
+
+    st.title(_("app_title", lang))
     
     # Define all possible tab labels
     tab_label_freedivers = _("freedivers_tab_title", lang)
     tab_label_main_training_log = _("training_log_tab_title", lang)
     tab_label_performances = _("performances_main_tab_title", lang)
-    tab_label_main_feedback_log = _("feedback_log_tab_label", lang)
+    tab_label_main_feedback_log = _("feedback_log_tab_title", lang)
 
     # Base tabs for everyone
     tabs_to_display_names = []
     if is_admin_view_authorized:
-        tabs_to_display_names.append(f"{tab_label_freedivers} 🎓")
+        tabs_to_display_names.append(f"{tab_label_freedivers}")
     
     tabs_to_display_names.extend([
         tab_label_main_training_log,
@@ -905,7 +910,7 @@ def main():
 
     # Apnéistes Tab (Admin Only)
     if is_admin_view_authorized:
-        with tab_map[f"{tab_label_freedivers} 🎓"]:
+        with tab_map[f"{tab_label_freedivers}"]:
             st.subheader(_("edit_freedivers_header", lang))
             all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
             freedivers_data_for_editor = []
@@ -962,6 +967,9 @@ def main():
                     save_user_profiles(new_profiles)
                     save_records(all_records_loaded)
                     save_instructor_feedback(instructor_feedback_loaded)
+                    load_user_profiles.clear()
+                    load_records.clear()
+                    load_instructor_feedback.clear()
                     st.success(_("freedivers_updated_success", lang))
                     st.rerun()
     
@@ -969,7 +977,7 @@ def main():
     with tab_map[tab_label_main_training_log]:
         sub_tab_definitions = [_("training_sessions_sub_tab_label", lang)]
         if is_admin_view_authorized:
-            sub_tab_definitions.append(f"{_('edit_training_sessions_sub_tab_label', lang)} 🎓")
+            sub_tab_definitions.append(f"{_('edit_training_sessions_sub_tab_label', lang)}")
         training_sub_tabs = st.tabs(sub_tab_definitions)
         with training_sub_tabs[0]:
             st.subheader(_("detailed_training_sessions_subheader", lang))
@@ -1041,7 +1049,9 @@ def main():
                             for rec in all_records_loaded:
                                 if rec.get('linked_training_session_id') in deleted_ids: rec['linked_training_session_id'] = None
                             save_records(all_records_loaded)
+                            load_records.clear()
                         save_training_log(new_log_list)
+                        load_training_log.clear()
                         st.success(_("training_log_updated_success", lang))
                         st.rerun()
 
@@ -1053,9 +1063,9 @@ def main():
         ]
         if is_admin_view_authorized:
             perf_sub_tabs_labels.extend([
-                f"{_('club_performances_overview_tab_label', lang)} 🎓",
-                f"{_('performances_overview_tab_label', lang)} 🎓",
-                f"{_('edit_performances_sub_tab_label', lang)} 🎓"
+                f"{_('club_performances_overview_tab_label', lang)}",
+                f"{_('performances_overview_tab_label', lang)}",
+                f"{_('edit_performances_sub_tab_label', lang)}"
             ])
 
         perf_sub_tabs = st.tabs(perf_sub_tabs_labels)
@@ -1169,6 +1179,7 @@ def main():
                                             st.error(f"Invalid performance format for '{new_perf_str}'")
                                         records_to_process.append(original_rec)
                                 save_records(records_to_process)
+                                load_records.clear()
                                 st.success(_("history_updated_success", lang))
                                 st.rerun()
         
@@ -1176,7 +1187,7 @@ def main():
             display_level_performance_tab(all_records_loaded, user_profiles, discipline_keys, lang)
 
         if is_admin_view_authorized:
-            with perf_sub_tab_map[f"{_('club_performances_overview_tab_label', lang)} 🎓"]:
+            with perf_sub_tab_map[f"{_('club_performances_overview_tab_label', lang)}"]:
                 if not all_records_loaded:
                     st.info(_("no_ranking_data", lang))
                 else:
@@ -1236,7 +1247,7 @@ def main():
                                 ]
                                 st.dataframe(pd.DataFrame(ranking_table_data), use_container_width=True, hide_index=True)
             
-            with perf_sub_tab_map[f"{_('performances_overview_tab_label', lang)} 🎓"]:
+            with perf_sub_tab_map[f"{_('performances_overview_tab_label', lang)}"]:
                 st.subheader(_("performances_overview_tab_label", lang))
                 all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
                 col1, col2, col3 = st.columns(3)
@@ -1263,7 +1274,7 @@ def main():
                 ]
                 st.dataframe(pd.DataFrame(display_data), hide_index=True, use_container_width=True)
 
-            with perf_sub_tab_map[f"{_('edit_performances_sub_tab_label', lang)} 🎓"]:
+            with perf_sub_tab_map[f"{_('edit_performances_sub_tab_label', lang)}"]:
                 st.subheader(_("edit_performances_sub_tab_label", lang))
                 if not all_records_loaded:
                     st.info("No performances logged in the system.")
@@ -1315,6 +1326,7 @@ def main():
                                     "entry_date": original_rec.get('entry_date', date.today().isoformat())
                                 })
                         save_records([r for r in new_records if r is not None])
+                        load_records.clear()
                         st.success(_("all_performances_updated_success", lang))
                         st.rerun()
 
@@ -1325,8 +1337,8 @@ def main():
         # Define sub-tabs based on user role
         feedback_sub_tabs_labels = [my_feedback_sub_tab_label]
         if is_admin_view_authorized:
-            feedback_sub_tabs_labels.append(f"{_('feedbacks_overview_tab_label', lang)} 🎓")
-            feedback_sub_tabs_labels.append(f"{_('edit_feedbacks_sub_tab_label', lang)} 🎓")
+            feedback_sub_tabs_labels.append(f"{_('feedbacks_overview_tab_label', lang)}")
+            feedback_sub_tabs_labels.append(f"{_('edit_feedbacks_sub_tab_label', lang)}")
 
         feedback_sub_tabs = st.tabs(feedback_sub_tabs_labels)
         feedback_sub_tab_map = dict(zip(feedback_sub_tabs_labels, feedback_sub_tabs))
@@ -1338,7 +1350,7 @@ def main():
             user_profile_data = user_profiles.get(current_user, {})
             has_ai_consent = user_profile_data.get("consent_ai_feedback", False)
             if not user_feedback:
-                st.info(_("no_feedback_to_summarize", lang))
+                st.info(_("no_feedback_for_user", lang))
             else:
                 if has_ai_consent:
                     if st.button(_("generate_feedback_summary_button", lang)):
@@ -1347,7 +1359,7 @@ def main():
                             import toml
                             prompts_instructions = toml.load("./prompts.toml")
                             adeps_coaching_instructions = prompts_instructions['feedback']['adeps_coaching_instructions']
-                            huron_spirit = prompts_instructions['feedback']['huron_spirit']                                
+                            huron_spirit = prompts_instructions['feedback']['huron_spirit']                          
                             comparatif_brevets = prompts_instructions['feedback']['comparatif_brevets']  
                             motivations_text = user_profile_data.get("motivations", "")
                             objectifs_text = user_profile_data.get("projection_3_ans", "")
@@ -1380,14 +1392,24 @@ def main():
                                 st.session_state['feedback_summary'] = summary_text.text
                             except Exception as e:
                                 st.error(f"Erreur lors de la génération du résumé : {e}")
-                    if 'feedback_summary' in st.session_state:
-                        st.write(st.session_state['feedback_summary'])
+                    if 'feedback_summary' in st.session_state and st.session_state.feedback_summary:
+                        st.markdown(st.session_state['feedback_summary'])
                 else:
                     st.warning(_("consent_ai_feedback_missing", lang))
-        
-        # Admin-only Sub-Tabs
+
+                # st.markdown("---")
+                # st.subheader("Historique des Feedbacks Reçus")
+                # for fb in sorted(user_feedback, key=lambda x: x.get('feedback_date', '1900-01-01'), reverse=True):
+                #      with st.container(border=True):
+                #         session_details = get_training_session_details(fb.get("training_session_id"), training_log_loaded)
+                #         st.markdown(f"**{fb.get('feedback_date', 'N/A')}** - de **{fb.get('instructor_name', 'N/A')}** à **{session_details.get('event_name', 'N/A')}**")
+                #         styled_text = style_feedback_text(fb['feedback_text'])
+                #         st.markdown(styled_text, unsafe_allow_html=True)
+
+
+    # Admin-only Sub-Tabs
         if is_admin_view_authorized:
-            with feedback_sub_tab_map[f"{_('feedbacks_overview_tab_label', lang)} 🎓"]: # Feedbacks Overview
+            with feedback_sub_tab_map[f"{_('feedbacks_overview_tab_label', lang)}"]: # Feedbacks Overview
                 st.subheader(_("feedbacks_overview_tab_label", lang))
                 all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
                 col1, col2, col3 = st.columns(3)
@@ -1408,12 +1430,11 @@ def main():
                     for fb in sorted(filtered_feedbacks, key=lambda x: x.get('feedback_date', '1900-01-01'), reverse=True):
                         with st.container(border=True):
                             session_details = get_training_session_details(fb.get("training_session_id"), training_log_loaded)
-                            # st.markdown(f"{_('feedback_for_freediver_label', lang)} **{fb['diver_name']}** | {_('instructor_name_label', lang)} **{fb['instructor_name']}** | Session: **{session_details['event_name']}** le **{session_details['event_date']}**")
                             st.markdown(f"**{fb['diver_name']}** évalué par **{fb['instructor_name']}** à **{session_details['event_name']}** le **{session_details['event_date']}**")
                             styled_text = style_feedback_text(fb['feedback_text'])
                             st.markdown(styled_text, unsafe_allow_html=True)
             
-            with feedback_sub_tab_map[f"{_('edit_feedbacks_sub_tab_label', lang)} 🎓"]: # Edit Feedbacks
+            with feedback_sub_tab_map[f"{_('edit_feedbacks_sub_tab_label', lang)}"]: # Edit Feedbacks
                 st.subheader(_("feedback_log_table_header", lang))
                 if not instructor_feedback_loaded:
                     st.info(_("no_feedback_in_log", lang))
@@ -1458,8 +1479,48 @@ def main():
                             for row in edited_feedback_df.to_dict('records') if not row[_("history_delete_col_editor", lang)]
                         ]
                         save_instructor_feedback(new_feedback_list)
+                        load_instructor_feedback.clear()
                         st.success(_("feedback_log_updated_success", lang))
                         st.rerun()
+
+# --- Main Execution ---
+def main():
+    """Main function to run the Streamlit app."""
+    # --- FIXED: Session State Initialization (Must be first) ---
+    if 'language' not in st.session_state:
+        st.session_state.language = 'fr'
+    if 'authentication_status' not in st.session_state:
+        st.session_state['authentication_status'] = None
+    if 'name' not in st.session_state:
+        st.session_state['name'] = None
+    
+    # Initialize buffers for form inputs to prevent AttributeErrors
+    if 'training_place_buffer' not in st.session_state:
+        st.session_state.training_place_buffer = ""
+    if 'training_desc_buffer' not in st.session_state:
+        st.session_state.training_desc_buffer = ""
+    if 'log_perf_input_buffer' not in st.session_state:
+        st.session_state.log_perf_input_buffer = ""
+    if 'feedback_for_user_buffer' not in st.session_state:
+        st.session_state.feedback_for_user_buffer = ""
+    if 'feedback_training_session_buffer' not in st.session_state:
+        st.session_state.feedback_training_session_buffer = ""
+    if 'feedback_text_buffer' not in st.session_state:
+        st.session_state.feedback_text_buffer = ""
+
+    # This holds the generated AI summary
+    if 'feedback_summary' not in st.session_state:
+        st.session_state.feedback_summary = None
+
+    st.set_page_config(page_title=_("page_title", st.session_state.language), layout="wide", initial_sidebar_state="expanded")
+
+    config = get_auth_config()
+
+    if st.session_state['authentication_status']:
+        main_app()
+    else:
+        display_login_form(config, st.session_state.language)
+
 
 if __name__ == "__main__":
     main()

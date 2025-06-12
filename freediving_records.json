@@ -522,12 +522,21 @@
         "entry_date": "2023-10-24"
     },
     {
-        "id": "dd49a93f4d7a41af92b29a6daf718cad",
+        "id": "c492da88de3a4434a2d5aa34ffb88134",
         "user": "Charles D.B.",
         "entry_date": "2025-06-12",
-        "discipline": "Depth (CWT/FIM)",
-        "original_performance_str": "18",
-        "parsed_value": 18,
+        "discipline": "Dynamic Bi-fins (DYN-BF)",
+        "original_performance_str": "21",
+        "parsed_value": 21,
+        "linked_training_session_id": "f4b01d581581476c873255cfb7dee9a7"
+    },
+    {
+        "id": "f291dce9768e4268ac31a88f1570c541",
+        "user": "Charles D.B.",
+        "entry_date": "2025-06-12",
+        "discipline": "Dynamic Bi-fins (DYN-BF)",
+        "original_performance_str": "25",
+        "parsed_value": 25,
         "linked_training_session_id": "f4b01d581581476c873255cfb7dee9a7"
     }
 ]
