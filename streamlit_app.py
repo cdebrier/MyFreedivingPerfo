@@ -1334,7 +1334,26 @@ def main():
                             motivations_text = user_profile_data.get("motivations", "")
                             objectifs_text = user_profile_data.get("projection_3_ans", "")
                             vision_text = user_profile_data.get("portrait_photo_text", "")
-                            prompt = f"..." # The full prompt string
+
+                            prompt = f"Voici une série de feedbacks pour un apnéiste. \
+                            Ce feedback est donné par d'autres apnéistes et instructeurs. \
+                            Tu es un coach d'apnée tel que décrit ici \n{adeps_coaching_instructions}. \
+                            Tu dois analyser ces feedbacks et en tirer un résumé constructif de maximum 10 phrases pour l'apnéiste afin qu'il puisse s'améliorer. \
+                            Tu dois prendre en compte le niveau actuel de l'apnéiste qui est le suivant : {current_cert_index_sidebar}.  \
+                            Tu dois également prendre en compte ses motivations à pratiquer l'apnée : {motivations_text}. \
+                            Ainsi que ses objectifs de progression : {objectifs_text}. \
+                            Et sa vision de l'apnée : {vision_text}. \
+                            Il faut aussi que tu prennes en compte les attentes de la Lifras pour chaque niveau d'apnée pour établir où se trouve l'apnéiste dans son parcours. \
+                            Voici ces attentes : {comparatif_brevets}. \
+                            Voici également de la théorie d'un coach que tu peux utiliser pour étoffer ton feedback: {huron_spirit}. \
+                            Ne ressors pas de ton analyse des feedbacks et autres contenus, un évènement spécifique qui pourrait être traumatisant, comme des soucis de santé par exemple, ou une mauvaise expérience. Reste en bird eye view.  \
+                            Les feedback sont ceux-ci:\n{all_feedback_text}. \
+                            Reste concis, bienveillant, constructif et factuel. N'utilises pas de bullet lists. \
+                            Tu peux mettre les recoemmndations clés en gras. \
+                            Ton texte doit couvrir tous les aspects de la pratique de l'apnée, y compris la technique, la sécurité, la relaxation, et l'état d'esprit. Ainsi que les aspects de progression et de motivation. \
+                            Tu dois également t'assurer que ton texte est adapté au niveau de l'apnéiste, en tenant compte de son expérience et de ses compétences actuelles. \
+                            Une fois ton texte prêt, vérifie plusieurs fois pour être cetain que tu as bien appliqué les consignes ci-dessus, sinon modifie ton texte."
+
                             try:
                                 from google import genai
                                 api_key = st.secrets["genai"]["key"]
