@@ -1347,7 +1347,7 @@ def main():
                         st.rerun()
 
     # --- Sidebar: Language Selector (Moved to bottom) ---
-    st.sidebar.markdown("---")
+    st.sidebar.markdown("")
     language_options = {"English": "en", "Français": "fr", "Nederlands": "nl"}
     current_lang_display_name = [k_disp for k_disp, v_code in language_options.items() if v_code == lang][0]
 
@@ -1428,7 +1428,7 @@ def main():
                             elif val_tab == "N/A":
                                 st.caption(_("no_record_yet_caption", lang))
 
-                st.markdown("---")
+                st.markdown("")
 
                 sub_tab_titles_user = [_("disciplines." + key, lang) for key in discipline_keys]
                 sub_tabs_user = st.tabs(sub_tab_titles_user)
@@ -1697,7 +1697,7 @@ def main():
                                 elif val_club == "N/A":
                                     st.caption(_("no_record_yet_caption", lang))
 
-                    st.markdown("---")
+                    st.markdown("")
 
                     ranking_sub_tab_titles = [_("disciplines." + key, lang) for key in discipline_keys]
                     ranking_sub_tabs = st.tabs(ranking_sub_tab_titles)
@@ -2070,9 +2070,9 @@ def main():
                     else:
                         for fb in sorted(filtered_feedbacks, key=lambda x: x.get('feedback_date', '1900-01-01'), reverse=True):
                             with st.container(border=True):
-                                st.markdown(f"**{_('feedback_for_freediver_label', lang)}** {fb['diver_name']} | **{_('instructor_name_label', lang)}** {fb['instructor_name']} | **Date:** {fb['feedback_date']}")
                                 session_details = get_training_session_details(fb.get("training_session_id"), training_log_loaded)
-                                st.caption(f"**Session:** {session_details['event_date']} - {session_details['event_name']}")
+                                st.markdown(f"{_('feedback_for_freediver_label', lang)} **{fb['diver_name']}** | {_('instructor_name_label', lang)} **{fb['instructor_name']}**  | Session: **{session_details['event_date']} - {session_details['event_name']}** ")
+                                
                                 styled_text = style_feedback_text(fb['feedback_text'])
                                 st.markdown(styled_text, unsafe_allow_html=True)
 

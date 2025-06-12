@@ -3,7 +3,10 @@
         "certification": "A1",
         "certification_date": "2025-03-27",
         "lifras_id": "55949",
-        "anonymize_results": true
+        "anonymize_results": true,
+        "motivations": "",
+        "projection_3_ans": "",
+        "portrait_photo_text": "C’est dans « Science et avenir » : Des manchots empereurs ont battu le record de plongée en apnée de l’espèce ! Ils plongent en moyenne à 90 m de profondeur et atteignent parfois plus de 450 mètres. S’ils ne restent que 4 minutes sous l’eau généralement, par 17 fois, les scientifiques ont enregistré des plongées d’environ 32 minutes ! (Le macareux moine, c’est 1 minute… pffff, rikiki !! )\n… Foi d'Abraracourcix, il ne me reste donc plus qu’à me faire sacrer empereur pour exploser les performances !"
     },
     "Arnaud B.": {
         "certification": "A2",
@@ -14,8 +17,11 @@
     "Aurélie B.": {
         "certification": "A1",
         "certification_date": "2022-04-08",
-        "lifras_id": "741",
-        "anonymize_results": true
+        "lifras_id": "",
+        "anonymize_results": true,
+        "motivations": "",
+        "projection_3_ans": "",
+        "portrait_photo_text": "L'apnée....\n\nJ´enfile mes plus belles lunettes, \nJe prends le temps de retrouver un seul cap, \nJe vérifie ma météo intérieure, \nEt je reprends ma route entourée de personnes extraordinaires.  \nBref, Le bonheur,  tout simplement."
     },
     "Bernard V.H.": {
         "certification": "A1",

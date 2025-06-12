@@ -3,7 +3,7 @@
         "id": "f4b01d581581476c873255cfb7dee9a7",
         "date": "2025-06-10",
         "place": "Troisfontaines",
-        "description": "Sortie à Troisfontaines pour permettre à ceux qui en ont beson de faire des sorties."
+        "description": "#apnée/profondeur à #Carrière/Troisfontaines . Sortie à Troisfontaines pour permettre à ceux qui en ont beson de faire des sorties. Au final, on sera entre \"habitués\". Bonne frite à la fin. Et dans l'eau, assez relax, pas trop de monde. On travaille la lenteur et la relaxation. On fait des échaufs'. On a pris deux bouées. On est cinq: Arnaud, Donald, Xavier, Vincent et Charles. On fait quelques descentes vers les 17-18m, puis on passe à une petite séance photo/explo près de la grille, puis finalement explo écrevisses et poissons. On ouvre la saison des carrières !"
     },
     {
         "id": "28461bb4ed2f4152897efe6a84179eb3",
@@ -204,6 +204,18 @@
         "description": "Entraînement piscine"
     },
     {
+        "id": "258131c67f6d4d7ab4c1b3f11036b721",
+        "date": "2024-04-02",
+        "place": "Rixensart",
+        "description": "- #apnée/stretching et #apnée/méditation par Charles au début de la séance avec les brevetés pendant que les autres sont en théorie S1. Assez classique comme échauffement : stretching classique, sollicitation du diaphragme, puis respi alternée pendant 5 min. \n\n- Ensuite,  #apnée/statique en mode pseudo-statique jeu : on marche lentement avec les doigts, on suit les rainures de la piscine les yeux fermés, on fait des \"largeurs\" de piscine, on compte les dallages les yeux fermées, on va le plus lentement possible, ... \n\n- Puis cours de apnée/DNF par Alex.  J'ai filmé tout le monde sous l'eau aussi."
+    },
+    {
+        "id": "9139382ebf1245ddbcd807b0a66e3fb5",
+        "date": "2024-02-06",
+        "place": "Rixensart",
+        "description": "Entraînement piscine avec Rémy et Vincent"
+    },
+    {
         "id": "ca77e309e4094cc482edad0e713a3de1",
         "date": "2024-01-16",
         "place": "Rixensart",
@@ -232,17 +244,5 @@
         "date": "2023-10-10",
         "place": "Rixensart",
         "description": "Entraînement non détaillé à la piscine de Rixensart."
-    },
-    {
-        "id": "9139382ebf1245ddbcd807b0a66e3fb5",
-        "date": "2024-02-06",
-        "place": "Rixensart",
-        "description": "Entraînement piscine avec Rémy et Vincent"
-    },
-    {
-        "id": "258131c67f6d4d7ab4c1b3f11036b721",
-        "date": "2024-04-02",
-        "place": "Rixensart",
-        "description": "- #apnée/stretching et #apnée/méditation par Charles au début de la séance avec les brevetés pendant que les autres sont en théorie S1. Assez classique comme échauffement : stretching classique, sollicitation du diaphragme, puis respi alternée pendant 5 min. \n\n- Ensuite,  #apnée/statique en mode pseudo-statique jeu : on marche lentement avec les doigts, on suit les rainures de la piscine les yeux fermés, on fait des \"largeurs\" de piscine, on compte les dallages les yeux fermées, on va le plus lentement possible, ... \n\n- Puis cours de apnée/DNF par Alex.  J'ai filmé tout le monde sous l'eau aussi."
     }
 ]

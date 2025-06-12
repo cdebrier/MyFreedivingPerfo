@@ -310,5 +310,21 @@
         "training_session_id": null,
         "instructor_name": "Charles D.B.",
         "feedback_text": "Test d'enregistrement de feedback avec session id."
+    },
+    {
+        "id": "e0f81333d2c74f8ab539bc1980448151",
+        "feedback_date": "2025-06-12",
+        "diver_name": "Xavier H.",
+        "training_session_id": "f4b01d581581476c873255cfb7dee9a7",
+        "instructor_name": "Charles D.B.",
+        "feedback_text": "Xavier évolue bien dans l'eau. Il est assez serein. Il pourrait davantage regarder la corde. Les descentes sont encore fort axées sur un objectif profondeur je trouve. Il a atteint 16 m max lors de cette sortie. Ses apnées tournaient autour d'une minute, et les sortie étaient relax. Franchement bien dans l'ensemble."
+    },
+    {
+        "id": "606853e583c64dfba34efc4d91b65996",
+        "feedback_date": "2025-06-12",
+        "diver_name": "Donald S.",
+        "training_session_id": "f4b01d581581476c873255cfb7dee9a7",
+        "instructor_name": "Charles D.B.",
+        "feedback_text": "On a travaillé la lenteur avec Donald. Cela lui a permis de sortir un peu moins juste. Même s'il est toujours très rapide dans ses descentes. Il a maintenu un temps de descente autour d'une minute. Style bien. Franchement bien. A travailler pour la prochaine fois : plus de calme et de lenteur, mais voir avec lui si c'est une approche qu'il apprécie."
     }
 ]
