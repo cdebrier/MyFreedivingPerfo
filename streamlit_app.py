@@ -940,20 +940,10 @@ def main_app():
                 else:
                     for entry in sorted(filtered_logs, key=lambda x: x.get('date', '1900-01-01'), reverse=True):
                         with st.expander(f"**{entry.get('date', 'N/A')} - {entry.get('place', 'N/A')}**", expanded=True):
-                            st.markdown(entry.get('description', _("no_description_available", lang)))
+                            styled_text = style_feedback_text(entry.get('description', _("no_description_available", lang)))
+                            st.markdown(styled_text, unsafe_allow_html=True)
                             
-                            # Find and display related feedbacks
-                            related_feedbacks = [
-                                fb for fb in instructor_feedback_loaded 
-                                if fb.get('training_session_id') == entry.get('id')
-                            ]
-
-                            if related_feedbacks:
-                                st.markdown("---")
-                                for fb in sorted(related_feedbacks, key=lambda x: (x.get('diver_name', ''), x.get('instructor_name', ''))):
-                                    st.markdown(f"**Feedback pour {fb.get('diver_name', 'N/A')} par {fb.get('instructor_name', 'N/A')}:**")
-                                    styled_text = style_feedback_text(fb['feedback_text'])
-                                    st.markdown(f"> {styled_text}", unsafe_allow_html=True)
+                            
         
         if is_admin_view_authorized and len(training_sub_tabs) > 1:
             with training_sub_tabs[1]:
@@ -1378,11 +1368,10 @@ def main_app():
                     else:
                         for fb in sorted(filtered_feedbacks, key=lambda x: x.get('feedback_date', '1900-01-01'), reverse=True):
                             with st.container(border=True):
-                                st.markdown(f"**{_('feedback_for_freediver_label', lang)}** {fb['diver_name']} | **{_('instructor_name_label', lang)}** {fb['instructor_name']} | **Date:** {fb['feedback_date']}")
+                                
                                 session_details = get_training_session_details(fb.get("training_session_id"), training_log_loaded)
-                                st.caption(f"**Session:** {session_details['event_date']} - {session_details['event_name']}")
-                                styled_text = style_feedback_text(fb['feedback_text'])
-                                st.markdown(styled_text, unsafe_allow_html=True)
+                                st.markdown(f"**{fb['diver_name']}** par **{fb['instructor_name']}** à **{session_details['event_name']}** le {fb['feedback_date']}")
+                                st.markdown(fb['feedback_text'], unsafe_allow_html=True)
 
             if f"{_('edit_feedbacks_sub_tab_label', lang)}" in feedback_sub_tab_map:
                 with feedback_sub_tab_map[f"{_('edit_feedbacks_sub_tab_label', lang)}"]:
