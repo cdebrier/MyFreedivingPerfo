@@ -952,11 +952,7 @@ def main_app():
                             logs_with_tag_ids.add(log['id'])
                             continue
                         
-                        # related_feedbacks = [fb for fb in instructor_feedback_loaded if fb.get('training_session_id') == log.get('id')]
-                        # for fb in related_feedbacks:
-                        #     if selected_tag in fb.get('feedback_text', ''):
-                        #         logs_with_tag_ids.add(log['id'])
-                        #         break
+                       
                     filtered_logs = [log for log in filtered_logs if log.get('id') in logs_with_tag_ids]
 
                 if not filtered_logs:
@@ -967,13 +963,7 @@ def main_app():
                             styled_text = style_feedback_text(entry.get('description', _("no_description_available", lang)))
                             st.markdown(styled_text, unsafe_allow_html=True)
                             
-                            # related_feedbacks = [fb for fb in instructor_feedback_loaded if fb.get('training_session_id') == entry.get('id')]
-                            # if related_feedbacks:
-                            #     st.markdown("---")
-                            #     for fb in sorted(related_feedbacks, key=lambda x: (x.get('diver_name', ''), x.get('instructor_name', ''))):
-                            #         st.markdown(f"**Feedback pour {fb.get('diver_name', 'N/A')} par {fb.get('instructor_name', 'N/A')}:**")
-                            #         styled_feedback = style_feedback_text(fb['feedback_text'])
-                            #         st.markdown(f"> {styled_feedback}", unsafe_allow_html=True)
+                         
         
         if is_admin_view_authorized and len(training_sub_tabs) > 1:
             with training_sub_tabs[1]:
