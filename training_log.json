@@ -244,5 +244,11 @@
         "date": "2023-10-10",
         "place": "Rixensart",
         "description": "Entraînement non détaillé à la piscine de Rixensart."
+    },
+    {
+        "id": "97d8fc786fd24e87b875dce5b6dfc142",
+        "date": "2025-06-13",
+        "place": "Blocry",
+        "description": "Entraînement donné par Peket et Vincent. Description à rédiger à l'occasion :)"
     }
 ]

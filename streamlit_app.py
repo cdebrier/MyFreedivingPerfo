@@ -122,7 +122,7 @@ TRANSLATIONS = {
             "July": "Juillet", "August": "Août", "September": "Septembre", "October": "Octobre", "November": "Novembre", "December": "Décembre"
         },
         "performances_main_tab_title": "📊 Performances",
-        "club_performances_overview_tab_label": "🏆 Classement [🔧]",
+        "club_performances_overview_tab_label": "🏆 Classement 🎓",
         "select_discipline_for_ranking": "Sélectionnez la discipline pour le classement :",
         "podium_header": "🏆 Podium",
         "full_ranking_header": "📋 Classement Complet",
@@ -170,7 +170,7 @@ TRANSLATIONS = {
         "club_level_performance_tab_title": "🏆 Performances du Club",
         "no_data_for_club_performance_display": "Aucune donnée de performance disponible pour le club dans cette discipline.",
         "quarterly_average_label": "Moyenne Trimestrielle",
-        "freedivers_tab_title": "🫂 Apnéistes [🔧]",
+        "freedivers_tab_title": "🫂 Apnéistes 🎓",
         "edit_freedivers_header": "🫂 Gérer les Apnéistes",
         "freediver_name_col_editor": "Nom Apnéiste (Prénom L.)",
         "set_reset_password_col_editor": "Définir/Réinitialiser Mot de Passe",
@@ -201,9 +201,9 @@ TRANSLATIONS = {
         "training_log_table_header": "📋 Activités (Modifiable)",
         "save_training_log_changes_button": "💾 Sauvegarder l'Activité",
         "training_log_updated_success": "Activité mise à jour avec succès.",
-        "performance_log_tab_label": "📅 Journal des Performances [🔧]",
-        "performances_overview_tab_label": "📅 Journal des Performances [🔧]",
-        "edit_performances_sub_tab_label": "📝 Editer les Performances [🔧]",
+        "performance_log_tab_label": "📅 Journal des Performances 🎓",
+        "performances_overview_tab_label": "📅 Journal des Performances 🎓",
+        "edit_performances_sub_tab_label": "📝 Editer les Performances 🎓",
         "save_all_performances_button": "💾 Sauvegarder les Modifications du Journal",
         "all_performances_updated_success": "Journal des performances mis à jour avec succès.",
         "feedback_log_tab_label": "💬 Feedbacks",
@@ -211,8 +211,8 @@ TRANSLATIONS = {
         "generate_feedback_summary_button": "Générer le résumé des feedbacks",
         "feedback_summary_header": "Résumé des feedbacks",
         "no_feedback_to_summarize": "Aucun feedback à résumer pour le moment.",
-        "feedbacks_overview_tab_label": "💬 Vue d'ensemble des Feedbacks [🔧]",
-        "edit_feedbacks_sub_tab_label": "📝 Editer les Feedbacks [🔧]",
+        "feedbacks_overview_tab_label": "💬 Vue d'ensemble des Feedbacks 🎓",
+        "edit_feedbacks_sub_tab_label": "📝 Editer les Feedbacks 🎓",
         "log_feedback_header_sidebar": "📝 Feedback Instructeur",
         "feedback_for_freediver_label": "Apnéiste :",
         "feedback_log_tab_title" : "💬 Feedbacks",
@@ -233,7 +233,7 @@ TRANSLATIONS = {
         "select_instructor_prompt": "Sélectionnez l'Instructeur",
         "detailed_training_sessions_subheader": "Activités",
         "training_sessions_sub_tab_label": "🗓️ Journal d'Activités",
-        "edit_training_sessions_sub_tab_label": "✏️ Editer les Activités [🔧]",
+        "edit_training_sessions_sub_tab_label": "✏️ Editer les Activités 🎓",
         "no_description_available": "Aucune description disponible.",
         "no_training_sessions_logged": "Aucune activité enregistrée pour le moment.",
         "filter_by_freediver_label": "Filtrer par Apnéiste :",
@@ -941,6 +941,19 @@ def main_app():
                     for entry in sorted(filtered_logs, key=lambda x: x.get('date', '1900-01-01'), reverse=True):
                         with st.expander(f"**{entry.get('date', 'N/A')} - {entry.get('place', 'N/A')}**", expanded=True):
                             st.markdown(entry.get('description', _("no_description_available", lang)))
+                            
+                            # Find and display related feedbacks
+                            related_feedbacks = [
+                                fb for fb in instructor_feedback_loaded 
+                                if fb.get('training_session_id') == entry.get('id')
+                            ]
+
+                            if related_feedbacks:
+                                st.markdown("---")
+                                for fb in sorted(related_feedbacks, key=lambda x: (x.get('diver_name', ''), x.get('instructor_name', ''))):
+                                    st.markdown(f"**Feedback pour {fb.get('diver_name', 'N/A')} par {fb.get('instructor_name', 'N/A')}:**")
+                                    styled_text = style_feedback_text(fb['feedback_text'])
+                                    st.markdown(f"> {styled_text}", unsafe_allow_html=True)
         
         if is_admin_view_authorized and len(training_sub_tabs) > 1:
             with training_sub_tabs[1]:
@@ -1280,6 +1293,7 @@ def main_app():
         feedback_sub_tabs = st.tabs(feedback_sub_tabs_labels)
         feedback_sub_tab_map = dict(zip(feedback_sub_tabs_labels, feedback_sub_tabs))
 
+        
         with feedback_sub_tab_map[my_feedback_sub_tab_label]:
             # st.subheader(_("my_feedback_tab_label", lang))
             user_feedback = [fb for fb in instructor_feedback_loaded if fb.get('diver_name') == current_user]
@@ -1338,6 +1352,103 @@ def main_app():
 
     # Admin-only Sub-Tabs
         if is_admin_view_authorized:
+            if f"{_('feedbacks_overview_tab_label', lang)}" in feedback_sub_tab_map:
+                with feedback_sub_tab_map[f"{_('feedbacks_overview_tab_label', lang)}"]:
+                    all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        filter_user = st.selectbox(_("filter_by_freediver_label", lang), [_("all_freedivers_option", lang)] + all_known_users_list, key="fb_overview_user")
+                    with col2:
+                        session_options = {s['id']: f"{s.get('date', 'N/A')} - {s.get('place', 'N/A')}" for s in training_log_loaded}
+                        filter_session_id = st.selectbox(_("filter_by_training_session_label", lang), [_("all_sessions_option", lang)] + list(session_options.keys()), format_func=lambda x: session_options.get(x, x), key="fb_overview_session")
+                    with col3:
+                        instructors = sorted(list(set(fb['instructor_name'] for fb in instructor_feedback_loaded)))
+                        filter_instructor = st.selectbox(_("filter_by_instructor_label", lang), [_("all_instructors_option", lang)] + instructors, key="fb_overview_instructor")
+
+                    filtered_feedbacks = instructor_feedback_loaded
+                    if filter_user != _("all_freedivers_option", lang):
+                        filtered_feedbacks = [f for f in filtered_feedbacks if f['diver_name'] == filter_user]
+                    if filter_session_id != _("all_sessions_option", lang):
+                        filtered_feedbacks = [f for f in filtered_feedbacks if f.get('training_session_id') == filter_session_id]
+                    if filter_instructor != _("all_instructors_option", lang):
+                        filtered_feedbacks = [f for f in filtered_feedbacks if f['instructor_name'] == filter_instructor]
+
+                    if not filtered_feedbacks:
+                        st.info(_("no_feedbacks_match_filters", lang))
+                    else:
+                        for fb in sorted(filtered_feedbacks, key=lambda x: x.get('feedback_date', '1900-01-01'), reverse=True):
+                            with st.container(border=True):
+                                st.markdown(f"**{_('feedback_for_freediver_label', lang)}** {fb['diver_name']} | **{_('instructor_name_label', lang)}** {fb['instructor_name']} | **Date:** {fb['feedback_date']}")
+                                session_details = get_training_session_details(fb.get("training_session_id"), training_log_loaded)
+                                st.caption(f"**Session:** {session_details['event_date']} - {session_details['event_name']}")
+                                styled_text = style_feedback_text(fb['feedback_text'])
+                                st.markdown(styled_text, unsafe_allow_html=True)
+
+            if f"{_('edit_feedbacks_sub_tab_label', lang)}" in feedback_sub_tab_map:
+                with feedback_sub_tab_map[f"{_('edit_feedbacks_sub_tab_label', lang)}"]:
+                    if not instructor_feedback_loaded:
+                        st.info(_("no_feedback_in_log", lang))
+                    else:
+                        with st.form(key="feedback_log_edit_form", border=False):
+                            all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
+                            session_options = {s['id']: f"{s.get('date', 'N/A')} - {s.get('place', 'N/A')}" for s in training_log_loaded}
+                            session_options[None] = _("no_specific_session_option", lang)
+
+                            feedback_df_data = []
+                            for fb in instructor_feedback_loaded:
+                                dt_obj = None
+                                try:
+                                    dt_obj = date.fromisoformat(fb.get("feedback_date"))
+                                except (ValueError, TypeError):
+                                    pass
+                                feedback_df_data.append({
+                                    "id": fb["id"],
+                                    _("feedback_date_col", lang): dt_obj,
+                                    _("feedback_for_freediver_label", lang): fb["diver_name"],
+                                    _("instructor_name_label", lang): fb["instructor_name"],
+                                    _("link_training_session_label", lang): session_options.get(fb.get("training_session_id")),
+                                    _("feedback_text_label", lang): fb["feedback_text"],
+                                    _("history_delete_col_editor", lang): False
+                                })
+                            
+                            feedback_df = pd.DataFrame(feedback_df_data)
+                            session_display_to_id = {v: k for k, v in session_options.items()}
+
+                            edited_feedback_df = st.data_editor(
+                                feedback_df,
+                                column_config={
+                                    "id": None,
+                                    _("feedback_date_col", lang): st.column_config.DateColumn(required=True, format="YYYY-MM-DD"),
+                                    _("feedback_for_freediver_label", lang): st.column_config.SelectboxColumn(options=all_known_users_list, required=True),
+                                    _("instructor_name_label", lang): st.column_config.SelectboxColumn(options=all_known_users_list, required=True),
+                                    _("link_training_session_label", lang): st.column_config.SelectboxColumn(options=session_options.values(), required=True),
+                                    _("feedback_text_label", lang): st.column_config.TextColumn(required=True),
+                                    _("history_delete_col_editor", lang): st.column_config.CheckboxColumn()
+                                },
+                                num_rows="dynamic",
+                                hide_index=True,
+                                key="feedback_log_editor",
+                                use_container_width=True
+                            )
+
+                            if st.form_submit_button(_("save_feedback_log_changes_button", lang)):
+                                new_feedback_list = []
+                                for row in edited_feedback_df.to_dict('records'):
+                                    if not row[_("history_delete_col_editor", lang)]:
+                                        date_val = row[_("feedback_date_col", lang)]
+                                        new_feedback_list.append({
+                                            "id": row.get("id") or uuid.uuid4().hex,
+                                            "feedback_date": date_val.isoformat() if isinstance(date_val, date) else str(date_val),
+                                            "diver_name": row[_("feedback_for_freediver_label", lang)],
+                                            "instructor_name": row[_("instructor_name_label", lang)],
+                                            "feedback_text": row[_("feedback_text_label", lang)].strip(),
+                                            "training_session_id": session_display_to_id.get(row[_("link_training_session_label", lang)])
+                                        })
+                                save_instructor_feedback(new_feedback_list)
+                                load_instructor_feedback.clear()
+                                st.success(_("feedback_log_updated_success", lang))
+                                st.rerun()
+            
             with tab_map.get(tab_label_freedivers, st.empty()):
                 # st.subheader(_("edit_freedivers_header", lang))
                 all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
