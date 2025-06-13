@@ -1,5 +1,11 @@
 [
     {
+        "id": "97d8fc786fd24e87b875dce5b6dfc142",
+        "date": "2025-06-13",
+        "place": "Blocry",
+        "description": "Entraînement donné par Peket et Vincent. Description à rédiger à l'occasion :)"
+    },
+    {
         "id": "f4b01d581581476c873255cfb7dee9a7",
         "date": "2025-06-10",
         "place": "Troisfontaines",
@@ -99,7 +105,7 @@
         "id": "62cc91c3eaf941d1b5d1b90f6bbcca8d",
         "date": "2025-04-15",
         "place": "Rixensart",
-        "description": "- #apnée/marche autour du stade avec Greg, Florence, Arnaud, Alain et moi. Pas préparé. On part vers un petit footing. Puis des apnées de 20s poumons vides en footing. On augmente un peu les temps des apnées. Puis on fait une variante où quand on est en apnée, on accélère. On passe ensuite vers 4-5x 100 m en apnée avec peu de récup. On fait ça en aller-retours sur la ligne droite. On passe ensuite vers des apnées mystères, tjs en footing. On termine par notre tour de stade habituel. \n\n- #apnée/stretching par Greg. Chouettes étirements. D'abord le dos tout en douceur, plié en deux avec pas mal d'explications. Puis le cou. Puis les épaules en croisant les mains et remontant au niveau de la tête, un croisement, puis l'autre, pendant quelques respirations. On passe ensuite à une petite méditation de 2 min. \n#apnée/statique par moi. On fait deux apnées de 1min où on conscientise l'air dans sa bouche. D'abord une où on fait comme d'habitude. Puis une où on gonfle bien ses joues, pour ensuite les dégonfler, renvoyer l'air dans les poumons, et décontracter la mâchoire. On fait une dernière apnée de 1min30 où on fait pareil, mais on essaie jusque 45s de ressentir l'air qui essaie de s'échapper de sa bouche, juste à l'équilibre. On s'arrête à 1'30\" en lachant des bulles de 45s à 1min30. On termine par deux séries d'apnées où on démarre sur une expi passive, puis on peut reprendre de l'air quand on veut, par une inspiration. Max de 5 min chez Grégoire, 4 min chez moi, mais chaud en expliquant. \n\n- #apnée/dynamique  par Greg (dnf) et moi (dynb) sur 50m. Je fais la prépa à la palme On démarre sur des 25 m lents. On passe ensuite à des 25 m avec pause à la cassure, et on ne repart pas de la cassure tant que le dernier n'est pas arrivé. On refait l'exercice avec 20s de statique avant. Puis pareil mais avec 15s de statique au bout en plus. On refait ensuite une dernière où on s'arrête à la cassure en allant très lentement, et on repart quand le dernier arrive à la cassure, ou à 1min. Max de 2min et des pour Eric. On fait ensuite un 50m, puis un 50m avec 15s de statique, puis 50m avec 30s de statique. On est pas trop mal. On passe en DNF 50m. Explication et démo de la technique, on part par vague 1/2. On termine par 5 min de bouchons."
+        "description": "- #apnée/marche autour du stade avec Greg, Florence, Arnaud, Alain et moi. Pas préparé. On part vers un petit footing. Puis des apnées de 20s poumons vides en footing. On augmente un peu les temps des apnées. Puis on fait une variante où quand on est en apnée, on accélère. On passe ensuite vers 4-5x 100 m en apnée avec peu de récup. On fait ça en aller-retours sur la ligne droite. On passe ensuite vers des apnées mystères, tjs en footing. On termine par notre tour de stade habituel. \n\n- #apnée/stretching par Greg. Chouettes étirements. D'abord le dos tout en douceur, plié en deux avec pas mal d'explications. Puis le cou. Puis les épaules en croisant les mains et remontant au niveau de la tête, un croisement, puis l'autre, pendant quelques respirations. On passe ensuite à une petite méditation de 2 min. \n\n- #apnée/statique par moi. On fait deux apnées de 1min où on conscientise l'air dans sa bouche. D'abord une où on fait comme d'habitude. Puis une où on gonfle bien ses joues, pour ensuite les dégonfler, renvoyer l'air dans les poumons, et décontracter la mâchoire. On fait une dernière apnée de 1min30 où on fait pareil, mais on essaie jusque 45s de ressentir l'air qui essaie de s'échapper de sa bouche, juste à l'équilibre. On s'arrête à 1'30\" en lachant des bulles de 45s à 1min30. On termine par deux séries d'apnées où on démarre sur une expi passive, puis on peut reprendre de l'air quand on veut, par une inspiration. Max de 5 min chez Grégoire, 4 min chez moi, mais chaud en expliquant. \n\n- #apnée/dynamique  par Greg (dnf) et moi (dynb) sur 50m. Je fais la prépa à la palme On démarre sur des 25 m lents. On passe ensuite à des 25 m avec pause à la cassure, et on ne repart pas de la cassure tant que le dernier n'est pas arrivé. On refait l'exercice avec 20s de statique avant. Puis pareil mais avec 15s de statique au bout en plus. On refait ensuite une dernière où on s'arrête à la cassure en allant très lentement, et on repart quand le dernier arrive à la cassure, ou à 1min. Max de 2min et des pour Eric. On fait ensuite un 50m, puis un 50m avec 15s de statique, puis 50m avec 30s de statique. On est pas trop mal. On passe en DNF 50m. Explication et démo de la technique, on part par vague 1/2. On termine par 5 min de bouchons."
     },
     {
         "id": "8b779d78e63d4ceb9d8f4554423ea573",
@@ -244,11 +250,5 @@
         "date": "2023-10-10",
         "place": "Rixensart",
         "description": "Entraînement non détaillé à la piscine de Rixensart."
-    },
-    {
-        "id": "97d8fc786fd24e87b875dce5b6dfc142",
-        "date": "2025-06-13",
-        "place": "Blocry",
-        "description": "Entraînement donné par Peket et Vincent. Description à rédiger à l'occasion :)"
     }
 ]

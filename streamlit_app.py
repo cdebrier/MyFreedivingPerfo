@@ -28,6 +28,17 @@ INSTRUCTOR_CERT_LEVELS_FOR_ADMIN_TABS_AND_DROPDOWNS = ["A3", "S4", "I1", "I2", "
 # --- Discipline Configuration ---
 LOWER_IS_BETTER_DISCIPLINES = ["16x25m Speed Endurance"]
 
+# --- Styling ---
+FEEDBACK_TAG_COLORS = {
+    "#apnée/marche": "#4CAF50",         # Green
+    "#apnée/stretching": "#2196F3",     # Blue
+    "#apnée/statique": "#FFC107",       # Amber
+    "#apnée/dynamique": "#f44336",      # Red
+    "#apnée/respiration": "#2196F3",    # Blue
+    "#apnée/profondeur": "#9C27B0",     # Violet (Purple)
+}
+
+
 # --- Language Translations ---
 TRANSLATIONS = {
     "fr": {
@@ -247,6 +258,8 @@ TRANSLATIONS = {
         "filter_by_year_label": "Filtrer par Année :",
         "filter_by_month_label": "Filtrer par Mois :",
         "filter_by_place_label": "Filtrer par Lieu :",
+        "filter_by_tag_label": "Filtrer par Tag",
+        "all_tags_option": "Tous les Tags",
         "all_years_option": "Toutes les Années",
         "all_months_option": "Tous les Mois",
         "all_places_option": "Tous les Lieux",
@@ -519,13 +532,7 @@ def get_training_session_details(session_id, training_logs):
 
 def style_feedback_text(text):
     """Styles specific tags in feedback text with colors and bold."""
-    tags_colors = {
-        "#apnée/marche": "#4CAF50",      # Green
-        "#apnée/stretching": "#2196F3", # Blue
-        "#apnée/statique": "#FFC107",    # Amber
-        "#apnée/dynamique": "#f44336"     # Red
-    }
-    for tag, color in tags_colors.items():
+    for tag, color in FEEDBACK_TAG_COLORS.items():
         replacement = f'<strong style="color:{color};">{tag}</strong>'
         text = text.replace(tag, replacement)
     return text
@@ -915,7 +922,6 @@ def main_app():
             sub_tab_definitions.append(f"{_('edit_training_sessions_sub_tab_label', lang)}")
         training_sub_tabs = st.tabs(sub_tab_definitions)
         with training_sub_tabs[0]:
-            # st.subheader(_("detailed_training_sessions_subheader", lang))
             if not training_log_loaded:
                 st.info(_("no_training_sessions_logged", lang))
             else:
@@ -923,10 +929,14 @@ def main_app():
                 places = sorted(list(set(entry['place'] for entry in training_log_loaded if entry.get('place'))))
                 months_en = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
                 months_translated = [_("months." + m, lang) for m in months_en]
-                col1, col2, col3 = st.columns(3)
+                all_tags = sorted(list(FEEDBACK_TAG_COLORS.keys()))
+                
+                col1, col2, col3, col4 = st.columns(4)
                 with col1: selected_year = st.selectbox(_("filter_by_year_label", lang), [_("all_years_option", lang)] + years, key="training_year_filter")
                 with col2: selected_month_name = st.selectbox(_("filter_by_month_label", lang), [_("all_months_option", lang)] + months_translated, key="training_month_filter")
                 with col3: selected_place = st.selectbox(_("filter_by_place_label", lang), [_("all_places_option", lang)] + places, key="training_place_filter")
+                with col4: selected_tag = st.selectbox(_("filter_by_tag_label", lang), [_("all_tags_option", lang)] + all_tags, key="training_tag_filter")
+
                 
                 filtered_logs = training_log_loaded
                 if selected_year != _("all_years_option", lang): filtered_logs = [log for log in filtered_logs if log.get('date') and datetime.fromisoformat(log['date']).year == selected_year]
@@ -935,6 +945,20 @@ def main_app():
                     filtered_logs = [log for log in filtered_logs if log.get('date') and datetime.fromisoformat(log['date']).month == month_number]
                 if selected_place != _("all_places_option", lang): filtered_logs = [log for log in filtered_logs if log.get('place') == selected_place]
                 
+                if selected_tag != _("all_tags_option", lang):
+                    logs_with_tag_ids = set()
+                    for log in filtered_logs:
+                        if selected_tag in log.get('description', ''):
+                            logs_with_tag_ids.add(log['id'])
+                            continue
+                        
+                        # related_feedbacks = [fb for fb in instructor_feedback_loaded if fb.get('training_session_id') == log.get('id')]
+                        # for fb in related_feedbacks:
+                        #     if selected_tag in fb.get('feedback_text', ''):
+                        #         logs_with_tag_ids.add(log['id'])
+                        #         break
+                    filtered_logs = [log for log in filtered_logs if log.get('id') in logs_with_tag_ids]
+
                 if not filtered_logs:
                     st.info("No training sessions match the selected filters.")
                 else:
@@ -943,11 +967,16 @@ def main_app():
                             styled_text = style_feedback_text(entry.get('description', _("no_description_available", lang)))
                             st.markdown(styled_text, unsafe_allow_html=True)
                             
-                            
+                            # related_feedbacks = [fb for fb in instructor_feedback_loaded if fb.get('training_session_id') == entry.get('id')]
+                            # if related_feedbacks:
+                            #     st.markdown("---")
+                            #     for fb in sorted(related_feedbacks, key=lambda x: (x.get('diver_name', ''), x.get('instructor_name', ''))):
+                            #         st.markdown(f"**Feedback pour {fb.get('diver_name', 'N/A')} par {fb.get('instructor_name', 'N/A')}:**")
+                            #         styled_feedback = style_feedback_text(fb['feedback_text'])
+                            #         st.markdown(f"> {styled_feedback}", unsafe_allow_html=True)
         
         if is_admin_view_authorized and len(training_sub_tabs) > 1:
             with training_sub_tabs[1]:
-                # st.subheader(_("training_log_table_header", lang))
                 if not training_log_loaded:
                     st.info(_("no_training_sessions_logged", lang))
                 else:
@@ -1283,9 +1312,7 @@ def main_app():
         feedback_sub_tabs = st.tabs(feedback_sub_tabs_labels)
         feedback_sub_tab_map = dict(zip(feedback_sub_tabs_labels, feedback_sub_tabs))
 
-        
         with feedback_sub_tab_map[my_feedback_sub_tab_label]:
-            # st.subheader(_("my_feedback_tab_label", lang))
             user_feedback = [fb for fb in instructor_feedback_loaded if fb.get('diver_name') == current_user]
             user_profile_data = user_profiles.get(current_user, {})
             has_ai_consent = user_profile_data.get("consent_ai_feedback", False)
@@ -1368,10 +1395,11 @@ def main_app():
                     else:
                         for fb in sorted(filtered_feedbacks, key=lambda x: x.get('feedback_date', '1900-01-01'), reverse=True):
                             with st.container(border=True):
-                                
                                 session_details = get_training_session_details(fb.get("training_session_id"), training_log_loaded)
-                                st.markdown(f"**{fb['diver_name']}** par **{fb['instructor_name']}** à **{session_details['event_name']}** le {fb['feedback_date']}")
-                                st.markdown(fb['feedback_text'], unsafe_allow_html=True)
+                                st.markdown(f"**{_('feedback_for_freediver_label', lang)}** {fb['diver_name']} | **{_('instructor_name_label', lang)}** {fb['instructor_name']} | **Date:** {fb['feedback_date']}")
+                                st.caption(f"**Session:** {session_details['event_date']} - {session_details['event_name']}")
+                                styled_text = style_feedback_text(fb['feedback_text'])
+                                st.markdown(styled_text, unsafe_allow_html=True)
 
             if f"{_('edit_feedbacks_sub_tab_label', lang)}" in feedback_sub_tab_map:
                 with feedback_sub_tab_map[f"{_('edit_feedbacks_sub_tab_label', lang)}"]:
