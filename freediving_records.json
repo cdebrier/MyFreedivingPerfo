@@ -538,5 +538,23 @@
         "original_performance_str": "25",
         "parsed_value": 25,
         "linked_training_session_id": "f4b01d581581476c873255cfb7dee9a7"
+    },
+    {
+        "id": "80f232f1ce674051b4190680bd875159",
+        "user": "Charles D.B.",
+        "entry_date": "2025-06-13",
+        "discipline": "Dynamic Bi-fins (DYN-BF)",
+        "original_performance_str": "18",
+        "parsed_value": 18,
+        "linked_training_session_id": "f4b01d581581476c873255cfb7dee9a7"
+    },
+    {
+        "id": "2fec851ab9714789affde6fd9850c782",
+        "user": "Charles D.B.",
+        "entry_date": "2025-06-13",
+        "discipline": "Dynamic Bi-fins (DYN-BF)",
+        "original_performance_str": "20",
+        "parsed_value": 20,
+        "linked_training_session_id": "f4b01d581581476c873255cfb7dee9a7"
     }
 ]
