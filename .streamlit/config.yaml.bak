@@ -7,120 +7,120 @@ credentials:
     alaink:
       email: alaink@example.com
       name: Alain K.
-      password: $2b$12$45RLvrHyG3pOvBZqpWJGhOCuW8MDO99OSB5f.aGkpsWLYz6.ns3wu
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     arnaudb:
       email: arnaudb@example.com
       name: Arnaud B.
-      password: $2b$12$fU.lK72LED8Lb3BLmYgk.uqBZicd9WLXAnDyk3u5JuyOL7Yv03C6a
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     "aur\xE9lieb":
       email: "aur\xE9lieb@example.com"
       name: "Aur\xE9lie B."
-      password: $2b$12$CkIUS/HOD10wCl9UCv50juIVsq2VK3P6XssU4ArHWSQCKqlXQF7KC
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     bernardvh:
       email: bernardvh@example.com
       name: Bernard V.H.
-      password: $2b$12$/9Bk46O3/1BcpueBBabH.eD45Nsyd59e7Re3Cl/MKBYhB4Yb87qY6
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     charlesd:
       email: charlesd@example.com
       name: Charles D.
-      password: $2b$12$Z3rsmW14bLNVtdtzq75lAOhmWoC/iGDQzrsvuVaUqsllbm1f2op7G
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     charlesdb:
       email: charlesdb@example.com
       name: Charles D.B.
-      password: $2b$12$MbjO.0qN3WLKOYoJ3hNSv.3Bm.EeDxYbAOYKwgCv65tVn8JzTnX/m
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     charlesdt:
       email: charlesdt@example.com
       name: Charles D.T.
-      password: $2b$12$fTeb4LSICbkhGyJCzlJO/O653NLio5Y6TcreSxqjdYno9INwd2MOG
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     donalds:
       email: donalds@example.com
       name: Donald S.
-      password: $2b$12$amb0vTwJmXuoKdXL6vN/f.qcV0k8JZZ6VjN.ploZhKhN3lkWZwEee
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     "d\xE9borahl":
       email: "d\xE9borahl@example.com"
       name: "D\xE9borah L."
-      password: $2b$12$K3Wt8CMIT557JB8GICxTXuCGFE1h47LTcYEO.j78CN72dPyjWGzeW
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     emmanuelh:
       email: emmanuelh@example.com
       name: Emmanuel H.
-      password: $2b$12$nHa2LtUSROBwIyY1qj4SxeygLXXh/GgbkQInpbZ70FoTqyHeCo2xG
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     ericm:
       email: ericm@example.com
       name: Eric M.
-      password: $2b$12$K8pwgwvVLTwGYXqyz8HXhOfZkvL2345hEMdhmStsF008FjscYGHKq
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     florences:
       email: florences@example.com
       name: Florence S.
-      password: $2b$12$q9l9a3NVyNnZUvDpeaTJo.H.GkiM7pmF9gqrkewvWNVkC6Vvo3JNW
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     "fran\xE7oisb":
       email: "fran\xE7oisb@example.com"
       name: "Fran\xE7ois B."
-      password: $2b$12$NsKwU3qFYfZvBj1M6NOnCO9Jcww/FL88eZSXEqsJ0zhNbOSt5dcbG
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     gregoryd:
       email: gregoryd@example.com
       name: Gregory D.
-      password: $2b$12$1RCmRSPceRIQnVaRu3e0Eu1Dk/m3HF5QpBOp9S/LisJuXA0SznzGG
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     "gr\xE9goirel":
       email: "gr\xE9goirel@example.com"
       name: "Gr\xE9goire L."
-      password: $2b$12$9wHfwrmErNiIgwQHc3Xkp.jyWi3jBJYrBfu0IkMZfF5SRt2rytERG
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     laurannep:
       email: laurannep@example.com
       name: Lauranne P.
-      password: $2b$12$nxAYmzgJGq6qPpWUfGw24e0uhh4D717vSE0/STIyc3TPHZz4uc3Ku
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     lucd:
       email: lucd@example.com
       name: Luc D.
-      password: $2b$12$4N279D0kGiWXZNsEtKv5vetJE33imZZ5TiOm9Q6hQ8r3wgVO/6V66
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     martinv:
       email: martinv@example.com
       name: Martin V.
-      password: $2b$12$dCu6V3twyZ7Ggdz/q4a6KuYp/2E6IqMbC9x13cM.6aWzGhsAXM5nm
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     michelf:
       email: michelf@example.com
       name: Michel F.
-      password: $2b$12$G6CyfMxTtwioWhCW7xQEkuo.NmT6VXcc71.cXnOLPkOj2yZTQlIZu
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     perrinem:
       email: perrinem@example.com
       name: Perrine M.
-      password: $2b$12$rTRiT5qAkvV5w6tfFsXQvulr8yHe6QbiNhsJV9H06F3EjnQhOuAt6
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     philipped:
       email: philipped@example.com
       name: Philippe D.
-      password: $2b$12$/AD7tzTrzXf4Qp4L8IXZQ.2BW.xI.wN2vsMnUiZ2AoEMBYQEgYSsi
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     philippek:
       email: philippek@example.com
       name: Philippe K.
-      password: $2b$12$T1T9PZh62HYQclZbSuRJTuDAyB3WmDC8GVhsj0pVoLlVhVRr7QuUC
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     "r\xE9myl":
       email: "r\xE9myl@example.com"
       name: "R\xE9my L."
-      password: $2b$12$t5CEUCYOxuz58.2AjKwDZOrAuHYBIulnPfI76qvQMtI44xJU2Nlp6
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     "st\xE9phaned":
       email: "st\xE9phaned@example.com"
       name: "St\xE9phane D."
-      password: $2b$12$/PawvqHmr8lDhr5t2Nyh5O2G44HdKS.j9fkblr7z/PGvU5b6/IcIq
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     "s\xE9bastienl":
       email: "s\xE9bastienl@example.com"
       name: "S\xE9bastien L."
-      password: $2b$12$slTMpHazjitUOwgz60jj7.AsKdD4vvR89/i5asRLt5CzDD2X6fNXC
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     "th\xE9og":
       email: "th\xE9og@example.com"
       name: "Th\xE9o G."
-      password: $2b$12$CcqXVQIfqTArau2RBhNAmu1LevFzxNUuSWPW9/w2Bx49JVymuumgm
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     vincentc:
       email: vincentc@example.com
       name: Vincent C.
-      password: $2b$12$.SqG3g0ZctDK7j7LwUdjju.ea6udfC.slZ6ElC85z/vsAURXKpCXS
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     xavierh:
       email: xavierh@example.com
       name: Xavier H.
-      password: $2b$12$y2m33ugCTJqhJBXXmvKpjOAm3OP6LgJb3KzWIOaWvKyK4VTULWr1e
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     xavierm:
       email: xavierm@example.com
       name: Xavier M.
-      password: $2b$12$/7Xg8ZCmdVIdtRJbo.Dm8uLbBVNZEufO5vOZ0YJAa/zY8d3m/GRru
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO
     yvesg:
       email: yvesg@example.com
       name: Yves G.
-      password: $2b$12$8LNNHGeoLfJ.sH3m9T5Ny.KJ15GwcZo1k57kr685lAUWwNNdO0/N.
+      password: $2b$12$swHDz7yXjk0yQhVrHdEohOPbnCTQmjBcoqIAoZFNhjtXE137XX4fO

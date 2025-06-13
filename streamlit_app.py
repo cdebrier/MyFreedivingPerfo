@@ -420,43 +420,41 @@ def save_instructor_feedback(feedback_data):
 def get_auth_config():
     """
     Loads authenticator config from config.yaml.
-    If it doesn't exist, it creates a default one from existing user profiles.
-    This function is cached to avoid reading the file on every interaction.
+    If it doesn't exist, it creates a default one using LIFRAS ID as password.
     """
     config_path = pathlib.Path(CONFIG_FILE)
     if not config_path.exists():
-        # Temporarily load data *without* using the main cached functions
-        # to avoid polluting the main cache state during this one-off setup.
-        try:
-            with open(TRAINING_LOG_FILE, 'r', encoding='utf-8') as f:
-                training_logs = json.load(f)
-        except (FileNotFoundError, json.JSONDecodeError):
-            training_logs = []
-        try:
-            with open(RECORDS_FILE, 'r', encoding='utf-8') as f:
-                records = json.load(f)
-        except (FileNotFoundError, json.JSONDecodeError):
-            records = []
         try:
             with open(USER_PROFILES_FILE, 'r', encoding='utf-8') as f:
                 profiles = json.load(f)
         except (FileNotFoundError, json.JSONDecodeError):
             profiles = {}
         
+        try:
+            with open(RECORDS_FILE, 'r', encoding='utf-8') as f:
+                records = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            records = []
+        
         all_users = sorted(list(set(r['user'] for r in records).union(set(profiles.keys()))))
         
         credentials = {'usernames': {}}
-        default_password = "changeme"  # Users should be told to change this
-        password_bytes = default_password.encode('utf-8')
-        salt = bcrypt.gensalt()
-        hashed_password_bytes = bcrypt.hashpw(password_bytes, salt)
         
         for user_name in all_users:
+            user_profile = profiles.get(user_name, {})
+            lifras_id = user_profile.get("lifras_id", "").strip()
+
+            plain_password = lifras_id if lifras_id else "changeme"
+            
+            password_bytes = plain_password.encode('utf-8')
+            salt = bcrypt.gensalt()
+            hashed_password_bytes = bcrypt.hashpw(password_bytes, salt)
+            
             username_key = ''.join(filter(str.isalnum, user_name)).lower()
             credentials['usernames'][username_key] = {
                 "email": f"{username_key}@example.com",
                 "name": user_name,
-                "password": hashed_password_bytes.decode('utf-8') # Store as string
+                "password": hashed_password_bytes.decode('utf-8')
             }
 
         config = {
@@ -1386,10 +1384,9 @@ def main_app():
                         for fb in sorted(filtered_feedbacks, key=lambda x: x.get('feedback_date', '1900-01-01'), reverse=True):
                             with st.container(border=True):
                                 session_details = get_training_session_details(fb.get("training_session_id"), training_log_loaded)
-                                st.markdown(f"**{_('feedback_for_freediver_label', lang)}** {fb['diver_name']} | **{_('instructor_name_label', lang)}** {fb['instructor_name']} | **Date:** {fb['feedback_date']}")
-                                st.caption(f"**Session:** {session_details['event_date']} - {session_details['event_name']}")
-                                styled_text = style_feedback_text(fb['feedback_text'])
-                                st.markdown(styled_text, unsafe_allow_html=True)
+                                st.markdown(f"**{fb['diver_name']}** par **{fb['instructor_name']}** à **{session_details['event_name']}** le **{fb['feedback_date']}**")
+                                st.markdown(fb['feedback_text'], unsafe_allow_html=True)
+                                
 
             if f"{_('edit_feedbacks_sub_tab_label', lang)}" in feedback_sub_tab_map:
                 with feedback_sub_tab_map[f"{_('edit_feedbacks_sub_tab_label', lang)}"]:

@@ -336,19 +336,19 @@
         "id": "2d1e1d596f934c889581b12a2e679263",
         "user": "Florence S.",
         "discipline": "Depth (CWT/FIM)",
-        "linked_training_session_id": null,
+        "linked_training_session_id": "68342c642d1040c2ba26906e707a816e",
         "original_performance_str": "22",
         "parsed_value": 22,
-        "entry_date": "2025-01-03"
+        "entry_date": "2025-06-03"
     },
     {
         "id": "677572d7454d41ada787400ceb407cf5",
         "user": "Perrine M.",
         "discipline": "Depth (CWT/FIM)",
-        "linked_training_session_id": null,
+        "linked_training_session_id": "68342c642d1040c2ba26906e707a816e",
         "original_performance_str": "20",
         "parsed_value": 20,
-        "entry_date": "2025-01-03"
+        "entry_date": "2025-06-03"
     },
     {
         "id": "9e0a8e62985e4df484a2b3d95060298f",
@@ -520,5 +520,23 @@
         "original_performance_str": "85",
         "parsed_value": 85,
         "entry_date": "2024-02-18"
+    },
+    {
+        "id": "a44de924fbb1465aba8cebe14b826d63",
+        "user": "Charles D.B.",
+        "entry_date": "2025-06-13",
+        "discipline": "Depth (CWT/FIM)",
+        "original_performance_str": "18",
+        "parsed_value": 18,
+        "linked_training_session_id": "f4b01d581581476c873255cfb7dee9a7"
+    },
+    {
+        "id": "99cc36dbcc324668b0e950644606c7a9",
+        "user": "Charles D.B.",
+        "entry_date": "2025-06-13",
+        "discipline": "Depth (CWT/FIM)",
+        "original_performance_str": "32",
+        "parsed_value": 32,
+        "linked_training_session_id": "68342c642d1040c2ba26906e707a816e"
     }
 ]
