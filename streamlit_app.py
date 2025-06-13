@@ -221,7 +221,7 @@ TRANSLATIONS = {
         "generate_feedback_summary_button": "Générer le résumé des feedbacks",
         "feedback_summary_header": "Résumé des feedbacks",
         "no_feedback_to_summarize": "Aucun feedback à résumer pour le moment.",
-        "feedbacks_overview_tab_label": "💬 Vue d'ensemble des Feedbacks [🔧]",
+        "feedbacks_overview_tab_label": "💬 Journal des Feedbacks [🔧]",
         "edit_feedbacks_sub_tab_label": "📝 Editer les Feedbacks [🔧]",
         "log_feedback_header_sidebar": "📝 Feedback Instructeur",
         "feedback_for_freediver_label": "Apnéiste :",

@@ -109,7 +109,7 @@
         "diver_name": "Bernard V.H.",
         "instructor_name": "Charles D.B.",
         "feedback_text": "Bernard sort parfois fort essoufflé à la remontée, à monitorer.",
-        "training_session_id": null
+        "training_session_id": "35d404431f2d4c2cacba7d43310f62ca"
     },
     {
         "id": "52f55add2cc5417c901f6b52cb137121",
@@ -117,7 +117,7 @@
         "diver_name": "Donald S.",
         "instructor_name": "Charles D.B.",
         "feedback_text": "Donald semble également flirter avec ses limites même s'il fait attention suite à son souci d'oreille de l'an dernier.",
-        "training_session_id": null
+        "training_session_id": "35d404431f2d4c2cacba7d43310f62ca"
     },
     {
         "id": "b136c0e5009f40739909bdd69f1cba24",
@@ -125,7 +125,7 @@
         "diver_name": "Grégoire L.",
         "instructor_name": "Charles D.B.",
         "feedback_text": "Grégoire est plutôt à l'aise.",
-        "training_session_id": null
+        "training_session_id": "35d404431f2d4c2cacba7d43310f62ca"
     },
     {
         "id": "0f53e74ac9404bd6b4e65e1fa4ada93e",
@@ -133,7 +133,7 @@
         "diver_name": "Lauranne P.",
         "instructor_name": "Charles D.B.",
         "feedback_text": "Lauranne intellectualise bcp et doit travailler son aquacité et sa détente",
-        "training_session_id": null
+        "training_session_id": "e6e5defb8fe74ca5ae73020d7399f8c6"
     },
     {
         "id": "47cb22780176462083aa91117cac6091",
@@ -141,7 +141,7 @@
         "diver_name": "Martin V.",
         "instructor_name": "Charles D.B.",
         "feedback_text": "Martin se débrouille bien, très relax en statique.",
-        "training_session_id": null
+        "training_session_id": "e6e5defb8fe74ca5ae73020d7399f8c6"
     },
     {
         "id": "4d8a76a1545e4619a124e3a196eac398",
@@ -149,7 +149,7 @@
         "diver_name": "Perrine M.",
         "instructor_name": "Vincent C.",
         "feedback_text": "Beau style pour Perrine. En particulier les retournements de Perrine montrent un enchaînement très fluide.",
-        "training_session_id": null
+        "training_session_id": "bfc4f5c4b10e4b3cb6f1a9ada99ea40c"
     },
     {
         "id": "00e8dd29ece143349ad3cbd16a528c94",
@@ -157,7 +157,7 @@
         "diver_name": "Florence S.",
         "instructor_name": "Vincent C.",
         "feedback_text": "Beau style pour Florence. Florence \"glisse\" un peu trop en profondeur à mon goût... mais elle se débrouille bien. Donc administrativement, ce serait mieux qu'elle aie son A2 ;)",
-        "training_session_id": null
+        "training_session_id": "bfc4f5c4b10e4b3cb6f1a9ada99ea40c"
     },
     {
         "id": "d7636a63ab7b4c66a017a24e6a0925b7",
@@ -165,7 +165,7 @@
         "diver_name": "Xavier H.",
         "instructor_name": "Vincent C.",
         "feedback_text": "Canard à améliorer pour Xavier. Xavier a plus de mouvements parasites que les autres; un peu plus d'expérience devrait lui faire beaucoup de bien. Palmage OK quand on le lui rappelle , mais ce n'est pas encore une habitude.",
-        "training_session_id": null
+        "training_session_id": "bfc4f5c4b10e4b3cb6f1a9ada99ea40c"
     },
     {
         "id": "b25e8917d3f44888a5c19788bcf72356",
@@ -173,7 +173,7 @@
         "diver_name": "Eric M.",
         "instructor_name": "Vincent C.",
         "feedback_text": "Eric fait des retournements \"express\", comme s'il était très stressé, mais dit que ce n'est pas le cas. Au retour aussi, son visage me fait parfois penser qu'il a eu un stress ou une peur, mais il me dit que tout va bien.",
-        "training_session_id": null
+        "training_session_id": "bfc4f5c4b10e4b3cb6f1a9ada99ea40c"
     },
     {
         "id": "34c81babc53b46358a8d45a599358775",
@@ -181,7 +181,7 @@
         "diver_name": "Gregory D.",
         "instructor_name": "Vincent C.",
         "feedback_text": "Gregory a fait une descente jusqu'au fond en CNF (sans palmes, sans utiliser la corde), d'un style que j'ai trouvé parfait! C'était beau à voir!\nPerso, je me suis senti détendu dans mes descentes profondes (merci à Greg pour la sécu à ces moments-là).",
-        "training_session_id": null
+        "training_session_id": "bfc4f5c4b10e4b3cb6f1a9ada99ea40c"
     },
     {
         "id": "004e459c31c7483eb3911409a1dcb6e4",
@@ -189,7 +189,7 @@
         "diver_name": "Charles D.",
         "instructor_name": "Charles D.B.",
         "feedback_text": "Passage A1 piscine. Charles franchement très bien.",
-        "training_session_id": null
+        "training_session_id": "aa9542682cf64da3a2447a3c6e6cb65f"
     },
     {
         "id": "447a5db84d284100b38084d9f406f6eb",
@@ -197,7 +197,7 @@
         "diver_name": "Martin V.",
         "instructor_name": "Charles D.B.",
         "feedback_text": "Passage A1 piscine. Martin franchement très bien.",
-        "training_session_id": null
+        "training_session_id": "aa9542682cf64da3a2447a3c6e6cb65f"
     },
     {
         "id": "63745a77b69e4485a110b34c7d19d189",
@@ -205,7 +205,7 @@
         "diver_name": "Déborah L.",
         "instructor_name": "Charles D.B.",
         "feedback_text": "Passage A1 piscine. Deborah franchement très bien.",
-        "training_session_id": null
+        "training_session_id": "aa9542682cf64da3a2447a3c6e6cb65f"
     },
     {
         "id": "0599650cd1464a58811362082a8d5b8c",
@@ -213,7 +213,7 @@
         "diver_name": "Lauranne P.",
         "instructor_name": "Charles D.B.",
         "feedback_text": "Exam piscine. Lauranne un peu distraite parfois, et pour le moment niveau A1 max., à suivre. Elle a fait le max de points pour l'exam théorique. Première de promo.",
-        "training_session_id": null
+        "training_session_id": "aa9542682cf64da3a2447a3c6e6cb65f"
     },
     {
         "id": "17121867420343b384c1e54b484f3c5e",
@@ -221,7 +221,7 @@
         "diver_name": "Théo G.",
         "instructor_name": "Philippe K.",
         "feedback_text": "Petit feedback sur la perte d’équilibre de Théo.\nHier après une compensation dans la grande profondeur, il a eu la tête qui tourne.  Il a mis un temps avant de récupérer son équilibre.  \nIl faudra le surveiller à Némo si il a encore ce problème à l’oreille droite.",
-        "training_session_id": null
+        "training_session_id": "4e69cdcdb4ee4891937e675aed40251b"
     },
     {
         "id": "dd9ce3c70f514c21b7991c09b9574cde",
@@ -229,7 +229,7 @@
         "diver_name": "Eric M.",
         "instructor_name": "Vincent C.",
         "feedback_text": "Eric descend assez à l'aise. Petit problème d'oreille à un moment (nez encombré,..), mais c'est passé. Ne semble pas pousser pour faire des chiffres, mais profiter des descentes. Il assure bien la sécu (reste près de son binôme, prêt à intervenir)",
-        "training_session_id": null
+        "training_session_id": "68342c642d1040c2ba26906e707a816e"
     },
     {
         "id": "03ca06d06223411cb59df6b386e9a6fc",
@@ -237,7 +237,7 @@
         "diver_name": "Xavier H.",
         "instructor_name": "Vincent C.",
         "feedback_text": "Xavier H: aussi à l'aise. Pousse souvent la corde en descendant, en particulier quand il fait la sécurité. Besoin de refaire des exercices de canard, et de départ en free (sur le dos ou le ventre, mais sans donner des coups de palme aux autres ;) ). Descendu plusieurs fois à 20m, en étant à l'aise. Xavier doit aussi apprendre à rester plus dans la zone de sabouée. Il dévie très souvent à côté, au risque de gêner les autres apnéistes.",
-        "training_session_id": null
+        "training_session_id": "68342c642d1040c2ba26906e707a816e"
     },
     {
         "id": "e9432b77a2f84f7b975a35f86c578c02",
@@ -245,7 +245,7 @@
         "diver_name": "Grégoire L.",
         "instructor_name": "Vincent C.",
         "feedback_text": "Grégoire L: à une capacité pour de longues apnées, touche le fond sans problème. Pourrais maintenant travailler sur le style: il descend jambe +- écartées, redonne des coups de palmes pendant la chute (alors qu'il n'est pas pressé),... Grégoire doit aussi apprendre à rester plus dans la zone de sabouée. Il dévie très souvent à côté, au risque de gêner les autres apnéistes.",
-        "training_session_id": null
+        "training_session_id": "68342c642d1040c2ba26906e707a816e"
     },
     {
         "id": "f42ddcf21e414e7ea21c03d6a0227d72",
@@ -253,7 +253,7 @@
         "diver_name": "Charles D.B.",
         "instructor_name": "Philippe K.",
         "feedback_text": "Merci pour votre implication et la qualité de votre préparation pour ce passage de brevet hier.  C'est un réel bonheur pour moi de voir votre engagement dans Macapnée.  Je ne reçois que des compliments à votre sujet.  \nC'est pour moi une grande satisfaction de voir l'évolution de notre notre petite école grâce à Alex, oui bien sur, mais surtout à vous trois qui assurez et qui cimentez une convivialité appréciée dans notre groupe d'apnéistes. 🙏",
-        "training_session_id": null
+        "training_session_id": "c71f1041a6db4e7d92b6ca1753806254"
     },
     {
         "id": "efa1dfe6465242349a41ac70adbf290f",
@@ -261,7 +261,7 @@
         "diver_name": "Rémy L.",
         "instructor_name": "Philippe K.",
         "feedback_text": "Merci pour votre implication et la qualité de votre préparation pour ce passage de brevet hier.  C'est un réel bonheur pour moi de voir votre engagement dans Macapnée.  Je ne reçois que des compliments à votre sujet.  \nC'est pour moi une grande satisfaction de voir l'évolution de notre notre petite école grâce à Alex, oui bien sur, mais surtout à vous trois qui assurez et qui cimentez une convivialité appréciée dans notre groupe d'apnéistes. 🙏",
-        "training_session_id": null
+        "training_session_id": "c71f1041a6db4e7d92b6ca1753806254"
     },
     {
         "id": "cd8f23fc39574fd6b1c23e5af9aa7193",
@@ -269,7 +269,7 @@
         "diver_name": "Vincent C.",
         "instructor_name": "Philippe K.",
         "feedback_text": "Merci pour votre implication et la qualité de votre préparation pour ce passage de brevet hier.  C'est un réel bonheur pour moi de voir votre engagement dans Macapnée.  Je ne reçois que des compliments à votre sujet.  \nC'est pour moi une grande satisfaction de voir l'évolution de notre notre petite école grâce à Alex, oui bien sur, mais surtout à vous trois qui assurez et qui cimentez une convivialité appréciée dans notre groupe d'apnéistes. 🙏",
-        "training_session_id": null
+        "training_session_id": "c71f1041a6db4e7d92b6ca1753806254"
     },
     {
         "id": "b7c21ee9a15148c48c755d3c5e5ea73d",
@@ -277,7 +277,7 @@
         "diver_name": "Rémy L.",
         "instructor_name": "Vincent C.",
         "feedback_text": "C'était bien, pas grand chose à dire. Insister plus encore sur relax relax relax. Mais tu l'as fait. Peut-être faire une sécurité par paire avec petits doigts, mais tout le monde semble détester ça... exagérer sur le \"protocole de sortie\" pour les inciter à le faire.",
-        "training_session_id": null
+        "training_session_id": "9139382ebf1245ddbcd807b0a66e3fb5"
     },
     {
         "id": "6d7a91a5ef1f40de829c76260dca5e00",
@@ -285,7 +285,7 @@
         "diver_name": "Rémy L.",
         "instructor_name": "Philippe K.",
         "feedback_text": "J’apprécie votre prépa et votre désir de bien faire, d’être complet.  Mille bravos.\nMaintenant, c’est un cours S1 c-à-d un cours débutants première approche.  Ne cherchez pas à être complet du premier coup. Il faut aussi en laisser pour le S2 et le S3. \n(Perso, je n’ai pas appris l’Otovent avec mon premier brevet !) Je veux dire par là … ne les ‘bombardez’ pas au risque de les faire fuir.  Je sais que la mode est au ALL in ONE, mais il faut leur en laisser pour progresser avec plaisir dans les découvertes des autres niveaux. \nCeci dit, je suis heureux de vous voir poser comme des chefs sur cette prépa.  A tout à l’heure.",
-        "training_session_id": null
+        "training_session_id": "c71f1041a6db4e7d92b6ca1753806254"
     },
     {
         "id": "41fe15ac3f0343679859d75707b377c5",
@@ -293,7 +293,7 @@
         "diver_name": "Vincent C.",
         "instructor_name": "Philippe K.",
         "feedback_text": "J’apprécie votre prépa et votre désir de bien faire, d’être complet.  Mille bravos.\nMaintenant, c’est un cours S1 c-à-d un cours débutants première approche.  Ne cherchez pas à être complet du premier coup. Il faut aussi en laisser pour le S2 et le S3. \n(Perso, je n’ai pas appris l’Otovent avec mon premier brevet !) Je veux dire par là … ne les ‘bombardez’ pas au risque de les faire fuir.  Je sais que la mode est au ALL in ONE, mais il faut leur en laisser pour progresser avec plaisir dans les découvertes des autres niveaux. \nCeci dit, je suis heureux de vous voir poser comme des chefs sur cette prépa.  A tout à l’heure.",
-        "training_session_id": null
+        "training_session_id": "c71f1041a6db4e7d92b6ca1753806254"
     },
     {
         "id": "7636a8cab3f345faabbc86da5cf61ffa",
@@ -301,7 +301,7 @@
         "diver_name": "Charles D.B.",
         "instructor_name": "Alain K.",
         "feedback_text": "Et pour être complet, je pense que la petite séance ludique dans le noir de mardi a créé un déclic chez moi : au-delà du fait que je commence enfin à maîtriser le matos (palmes à chaussettes, plombs, antibuée…), pour la première fois, j'ai senti que je prenais réellement du plaisir à évoluer au fond de l'eau, sans la pression de \"devoir réussir\" mes longueurs en dynamique. Comme quoi, tout est dans la tête (mais c'est pas un scoop) ! :)\nDonc, encore merci d'avoir créé ce chouette moment !\nBelle journée.",
-        "training_session_id": null
+        "training_session_id": "dfa5e10c934245a19bd226f8e380c9e6"
     },
     {
         "id": "e0f81333d2c74f8ab539bc1980448151",
