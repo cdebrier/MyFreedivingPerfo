@@ -20,6 +20,7 @@ CONFIG_FILE = ".streamlit/config.yaml"
 # --- Privileged User Configuration ---
 # This list now defines who gets admin/privileged views.
 PRIVILEGED_USERS = ["Philippe K.", "Vincent C.", "Charles D.B.", "Rémy L.", "Gregory D."]
+SUPER_PRIVILEGED_USERS = ['Charles D.B.']
 
 # Instructor certification levels for different functionalities
 INSTRUCTOR_CERT_LEVELS_FOR_LOGGING_FEEDBACK_SIDEBAR = ["S4", "I1", "I2", "I3"]
@@ -672,6 +673,7 @@ def main_app():
 
     current_user = st.session_state.get("name")
     is_admin_view_authorized = current_user in PRIVILEGED_USERS
+    is_super_admin_view_authorized = current_user in SUPER_PRIVILEGED_USERS
     
     with st.sidebar:
         st.write(f"Bienvenue *{current_user}*")
@@ -1142,11 +1144,11 @@ def main_app():
         with perf_sub_tab_map[_("club_level_performance_tab_title", lang)]:
             display_level_performance_tab(all_records_loaded, user_profiles, discipline_keys, lang)
 
-        if is_admin_view_authorized:
+        if is_super_admin_view_authorized:
             with perf_sub_tab_map[f"{_('club_performances_overview_tab_label', lang)}"]:
                 if not all_records_loaded:
                     st.info(_("no_ranking_data", lang))
-                else:
+                else:                    
                     with st.container(border=True):
                         all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
                         club_pbs = {}
@@ -1210,7 +1212,13 @@ def main_app():
                 with col2:
                     session_options = {s['id']: f"{s['date']} - {s['place']}" for s in training_log_loaded}
                     filter_session_id_perf = st.selectbox(_("filter_by_training_session_label", lang), [_("all_sessions_option", lang)] + list(session_options.keys()), format_func=lambda x: session_options.get(x, x), key="perf_log_session_filter_overview")
-                with col3: filter_discipline_perf = st.selectbox(_("filter_by_discipline_label", lang), [_("all_disciplines_option", lang)] + discipline_keys, format_func=lambda k: _(f"disciplines.{k}", lang), key="perf_log_discipline_filter_overview")
+                with col3: 
+                    filter_discipline_perf = st.selectbox(
+                        _("filter_by_discipline_label", lang),
+                        options=[_("all_disciplines_option", lang)] + discipline_keys,
+                        format_func=lambda k: k if k == _("all_disciplines_option", lang) else _(f"disciplines.{k}", lang),
+                        key="perf_log_discipline_filter_overview"
+                    )
                 
                 filtered_records = all_records_loaded
                 if filter_user_perf != _("all_freedivers_option", lang): filtered_records = [r for r in filtered_records if r['user'] == filter_user_perf]
