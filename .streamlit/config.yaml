@@ -12,9 +12,9 @@ credentials:
       email: arnaudb@example.com
       name: Arnaud B.
       password: $2b$12$fU.lK72LED8Lb3BLmYgk.uqBZicd9WLXAnDyk3u5JuyOL7Yv03C6a
-    "aur\xE9lieb":
+    aurelieb:
       email: "aur\xE9lieb@example.com"
-      name: "Aur\xE9lie B."
+      name: "Aurélie B."
       password: $2b$12$CkIUS/HOD10wCl9UCv50juIVsq2VK3P6XssU4ArHWSQCKqlXQF7KC
     bernardvh:
       email: bernardvh@example.com
@@ -36,9 +36,9 @@ credentials:
       email: donalds@example.com
       name: Donald S.
       password: $2b$12$amb0vTwJmXuoKdXL6vN/f.qcV0k8JZZ6VjN.ploZhKhN3lkWZwEee
-    "d\xE9borahl":
-      email: "d\xE9borahl@example.com"
-      name: "D\xE9borah L."
+    deborrahl:
+      email: "déborahl@example.com"
+      name: "Deborrah L."
       password: $2b$12$K3Wt8CMIT557JB8GICxTXuCGFE1h47LTcYEO.j78CN72dPyjWGzeW
     emmanuelh:
       email: emmanuelh@example.com
@@ -52,17 +52,17 @@ credentials:
       email: florences@example.com
       name: Florence S.
       password: $2b$12$q9l9a3NVyNnZUvDpeaTJo.H.GkiM7pmF9gqrkewvWNVkC6Vvo3JNW
-    "fran\xE7oisb":
+    françoisb":
       email: "fran\xE7oisb@example.com"
-      name: "Fran\xE7ois B."
+      name: "François B."
       password: $2b$12$NsKwU3qFYfZvBj1M6NOnCO9Jcww/FL88eZSXEqsJ0zhNbOSt5dcbG
     gregoryd:
       email: gregoryd@example.com
       name: Gregory D.
       password: $2b$12$1RCmRSPceRIQnVaRu3e0Eu1Dk/m3HF5QpBOp9S/LisJuXA0SznzGG
-    "gr\xE9goirel":
+    gregoirel:
       email: "gr\xE9goirel@example.com"
-      name: "Gr\xE9goire L."
+      name: "Gréggoire L."
       password: $2b$12$9wHfwrmErNiIgwQHc3Xkp.jyWi3jBJYrBfu0IkMZfF5SRt2rytERG
     laurannep:
       email: laurannep@example.com
@@ -92,21 +92,21 @@ credentials:
       email: philippek@example.com
       name: Philippe K.
       password: $2b$12$T1T9PZh62HYQclZbSuRJTuDAyB3WmDC8GVhsj0pVoLlVhVRr7QuUC
-    "r\xE9myl":
+    remyl:
       email: "r\xE9myl@example.com"
-      name: "R\xE9my L."
+      name: "Rémy L."
       password: $2b$12$t5CEUCYOxuz58.2AjKwDZOrAuHYBIulnPfI76qvQMtI44xJU2Nlp6
-    "st\xE9phaned":
+    stephaned:
       email: "st\xE9phaned@example.com"
-      name: "St\xE9phane D."
+      name: "Stéphane D."
       password: $2b$12$/PawvqHmr8lDhr5t2Nyh5O2G44HdKS.j9fkblr7z/PGvU5b6/IcIq
-    "s\xE9bastienl":
+    sebastienl:
       email: "s\xE9bastienl@example.com"
-      name: "S\xE9bastien L."
+      name: "Sébastien L."
       password: $2b$12$slTMpHazjitUOwgz60jj7.AsKdD4vvR89/i5asRLt5CzDD2X6fNXC
-    "th\xE9og":
+    theog:
       email: "th\xE9og@example.com"
-      name: "Th\xE9o G."
+      name: "Théo G."
       password: $2b$12$CcqXVQIfqTArau2RBhNAmu1LevFzxNUuSWPW9/w2Bx49JVymuumgm
     vincentc:
       email: vincentc@example.com
