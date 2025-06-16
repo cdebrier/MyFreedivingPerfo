@@ -52,7 +52,7 @@ credentials:
       email: florences@example.com
       name: Florence S.
       password: $2b$12$q9l9a3NVyNnZUvDpeaTJo.H.GkiM7pmF9gqrkewvWNVkC6Vvo3JNW
-    françoisb":
+    francoisb:
       email: "fran\xE7oisb@example.com"
       name: "François B."
       password: $2b$12$NsKwU3qFYfZvBj1M6NOnCO9Jcww/FL88eZSXEqsJ0zhNbOSt5dcbG
@@ -99,7 +99,7 @@ credentials:
     stephaned:
       email: "st\xE9phaned@example.com"
       name: "Stéphane D."
-      password: $2b$12$/PawvqHmr8lDhr5t2Nyh5O2G44HdKS.j9fkblr7z/PGvU5b6/IcIq
+      password: $2b$12$nHa2LtUSROBwIyY1qj4SxeygLXXh/GgbkQInpbZ70FoTqyHeCo2xG
     sebastienl:
       email: "s\xE9bastienl@example.com"
       name: "Sébastien L."
@@ -115,7 +115,7 @@ credentials:
     xavierh:
       email: xavierh@example.com
       name: Xavier H.
-      password: $2b$12$y2m33ugCTJqhJBXXmvKpjOAm3OP6LgJb3KzWIOaWvKyK4VTULWr1e
+      password: $2b$12$nHa2LtUSROBwIyY1qj4SxeygLXXh/GgbkQInpbZ70FoTqyHeCo2xG
     xavierm:
       email: xavierm@example.com
       name: Xavier M.
