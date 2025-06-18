@@ -1100,9 +1100,137 @@ def main_app():
         perf_sub_tab_map = dict(zip(perf_sub_tabs_labels, perf_sub_tabs))
 
 
-        # In streamlit_app.py, inside main_app(), within the "Performances Tab" (`with tab_map[tab_label_performances]:`)
+        with perf_sub_tab_map[_("personal_records_tab_label", lang)]:
+            user_records_for_tab = [r for r in all_records_loaded if r['user'] == current_user]
+            if not user_records_for_tab:
+                st.info(_("no_performances_yet", lang))
+            else:
+                with st.container(border=True):
+                    discipline_keys = ["Dynamic Bi-fins (DYN-BF)", "Static Apnea (STA)", "Dynamic No-fins (DNF)", "Depth (CWT/FIM)", "Depth (VWT/NLT)", "16x25m Speed Endurance"]
+                    pbs_tab = {}
+                    for disc_key_pb_tab in discipline_keys:
+                        disc_records_pb_tab = [r for r in user_records_for_tab if r['discipline'] == disc_key_pb_tab and r.get('parsed_value') is not None]
+                        if not disc_records_pb_tab:
+                            pbs_tab[disc_key_pb_tab] = ("N/A", "N/A", "N/A")
+                            continue
+                        best_record_pb_tab = min(disc_records_pb_tab, key=lambda x: x['parsed_value']) if is_lower_better(disc_key_pb_tab) else max(disc_records_pb_tab, key=lambda x: x['parsed_value'])
+                        pb_value_formatted_tab = format_seconds_to_static_time(best_record_pb_tab['parsed_value']) if is_time_based_discipline(disc_key_pb_tab) else f"{int(best_record_pb_tab['parsed_value'])}m"
+                        session_details = get_training_session_details(best_record_pb_tab.get('linked_training_session_id'), training_log_loaded)
+                        pbs_tab[disc_key_pb_tab] = (pb_value_formatted_tab, session_details['event_name'], session_details['event_date'])
 
-# ... (previous code for personal_records_tab_label and club_level_performance_tab_title) ...
+                    cols_pb_tab = st.columns(len(discipline_keys))
+                    for i_pb_col_tab, disc_key_pb_col_tab in enumerate(discipline_keys):
+                        val_tab, event_name_tab, event_date_tab = pbs_tab.get(disc_key_pb_col_tab)
+                        with cols_pb_tab[i_pb_col_tab]:
+                            metric_label = _("pb_labels." + disc_key_pb_col_tab, lang)
+                            st.metric(label=metric_label, value=val_tab)
+                            if event_date_tab:
+                                st.caption(_("achieved_on_event_caption", lang, event_name=event_name_tab, event_date=event_date_tab))
+                            elif val_tab == "N/A":
+                                st.caption(_("no_record_yet_caption", lang))
+                st.markdown("")
+                sub_tab_titles_user = [_("disciplines." + key, lang) for key in discipline_keys]
+                sub_tabs_user = st.tabs(sub_tab_titles_user)
+                for i_sub_tab_user, disc_key_sub_tab_user in enumerate(discipline_keys):
+                    with sub_tabs_user[i_sub_tab_user]:
+                        chart_data_list = [
+                            {
+                                "Event Date": pd.to_datetime(get_training_session_details(r_chart.get('linked_training_session_id'), training_log_loaded).get('event_date')),
+                                "PerformanceValue": r_chart['parsed_value'],
+                                "Event Name": get_training_session_details(r_chart.get('linked_training_session_id'), training_log_loaded).get('event_name')
+                            }
+                            for r_chart in sorted(user_records_for_tab, key=lambda x: get_training_session_details(x.get('linked_training_session_id'), training_log_loaded).get('event_date') or '1900-01-01')
+                            if r_chart['discipline'] == disc_key_sub_tab_user and r_chart.get('parsed_value') is not None and get_training_session_details(r_chart.get('linked_training_session_id'), training_log_loaded).get('event_date')
+                        ]
+                        st.markdown(f"#### {_('performance_evolution_subheader', lang)}")
+                        if chart_data_list:
+                            chart_df = pd.DataFrame(chart_data_list)
+                            y_axis_title = _("performance_value", lang)
+                            tooltip_list = ['Event Date:T', 'Event Name:N']
+                            if is_time_based_discipline(disc_key_sub_tab_user):
+                                chart_df['PerformanceValueMinutes'] = chart_df['PerformanceValue'] / 60
+                                y_axis_title += f" ({_('minutes_unit', lang)})"
+                                y_encoding_field = 'PerformanceValueMinutes:Q'
+                                tooltip_list.insert(1, alt.Tooltip('PerformanceValueMinutes:Q', title=_('performance_value', lang) + f" ({_('minutes_unit', lang)})", format=".2f"))
+                            else:
+                                y_axis_title += f" ({_('meters_unit', lang)})"
+                                y_encoding_field = 'PerformanceValue:Q'
+                                tooltip_list.insert(1, alt.Tooltip('PerformanceValue:Q', title=_('performance_value', lang) + f" ({_('meters_unit', lang)})"))
+                            chart = alt.Chart(chart_df).mark_line(point=True).encode(
+                                x=alt.X('Event Date:T', title=_("history_event_date_col", lang)),
+                                y=alt.Y(y_encoding_field, title=y_axis_title, scale=alt.Scale(zero=False)),
+                                tooltip=tooltip_list
+                            ).interactive()
+                            st.altair_chart(chart, use_container_width=True)
+                        else:
+                            st.caption(_("no_data_for_graph", lang))
+                        st.markdown(f"#### {_('history_table_subheader', lang)}")
+                        history_for_editor_raw = [r for r in user_records_for_tab if r['discipline'] == disc_key_sub_tab_user]
+                        if not history_for_editor_raw:
+                            st.caption(_("no_history_display", lang))
+                        else:
+                            training_session_options = {ts.get('id'): f"{ts.get('date')} - {ts.get('place', 'N/A')}" for ts in sorted(training_log_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True)}
+                            # Add "None" option for unlinked sessions
+                            training_session_options[None] = _("no_specific_session_option", lang)
+                            
+                            session_display_to_id = {v: k for k, v in training_session_options.items()}
+                            history_for_editor_display = [
+                                {
+                                    "id": rec.get("id"),
+                                    _("link_training_session_label", lang): training_session_options.get(rec.get("linked_training_session_id"), _("no_specific_session_option", lang)),
+                                    _("history_performance_col", lang): rec.get("original_performance_str", ""), # Use original_performance_str here
+                                    _("history_delete_col_editor", lang): False
+                                }
+                                for rec in sorted(history_for_editor_raw, key=lambda x: get_training_session_details(x.get('linked_training_session_id'), training_log_loaded).get('event_date') or '1900-01-01', reverse=True)
+                            ]
+                            with st.form(key=f"personal_history_form_{disc_key_sub_tab_user}", border=False):
+                                # Define column config dynamically based on discipline type
+                                performance_column_config = {}
+                                if is_time_based_discipline(disc_key_sub_tab_user):
+                                    # For time-based, still display as text (MM:SS) but allow parsing
+                                    # Streamlit's TextColumn is fine here as we parse manually on submit
+                                    performance_column_config = st.column_config.TextColumn(label=_("history_performance_col", lang), required=True)
+                                else:
+                                    # For distance/other numeric, use NumberColumn
+                                    performance_column_config = st.column_config.NumberColumn(
+                                        label=_("history_performance_col", lang),
+                                        required=True,
+                                        format="%d m" # Example format for meters. Adjust if needed.
+                                    )
+
+                                edited_df = st.data_editor(
+                                    pd.DataFrame(history_for_editor_display),
+                                    column_config={
+                                        "id": None,
+                                        _("link_training_session_label", lang): st.column_config.SelectboxColumn(options=list(training_session_options.values()), required=True),
+                                        _("history_performance_col", lang): performance_column_config, # <--- Apply dynamic config here
+                                        _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(label=_("history_delete_col_editor", lang))
+                                    },
+                                    hide_index=True, key=f"data_editor_{current_user}_{disc_key_sub_tab_user}"
+                                )
+                                if st.form_submit_button(_("save_history_changes_button", lang)):
+                                    records_to_process = [r for r in all_records_loaded if not(r['user'] == current_user and r['discipline'] == disc_key_sub_tab_user)]
+                                    for row in edited_df.to_dict('records'):
+                                        if row[_("history_delete_col_editor", lang)]:
+                                            continue
+                                        original_rec = next((r for r in history_for_editor_raw if r['id'] == row['id']), None)
+                                        if original_rec:
+                                            new_perf_str = str(row[_("history_performance_col", lang)]).strip()
+                                            new_session_id = session_display_to_id.get(row[_("link_training_session_label", lang)])
+                                            parsed_val = parse_static_time_to_seconds(new_perf_str, lang) if is_time_based_discipline(disc_key_sub_tab_user) else parse_distance_to_meters(new_perf_str, lang)
+                                            if parsed_val is not None:
+                                                original_rec['original_performance_str'] = new_perf_str
+                                                original_rec['parsed_value'] = parsed_val
+                                                original_rec['linked_training_session_id'] = new_session_id
+                                            else:
+                                                st.error(f"Invalid performance format for '{new_perf_str}'")
+                                            records_to_process.append(original_rec)
+                                    save_records(records_to_process)
+                                    st.success(_("history_updated_success", lang))
+                                    st.rerun()
+        
+        with perf_sub_tab_map[_("club_level_performance_tab_title", lang)]:
+            display_level_performance_tab(all_records_loaded, user_profiles, discipline_keys, lang)
 
         # Conditionally render the content for the "Classement" tab (super admin)
         if is_super_admin_view_authorized:
