@@ -414,23 +414,42 @@ def load_user_profiles():
 
 def save_user_profiles(profiles):
     client = get_gsheets_client()
-    sheet = get_sheet_by_url(client, st.secrets["gsheets"]["user_profiles_sheet_url"], 'user_profiles') # <-- Change 'Sheet1'
+    sheet = get_sheet_by_url(client, st.secrets["gsheets"]["user_profiles_sheet_url"], 'user_profiles') 
     
     profiles_list = list(profiles.values())
     if not profiles_list:
         sheet.clear()
         return
 
-    # Ensure 'user_name' is a consistent key for all profiles
-    for name, profile in profiles.items():
-        profile['user_name'] = name # Ensure the key used for the dict is stored as a column
+    # Définissez explicitement tous les en-têtes que vous attendez dans la feuille
+    # C'est la partie CRUCIALE qui garantit que la colonne "consent_ai_feedback" sera toujours incluse.
+    expected_headers = [
+        "user_name", "id", "certification", "certification_date", 
+        "lifras_id", "anonymize_results", "consent_ai_feedback", 
+        "motivations", "projection_3_ans", "portrait_photo_text"
+    ]
     
-    headers = list(profiles_list[0].keys())
-    data_to_write = [headers] + [[profile.get(h) for h in headers] for profile in profiles_list]
+    # Assurez-vous que chaque profil a toutes les clés définies dans expected_headers,
+    # avec des valeurs par défaut si elles sont manquantes (False pour les booléens, "" pour les chaînes, None pour les dates)
+    data_to_write = [expected_headers] 
+    for profile_data in profiles_list:
+        row = []
+        for header in expected_headers:
+            if header == "consent_ai_feedback":
+                row.append(profile_data.get(header, False)) # False par défaut pour le consentement AI
+            elif header == "anonymize_results":
+                row.append(profile_data.get(header, False)) # False par défaut pour l'anonymisation
+            elif header in ["certification_date"]:
+                # Gérer les dates: None si pas de date, sinon la valeur
+                date_val = profile_data.get(header)
+                row.append(date_val if pd.notna(date_val) else None)
+            else:
+                row.append(profile_data.get(header, "")) # Chaîne vide par défaut pour les autres
+        data_to_write.append(row)
     
     sheet.clear()
     sheet.update(data_to_write)
-    load_user_profiles.clear() # Clear cache after saving
+    load_user_profiles.clear() # Vider le cache après la sauvegarde
 
 # --- Data Handling for Training Logs ---
 @st.cache_data(ttl=60)
@@ -1406,55 +1425,58 @@ def main_app():
             user_profile_data = user_profiles.get(current_user, {})
             has_ai_consent = user_profile_data.get("consent_ai_feedback", False)
             
-            if not user_feedback:
-                st.info(_("no_feedback_for_user", lang))
-            
             if not has_ai_consent:
                 st.warning(_("consent_ai_feedback_missing", lang))
             else:
-                if user_feedback:
-                    if st.button(_("generate_feedback_summary_button", lang)):
-                        with st.spinner("Génération du résumé..."):
-                            all_feedback_text = "\n".join([f"- {fb['feedback_text']}" for fb in user_feedback])
-                            import toml
-                            prompts_instructions = toml.load("./prompts.toml")
-                            adeps_coaching_instructions = prompts_instructions['feedback']['adeps_coaching_instructions']
-                            huron_spirit = prompts_instructions['feedback']['huron_spirit']                  
-                            comparatif_brevets = prompts_instructions['feedback']['comparatif_brevets']  
-                            motivations_text = user_profile_data.get("motivations", "")
-                            objectifs_text = user_profile_data.get("projection_3_ans", "")
-                            vision_text = user_profile_data.get("portrait_photo_text", "")
-                            
-                            prompt = f"""Voici une série de feedbacks pour un apnéiste. 
-                            Ce feedback est donné par d'autres apnéistes et instructeurs. 
-                            Tu es un coach d'apnée tel que décrit ici \n{adeps_coaching_instructions}. 
-                            Tu dois analyser ces feedbacks et en tirer un résumé constructif de maximum 10 phrases pour l'apnéiste afin qu'il puisse s'améliorer. 
-                            Tu dois prendre en compte le niveau actuel de l'apnéiste qui est le suivant : {user_profiles.get(current_user, {}).get('certification', 'Non spécifié')}.  
-                            Tu dois également prendre en compte ses motivations à pratiquer l'apnée : {motivations_text}. 
-                            Ainsi que ses objectifs de progression : {objectifs_text}. 
-                            Et sa vision de l'apnée : {vision_text}. 
-                            Il faut aussi que tu prennes en compte les attentes de la Lifras pour chaque niveau d'apnée pour établir où se trouve l'apnéiste dans son parcours. 
-                            Voici ces attentes : {comparatif_brevets}. 
-                            Voici également de la théorie d'un coach que tu peux utiliser pour étoffer ton feedback: {huron_spirit}. 
-                            Ne ressors pas de ton analyse des feedbacks et autres contenus, un évènement spécifique qui pourrait être traumatisant, comme des soucis de santé par exemple, ou une mauvaise expérience. Reste en bird eye view.  
-                            Les feedback sont ceux-ci:\n{all_feedback_text}. 
-                            Reste concis, bienveillant, constructif et factuel. N'utilises pas de bullet lists. 
-                            Tu peux mettre les recoemmndations clés en gras. 
-                            Ton texte doit couvrir tous les aspects de la pratique de l'apnée, y compris la technique, la sécurité, la relaxation, et l'état d'esprit. Ainsi que les aspects de progression et de motivation. 
-                            Tu dois également t'assurer que ton texte est adapté au niveau de l'apnéiste, en tenant compte de son expérience et de ses compétences actuelles. 
-                            Une fois ton texte prêt, vérifie plusieurs fois pour être cetain que tu as bien appliqué les consignes ci-dessus, sinon modifie ton texte."""
+                # Only show "No feedback to summarize" if there's consent AND no feedback
+                if not user_feedback:
+                    st.info(_("no_feedback_to_summarize", lang)) # Or a more appropriate message if you want AI to generate initial guidance
+                
+                # This button should always be available if consent is given
+                if st.button(_("generate_feedback_summary_button", lang)):
+                    # Your AI generation logic here
+                    with st.spinner("Génération du résumé..."):
+                        all_feedback_text = "\n".join([f"- {fb['feedback_text']}" for fb in user_feedback])
+                        import toml
+                        prompts_instructions = toml.load("./prompts.toml")
+                        adeps_coaching_instructions = prompts_instructions['feedback']['adeps_coaching_instructions']
+                        huron_spirit = prompts_instructions['feedback']['huron_spirit']            
+                        comparatif_brevets = prompts_instructions['feedback']['comparatif_brevets']  
+                        motivations_text = user_profile_data.get("motivations", "")
+                        objectifs_text = user_profile_data.get("projection_3_ans", "")
+                        vision_text = user_profile_data.get("portrait_photo_text", "")
+                        
+                        prompt = f"""Voici une série de feedbacks pour un apnéiste. 
+                        Ce feedback est donné par d'autres apnéistes et instructeurs. 
+                        Tu es un coach d'apnée tel que décrit ici \n{adeps_coaching_instructions}. 
+                        Tu dois analyser ces feedbacks et en tirer un résumé constructif de maximum 10 phrases pour l'apnéiste afin qu'il puisse s'améliorer. 
+                        Tu dois prendre en compte le niveau actuel de l'apnéiste qui est le suivant : {user_profiles.get(current_user, {}).get('certification', 'Non spécifié')}.  
+                        Tu dois également prendre en compte ses motivations à pratiquer l'apnée : {motivations_text}. 
+                        Ainsi que ses objectifs de progression : {objectifs_text}. 
+                        Et sa vision de l'apnée : {vision_text}. 
+                        Il faut aussi que tu prennes en compte les attentes de la Lifras pour chaque niveau d'apnée pour établir où se trouve l'apnéiste dans son parcours. 
+                        Voici ces attentes : {comparatif_brevets}. 
+                        Voici également de la théorie d'un coach que tu peux utiliser pour étoffer ton feedback: {huron_spirit}. 
+                        Ne ressors pas de ton analyse des feedbacks et autres contenus, un évènement spécifique qui pourrait être traumatisant, comme des soucis de santé par exemple, ou une mauvaise expérience. Reste en bird eye view.  
+                        Les feedback sont ceux-ci:\n{all_feedback_text}. 
+                        Reste concis, bienveillant, constructif et factuel. N'utilises pas de bullet lists. 
+                        Tu peux mettre les recoemmndations clés en gras. 
+                        Ton texte doit couvrir tous les aspects de la pratique de l'apnée, y compris la technique, la sécurité, la relaxation, et l'état d'esprit. Ainsi que les aspects de progression et de motivation. 
+                        Tu dois également t'assurer que ton texte est adapté au niveau de l'apnéiste, en tenant compte de son expérience et de ses compétences actuelles. 
+                        Une fois ton texte prêt, vérifie plusieurs fois pour être cetain que tu as bien appliqué les consignes ci-dessus, sinon modifie ton texte."""
 
-                            try:
-                                from google import genai
-                                api_key = st.secrets["genai"]["key"]
-                                client = genai.Client(api_key=api_key)
-                                summary_text = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
-                                st.session_state['feedback_summary'] = summary_text.text
-                            except Exception as e:
-                                st.error(f"Erreur lors de la génération du résumé : {e}")
-                    
-                    if 'feedback_summary' in st.session_state and st.session_state.feedback_summary:
-                        st.markdown(st.session_state['feedback_summary'])
+                        try:
+                            from google import genai
+                            api_key = st.secrets["genai"]["key"]
+                            client = genai.Client(api_key=api_key)
+                            summary_text = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+                            st.session_state['feedback_summary'] = summary_text.text
+                        except Exception as e:
+                            st.error(f"Erreur lors de la génération du résumé : {e}")
+                
+                # Display the summary if it exists
+                if 'feedback_summary' in st.session_state and st.session_state.feedback_summary:
+                    st.markdown(st.session_state['feedback_summary'])
 
     # Admin-only Sub-Tabs
         if is_admin_view_authorized:
