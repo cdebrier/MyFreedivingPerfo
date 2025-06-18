@@ -2,3 +2,4 @@ streamlit == 1.45.1
 st-gsheets-connection
 google-genai
 streamlit-authenticator == 0.4.2
+bcrypt

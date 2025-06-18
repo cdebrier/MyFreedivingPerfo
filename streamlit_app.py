@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import json
+import json # Kept for loading local config for bcrypt, but data handling moves to GSheets
 from datetime import datetime, date, time
 import uuid
 import altair as alt
@@ -8,17 +8,19 @@ import pathlib
 import yaml
 from yaml.loader import SafeLoader
 import bcrypt
+import gspread
+from google.oauth2 import service_account
 
-
-# --- File Configuration ---
-RECORDS_FILE = "freediving_records.json"
-USER_PROFILES_FILE = "user_profiles.json"
-TRAINING_LOG_FILE = "training_log.json"
-INSTRUCTOR_FEEDBACK_FILE = "instructor_feedback.json"
-CONFIG_FILE = ".streamlit/config.yaml"
+# --- Google Sheets Configuration ---
+# These will be loaded from st.secrets
+# SPREADSHEET_URLS = {
+#     "records": "YOUR_RECORDS_GOOGLE_SHEET_URL",
+#     "user_profiles": "YOUR_USER_PROFILES_GOOGLE_SHEET_URL",
+#     "training_log": "YOUR_TRAINING_LOG_GOOGLE_SHEET_URL",
+#     "instructor_feedback": "YOUR_INSTRUCTOR_FEEDBACK_GOOGLE_SHEET_URL",
+# }
 
 # --- Privileged User Configuration ---
-# This list now defines who gets admin/privileged views.
 PRIVILEGED_USERS = ["Philippe K.", "Vincent C.", "Charles D.B.", "Rémy L.", "Gregory D."]
 SUPER_PRIVILEGED_USERS = ['Charles D.B.']
 
@@ -38,7 +40,6 @@ FEEDBACK_TAG_COLORS = {
     "#apnée/respiration": "#2196F3",    # Blue
     "#apnée/profondeur": "#9C27B0",     # Violet (Purple)
 }
-
 
 # --- Language Translations ---
 TRANSLATIONS = {
@@ -269,6 +270,7 @@ TRANSLATIONS = {
         "logout_button": "Déconnexion"
     }
 }
+
 # --- Helper to get translated text ---
 def _(key, lang='fr', **kwargs):
     """
@@ -297,175 +299,243 @@ def get_display_name(user_name, user_profiles, lang):
             return _("anonymous_freediver_name", lang)
     return user_name
 
+# --- Google Sheets Connection ---
+@st.cache_resource(ttl=3600) # Cache the connection for an hour
+def get_gsheets_client():
+    try:
+        # Use st.secrets to get credentials for service account
+        creds = service_account.Credentials.from_service_account_info(
+            st.secrets["gsheets"],
+            scopes=["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file"]
+        )
+        return gspread.authorize(creds)
+    except Exception as e:
+        st.error(f"Error connecting to Google Sheets: {e}")
+        st.info("Please ensure your `.streamlit/secrets.toml` is correctly configured and Google Sheets/Drive APIs are enabled for your service account.")
+        st.stop()
+        return None
+
+def get_sheet_by_url(client, url, worksheet_name='Sheet1'): # Added worksheet_name parameter
+    try:
+        spreadsheet = client.open_by_url(url)
+        # Assuming your data is in the first worksheet or a worksheet named 'Sheet1'
+        # You might need to adjust 'Sheet1' to the actual name of your worksheet
+        return spreadsheet.worksheet(worksheet_name)
+    except gspread.exceptions.WorksheetNotFound:
+        st.error(f"Worksheet '{worksheet_name}' not found in the Google Sheet at {url}. Please check the worksheet name.")
+        st.stop()
+        return None
+    except Exception as e:
+        st.error(f"Error opening Google Sheet with URL {url}: {e}")
+        st.stop()
+        return None
 
 # --- Data Handling for Performance Records ---
-def migrate_and_clean_records(records_list, training_logs):
-    """
-    Ensures records have necessary fields and removes redundant ones.
-    If a record is linked to a training session, `event_name` and `event_date` are removed.
-    """
+@st.cache_data(ttl=60) # Cache data for 60 seconds
+def load_records(training_logs):
+    client = get_gsheets_client()
+    # Pass the specific worksheet name for records
+    sheet = get_sheet_by_url(client, st.secrets["gsheets"]["records_sheet_url"], 'freediving_records') # <-- Change 'Sheet1' to your actual worksheet name for records
+    records = sheet.get_all_records()
+    
+    # Ensure IDs and perform migrations if necessary
     updated = False
-    training_log_lookup = {log['id']: log for log in training_logs}
-
-    for record in records_list:
+    for record in records:
         if record.get('id') is None:
             record['id'] = uuid.uuid4().hex
             updated = True
-
-        # Ensure entry_date exists, falling back to today's date
         if 'entry_date' not in record:
             record['entry_date'] = date.today().isoformat()
             updated = True
-
-        # Ensure linked_training_session_id exists
         if 'linked_training_session_id' not in record:
             record['linked_training_session_id'] = None
             updated = True
-
-        # If a record is properly linked, remove redundant fields
-        if record.get('linked_training_session_id') in training_log_lookup:
+            
+        # Clean up old fields if linked_training_session_id exists and is valid
+        if record.get('linked_training_session_id') in {log['id'] for log in training_logs}:
             if 'event_name' in record:
                 del record['event_name']
                 updated = True
             if 'event_date' in record:
                 del record['event_date']
                 updated = True
-            # The old 'date' field from very old versions
-            if 'date' in record:
-                 del record['date']
-                 updated = True
-    return updated
+            if 'date' in record: # Very old versions
+                del record['date']
+                updated = True
 
-@st.cache_data
-def load_records(training_logs):
-    """Loads performance records and runs migration/cleaning."""
-    try:
-        with open(RECORDS_FILE, 'r', encoding='utf-8') as f:
-            records = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        records = []
-    if migrate_and_clean_records(records, training_logs):
-        save_records(records)
+    if updated:
+        save_records(records) # Save after migration
     return records
 
 def save_records(records):
-    """Saves performance records to the JSON file."""
-    with open(RECORDS_FILE, 'w', encoding='utf-8') as f:
-        json.dump(records, f, indent=4, ensure_ascii=False)
+    client = get_gsheets_client()
+    sheet = get_sheet_by_url(client, st.secrets["gsheets"]["records_sheet_url"], 'freediving_records') # <-- Change 'Sheet1'
+    
+    # Prepare data for saving - ensure all records have consistent keys for headers
+    # This is important for gspread to update correctly.
+    if not records:
+        # Clear sheet if no records are left
+        sheet.clear()
+        # Add header row if desired, e.g., sheet.append_row(list(initial_record_keys))
+        return
+    
+    # Get all column headers from the first record (assume consistent schema)
+    # Or define a strict schema if you prefer
+    headers = list(records[0].keys())
+    data_to_write = [headers] + [[record.get(h) for h in headers] for record in records]
+    
+    # Clear existing content and write all data back
+    sheet.clear()
+    sheet.update(data_to_write)
+    load_records.clear() # Clear cache after saving
 
 # --- Data Handling for User Profiles ---
-@st.cache_data
+@st.cache_data(ttl=60)
 def load_user_profiles():
-    try:
-        with open(USER_PROFILES_FILE, 'r', encoding='utf-8') as f:
-            profiles = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        profiles = {}
+    client = get_gsheets_client()
+    sheet = get_sheet_by_url(client, st.secrets["gsheets"]["user_profiles_sheet_url"], 'user_profiles') # <-- Change 'Sheet1'
+    # Get all records as a list of dictionaries
+    profiles_list = sheet.get_all_records()
+    # Convert list of dicts to the dictionary format expected by the app {username: profile_data}
+    profiles = {p['user_name']: p for p in profiles_list if 'user_name' in p}
+    
+    # Ensure 'user_name' column exists in the sheet. If not, add a migration.
+    # For initial setup, it's simpler to manually create the sheet with the expected header.
+    # Also, ensure all existing users have an 'id' for authentication later.
+    updated = False
+    for user_name, profile_data in profiles.items():
+        if profile_data.get('id') is None:
+            profile_data['id'] = uuid.uuid4().hex
+            updated = True
+    
+    if updated:
+        save_user_profiles(profiles) # Save after migration
     return profiles
 
 def save_user_profiles(profiles):
-    with open(USER_PROFILES_FILE, 'w', encoding='utf-8') as f:
-        json.dump(profiles, f, indent=4, ensure_ascii=False)
+    client = get_gsheets_client()
+    sheet = get_sheet_by_url(client, st.secrets["gsheets"]["user_profiles_sheet_url"], 'user_profiles') # <-- Change 'Sheet1'
+    
+    profiles_list = list(profiles.values())
+    if not profiles_list:
+        sheet.clear()
+        return
+
+    # Ensure 'user_name' is a consistent key for all profiles
+    for name, profile in profiles.items():
+        profile['user_name'] = name # Ensure the key used for the dict is stored as a column
+    
+    headers = list(profiles_list[0].keys())
+    data_to_write = [headers] + [[profile.get(h) for h in headers] for profile in profiles_list]
+    
+    sheet.clear()
+    sheet.update(data_to_write)
+    load_user_profiles.clear() # Clear cache after saving
 
 # --- Data Handling for Training Logs ---
-def ensure_training_log_ids(log_list):
+@st.cache_data(ttl=60)
+def load_training_log():
+    client = get_gsheets_client()
+    sheet = get_sheet_by_url(client, st.secrets["gsheets"]["training_log_sheet_url"], 'training_log') # <-- Change 'Sheet1'
+    logs = sheet.get_all_records()
+    
     updated = False
-    for entry in log_list:
+    for entry in logs:
         if entry.get('id') is None:
             entry['id'] = uuid.uuid4().hex
             updated = True
-    return updated
-
-@st.cache_data
-def load_training_log():
-    try:
-        with open(TRAINING_LOG_FILE, 'r', encoding='utf-8') as f:
-            logs = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        logs = []
-    if ensure_training_log_ids(logs):
-        save_training_log(logs)
+    
+    if updated:
+        save_training_log(logs) # Save after migration
     return logs
 
 def save_training_log(logs):
-    with open(TRAINING_LOG_FILE, 'w', encoding='utf-8') as f:
-        json.dump(logs, f, indent=4, ensure_ascii=False)
+    client = get_gsheets_client()
+    sheet = get_sheet_by_url(client, st.secrets["gsheets"]["training_log_sheet_url"], 'training_log') # <-- Change 'Sheet1'
+    
+    if not logs:
+        sheet.clear()
+        return
+    
+    headers = list(logs[0].keys())
+    data_to_write = [headers] + [[log.get(h) for h in headers] for log in logs]
+    
+    sheet.clear()
+    sheet.update(data_to_write)
+    load_training_log.clear() # Clear cache after saving
 
 # --- Data Handling for Instructor Feedback ---
-def ensure_feedback_ids(feedback_list):
+@st.cache_data(ttl=60)
+def load_instructor_feedback():
+    client = get_gsheets_client()
+    sheet = get_sheet_by_url(client, st.secrets["gsheets"]["instructor_feedback_sheet_url"], 'instructor_feedback') # <-- Change 'Sheet1'
+    feedback_data = sheet.get_all_records()
+    
     updated = False
-    for entry in feedback_list:
+    for entry in feedback_data:
         if entry.get('id') is None:
             entry['id'] = uuid.uuid4().hex
             updated = True
-    return updated
-
-@st.cache_data
-def load_instructor_feedback():
-    try:
-        with open(INSTRUCTOR_FEEDBACK_FILE, 'r', encoding='utf-8') as f:
-            feedback_data = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        feedback_data = []
-    if ensure_feedback_ids(feedback_data):
-        save_instructor_feedback(feedback_data)
+    
+    if updated:
+        save_instructor_feedback(feedback_data) # Save after migration
     return feedback_data
 
 def save_instructor_feedback(feedback_data):
-    with open(INSTRUCTOR_FEEDBACK_FILE, 'w', encoding='utf-8') as f:
-        json.dump(feedback_data, f, indent=4, ensure_ascii=False)
+    client = get_gsheets_client()
+    sheet = get_sheet_by_url(client, st.secrets["gsheets"]["instructor_feedback_sheet_url"], 'instructor_feedback') # <-- Change 'Sheet1'
+    
+    if not feedback_data:
+        sheet.clear()
+        return
+    
+    headers = list(feedback_data[0].keys())
+    data_to_write = [headers] + [[fb.get(h) for h in headers] for fb in feedback_data]
+    
+    sheet.clear()
+    sheet.update(data_to_write)
+    load_instructor_feedback.clear() # Clear cache after saving
 
 # --- Authentication Config Handling ---
 @st.cache_data(ttl=300)
 def get_auth_config():
     """
-    Loads authenticator config from config.yaml.
-    If it doesn't exist, it creates a default one using LIFRAS ID as password.
+    Loads authenticator config. Since user profiles are now in GSheets,
+    this function will generate credentials based on GSheets data.
     """
-    config_path = pathlib.Path(CONFIG_FILE)
-    if not config_path.exists():
-        try:
-            with open(USER_PROFILES_FILE, 'r', encoding='utf-8') as f:
-                profiles = json.load(f)
-        except (FileNotFoundError, json.JSONDecodeError):
-            profiles = {}
-        
-        try:
-            with open(RECORDS_FILE, 'r', encoding='utf-8') as f:
-                records = json.load(f)
-        except (FileNotFoundError, json.JSONDecodeError):
-            records = []
-        
-        all_users = sorted(list(set(r['user'] for r in records).union(set(profiles.keys()))))
-        
-        credentials = {'usernames': {}}
-        
-        for user_name in all_users:
-            user_profile = profiles.get(user_name, {})
-            lifras_id = user_profile.get("lifras_id", "").strip()
+    profiles = load_user_profiles() # Load profiles from GSheets
+    training_logs = load_training_log() # Need training logs for load_records migration
+    all_records = load_records(training_logs) # Load records to get all users
 
-            plain_password = lifras_id if lifras_id else "changeme"
-            
-            password_bytes = plain_password.encode('utf-8')
-            salt = bcrypt.gensalt()
-            hashed_password_bytes = bcrypt.hashpw(password_bytes, salt)
-            
-            username_key = ''.join(filter(str.isalnum, user_name)).lower()
-            credentials['usernames'][username_key] = {
-                "email": f"{username_key}@example.com",
-                "name": user_name,
-                "password": hashed_password_bytes.decode('utf-8')
-            }
-
-        config = {
-            'credentials': credentials,
-            'cookie': {'name': 'freediving_cookie', 'key': 'a_secret_key', 'expiry_days': 30}
-        }
-        with open(config_path, 'w', encoding='utf-8') as f:
-            yaml.dump(config, f, default_flow_style=False)
+    all_users = sorted(list(set(r['user'] for r in all_records).union(set(profiles.keys()))))
     
-    with open(config_path, 'r', encoding='utf-8') as f:
-        config = yaml.load(f, Loader=SafeLoader)
+    credentials = {'usernames': {}}
+    
+    for user_name in all_users:
+        user_profile = profiles.get(user_name, {})
+        
+        # --- FIX START ---
+        # Ensure lifras_id is a string before stripping
+        lifras_id = str(user_profile.get("lifras_id", "")).strip()
+        # --- FIX END ---
+
+        plain_password = lifras_id if lifras_id else "changeme"
+        
+        password_bytes = plain_password.encode('utf-8')
+        salt = bcrypt.gensalt()
+        hashed_password_bytes = bcrypt.hashpw(password_bytes, salt)
+        
+        username_key = ''.join(filter(str.isalnum, user_name)).lower()
+        credentials['usernames'][username_key] = {
+            "email": f"{username_key}@example.com",
+            "name": user_name,
+            "password": hashed_password_bytes.decode('utf-8')
+        }
+
+    config = {
+        'credentials': credentials,
+        'cookie': {'name': 'freediving_cookie', 'key': 'a_secret_key', 'expiry_days': 30}
+    }
     
     return config
 
@@ -621,9 +691,9 @@ def display_level_performance_tab(all_records, user_profiles, discipline_keys, l
                 y=alt.Y('certification:N', title=_("certification_level_col", lang), sort=cert_order),
                 x=alt.X('parsed_value:Q', title=y_axis_title, scale=alt.Scale(zero=False)),
                 color=alt.Color('certification:N',
-                                scale=alt.Scale(domain=cert_order, range=cert_colors),
-                                legend=None
-                               ),
+                                 scale=alt.Scale(domain=cert_order, range=cert_colors),
+                                 legend=None
+                                ),
                 tooltip=[
                     alt.Tooltip('certification', title=_("certification_level_col", lang)),
                     alt.Tooltip('formatted_perf', title=_("avg_performance_col", lang))
@@ -644,7 +714,6 @@ def display_level_performance_tab(all_records, user_profiles, discipline_keys, l
             )
 
             st.altair_chart(chart + text, use_container_width=True)
-
 
 def display_login_form(config, lang):
     """Displays the login form and handles authentication."""
@@ -730,7 +799,7 @@ def main_app():
                     key="projection_3_ans_profile_form_sb"
                 )
                 st.text_area(
-                    "Texte pour le portrait  photo",
+                    "Texte pour le portrait photo",
                     value=user_profile_data_sidebar.get("portrait_photo_text", ""),
                     key="portrait_photo_text_profile_form_sb"
                 )
@@ -752,7 +821,6 @@ def main_app():
                     profiles_to_save[current_user] = user_profile
                     
                     save_user_profiles(profiles_to_save)
-                    load_user_profiles.clear()
                     st.success(_("profile_saved_success", lang, user=current_user))
                     st.rerun()
 
@@ -779,7 +847,6 @@ def main_app():
                         new_training_entry = {"id": uuid.uuid4().hex, "date": date_to_save.isoformat(), "place": place_to_save, "description": desc_to_save}
                         training_log_loaded.append(new_training_entry)
                         save_training_log(training_log_loaded)
-                        load_training_log.clear()
                         st.success(_("training_session_saved_success", lang))
                         st.session_state.training_place_buffer = ""
                         st.session_state.training_desc_buffer = ""
@@ -822,7 +889,6 @@ def main_app():
                             }
                             all_records_loaded.append(new_record)
                             save_records(all_records_loaded)
-                            load_records.clear()
                             st.success(_("performance_saved_success", lang, user=current_user))
                             st.session_state.log_perf_input_buffer = ""
                             st.rerun()
@@ -838,7 +904,7 @@ def main_app():
                     default_fb_user_idx = 0
                     try:
                         if st.session_state.feedback_for_user_buffer not in freediver_options_for_feedback:
-                           st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
+                            st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
                         default_fb_user_idx = freediver_options_for_feedback.index(st.session_state.feedback_for_user_buffer)
                     except (ValueError, KeyError):
                         st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
@@ -885,7 +951,6 @@ def main_app():
                             }
                             instructor_feedback_loaded.append(new_feedback)
                             save_instructor_feedback(instructor_feedback_loaded)
-                            load_instructor_feedback.clear()
                             st.success(_("feedback_saved_success", lang))
                             st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
                             st.session_state.feedback_training_session_buffer = _("select_training_prompt", lang)
@@ -950,8 +1015,7 @@ def main_app():
                         if selected_tag in log.get('description', ''):
                             logs_with_tag_ids.add(log['id'])
                             continue
-                        
-                       
+                    
                     filtered_logs = [log for log in filtered_logs if log.get('id') in logs_with_tag_ids]
 
                 if not filtered_logs:
@@ -962,7 +1026,6 @@ def main_app():
                             styled_text = style_feedback_text(entry.get('description', _("no_description_available", lang)))
                             st.markdown(styled_text, unsafe_allow_html=True)
                             
-                         
         
         if is_admin_view_authorized and len(training_sub_tabs) > 1:
             with training_sub_tabs[1]:
@@ -992,23 +1055,26 @@ def main_app():
                             hide_index=True, key="training_log_editor", num_rows="dynamic"
                         )
                         if st.form_submit_button(_("save_training_log_changes_button", lang)):
-                            new_log_list = [
-                                {
-                                    "id": row.get("id") or uuid.uuid4().hex,
+                            new_log_list = []
+                            for row in edited_training_df.to_dict('records'):
+                                if row[_("history_delete_col_editor", lang)]:
+                                    continue
+                                
+                                # Ensure 'id' exists for existing records, generate for new ones
+                                record_id = row.get("id") or uuid.uuid4().hex
+                                new_log_list.append({
+                                    "id": record_id,
                                     "date": row[_("training_date_label", lang)].isoformat() if isinstance(row[_("training_date_label", lang)], date) else str(row[_("training_date_label", lang)]),
                                     "place": row[_("training_place_label", lang)],
                                     "description": row[_("training_description_label", lang)]
-                                }
-                                for row in edited_training_df.to_dict('records') if not row[_("history_delete_col_editor", lang)]
-                            ]
+                                })
+
                             deleted_ids = set(log['id'] for log in training_log_loaded) - set(log['id'] for log in new_log_list if log.get('id'))
                             if deleted_ids:
                                 for rec in all_records_loaded:
                                     if rec.get('linked_training_session_id') in deleted_ids: rec['linked_training_session_id'] = None
                                 save_records(all_records_loaded)
-                                load_records.clear()
                             save_training_log(new_log_list)
-                            load_training_log.clear()
                             st.success(_("training_log_updated_success", lang))
                             st.rerun()
 
@@ -1104,23 +1170,40 @@ def main_app():
                             st.caption(_("no_history_display", lang))
                         else:
                             training_session_options = {ts.get('id'): f"{ts.get('date')} - {ts.get('place', 'N/A')}" for ts in sorted(training_log_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True)}
+                            # Add "None" option for unlinked sessions
+                            training_session_options[None] = _("no_specific_session_option", lang)
+                            
                             session_display_to_id = {v: k for k, v in training_session_options.items()}
                             history_for_editor_display = [
                                 {
                                     "id": rec.get("id"),
-                                    _("link_training_session_label", lang): training_session_options.get(rec.get("linked_training_session_id"), "N/A"),
-                                    _("history_performance_col", lang): rec.get("original_performance_str", ""),
+                                    _("link_training_session_label", lang): training_session_options.get(rec.get("linked_training_session_id"), _("no_specific_session_option", lang)),
+                                    _("history_performance_col", lang): rec.get("original_performance_str", ""), # Use original_performance_str here
                                     _("history_delete_col_editor", lang): False
                                 }
                                 for rec in sorted(history_for_editor_raw, key=lambda x: get_training_session_details(x.get('linked_training_session_id'), training_log_loaded).get('event_date') or '1900-01-01', reverse=True)
                             ]
                             with st.form(key=f"personal_history_form_{disc_key_sub_tab_user}", border=False):
+                                # Define column config dynamically based on discipline type
+                                performance_column_config = {}
+                                if is_time_based_discipline(disc_key_sub_tab_user):
+                                    # For time-based, still display as text (MM:SS) but allow parsing
+                                    # Streamlit's TextColumn is fine here as we parse manually on submit
+                                    performance_column_config = st.column_config.TextColumn(label=_("history_performance_col", lang), required=True)
+                                else:
+                                    # For distance/other numeric, use NumberColumn
+                                    performance_column_config = st.column_config.NumberColumn(
+                                        label=_("history_performance_col", lang),
+                                        required=True,
+                                        format="%d m" # Example format for meters. Adjust if needed.
+                                    )
+
                                 edited_df = st.data_editor(
                                     pd.DataFrame(history_for_editor_display),
                                     column_config={
                                         "id": None,
                                         _("link_training_session_label", lang): st.column_config.SelectboxColumn(options=list(training_session_options.values()), required=True),
-                                        _("history_performance_col", lang): st.column_config.TextColumn(label=_("history_performance_col", lang), required=True),
+                                        _("history_performance_col", lang): performance_column_config, # <--- Apply dynamic config here
                                         _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(label=_("history_delete_col_editor", lang))
                                     },
                                     hide_index=True, key=f"data_editor_{current_user}_{disc_key_sub_tab_user}"
@@ -1143,7 +1226,6 @@ def main_app():
                                                 st.error(f"Invalid performance format for '{new_perf_str}'")
                                             records_to_process.append(original_rec)
                                     save_records(records_to_process)
-                                    load_records.clear()
                                     st.success(_("history_updated_success", lang))
                                     st.rerun()
         
@@ -1156,7 +1238,6 @@ def main_app():
                 if not all_records_loaded:
                     st.info(_("no_ranking_data", lang))
                 else:
-                    # st.info('Tableau des records du club désactivé')
                     with st.container(border=True):
                         all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
                         club_pbs = {}
@@ -1212,96 +1293,100 @@ def main_app():
                                 ]
                                 st.dataframe(pd.DataFrame(ranking_table_data), use_container_width=True, hide_index=True)
             
-            with perf_sub_tab_map[f"{_('performances_overview_tab_label', lang)}"]:
-                # st.subheader(_("performances_overview_tab_label", lang))
-                all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
-                col1, col2, col3 = st.columns(3)
-                with col1: filter_user_perf = st.selectbox(_("filter_by_freediver_label", lang), [_("all_freedivers_option", lang)] + all_known_users_list, key="perf_log_user_filter_overview")
-                with col2:
-                    session_options = {s['id']: f"{s['date']} - {s['place']}" for s in training_log_loaded}
-                    filter_session_id_perf = st.selectbox(_("filter_by_training_session_label", lang), [_("all_sessions_option", lang)] + list(session_options.keys()), format_func=lambda x: session_options.get(x, x), key="perf_log_session_filter_overview")
-                with col3: 
-                    filter_discipline_perf = st.selectbox(
-                        _("filter_by_discipline_label", lang),
-                        options=[_("all_disciplines_option", lang)] + discipline_keys,
-                        format_func=lambda k: k if k == _("all_disciplines_option", lang) else _(f"disciplines.{k}", lang),
-                        key="perf_log_discipline_filter_overview"
-                    )
+        with perf_sub_tab_map[f"{_('performances_overview_tab_label', lang)}"]:
+            # st.subheader(_("performances_overview_tab_label", lang))
+            all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
+            col1, col2, col3 = st.columns(3)
+            with col1: filter_user_perf = st.selectbox(_("filter_by_freediver_label", lang), [_("all_freedivers_option", lang)] + all_known_users_list, key="perf_log_user_filter_overview")
+            with col2:
+                session_options = {s['id']: f"{s['date']} - {s['place']}" for s in training_log_loaded}
+                session_options[None] = _("no_specific_session_option", lang) # Add None option for unlinked records
+                filter_session_id_perf = st.selectbox(_("filter_by_training_session_label", lang), [_("all_sessions_option", lang)] + list(session_options.keys()), format_func=lambda x: session_options.get(x, x), key="perf_log_session_filter_overview")
+            with col3:  
+                filter_discipline_perf = st.selectbox(
+                    _("filter_by_discipline_label", lang),
+                    options=[_("all_disciplines_option", lang)] + discipline_keys,
+                    format_func=lambda k: k if k == _("all_disciplines_option", lang) else _(f"disciplines.{k}", lang),
+                    key="perf_log_discipline_filter_overview"
+                )
 
-                filtered_records = all_records_loaded
-                if filter_user_perf != _("all_freedivers_option", lang): filtered_records = [r for r in filtered_records if r['user'] == filter_user_perf]
-                if filter_session_id_perf != _("all_sessions_option", lang): filtered_records = [r for r in filtered_records if r.get('linked_training_session_id') == filter_session_id_perf]
-                if filter_discipline_perf != _("all_disciplines_option", lang): filtered_records = [r for r in filtered_records if r['discipline'] == filter_discipline_perf]
-                
-                display_data = [
+            filtered_records = all_records_loaded
+            if filter_user_perf != _("all_freedivers_option", lang): filtered_records = [r for r in filtered_records if r['user'] == filter_user_perf]
+            if filter_session_id_perf != _("all_sessions_option", lang): filtered_records = [r for r in filtered_records if r.get('linked_training_session_id') == filter_session_id_perf]
+            if filter_discipline_perf != _("all_disciplines_option", lang): filtered_records = [r for r in filtered_records if r['discipline'] == filter_discipline_perf]
+            
+            display_data = [
+                {
+                    _("user_col", lang): rec["user"],
+                    _("history_discipline_col", lang): _(f"disciplines.{rec['discipline']}", lang),
+                    _("link_training_session_label", lang): f"{get_training_session_details(rec.get('linked_training_session_id'), training_log_loaded)['event_date']} - {get_training_session_details(rec.get('linked_training_session_id'), training_log_loaded)['event_name']}",
+                    _("history_performance_col", lang): rec["original_performance_str"],
+                    _("history_entry_date_col", lang): rec["entry_date"]
+                }
+                for rec in sorted(filtered_records, key=lambda x: x.get('entry_date', '1900-01-01'), reverse=True)
+            ]
+            st.dataframe(pd.DataFrame(display_data), hide_index=True, use_container_width=True)
+
+        with perf_sub_tab_map[f"{_('edit_performances_sub_tab_label', lang)}"]:
+            # st.subheader(_("edit_performances_sub_tab_label", lang))
+            if not all_records_loaded:
+                st.info("No performances logged in the system.")
+            else:
+                all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
+                training_session_options = {log['id']: f"{log.get('date')} - {log.get('place', 'N/A')}" for log in training_log_loaded}
+                training_session_options[None] = _("no_specific_session_option", lang)
+                perf_log_data = [
                     {
+                        "id": rec["id"],
                         _("user_col", lang): rec["user"],
                         _("history_discipline_col", lang): _(f"disciplines.{rec['discipline']}", lang),
-                        _("link_training_session_label", lang): f"{get_training_session_details(rec.get('linked_training_session_id'), training_log_loaded)['event_date']} - {get_training_session_details(rec.get('linked_training_session_id'), training_log_loaded)['event_name']}",
+                        _("link_training_session_label", lang): training_session_options.get(rec.get("linked_training_session_id")),
                         _("history_performance_col", lang): rec["original_performance_str"],
-                        _("history_entry_date_col", lang): rec["entry_date"]
+                        _("history_delete_col_editor", lang): False
                     }
-                    for rec in sorted(filtered_records, key=lambda x: x.get('entry_date', '1900-01-01'), reverse=True)
+                    for rec in sorted(all_records_loaded, key=lambda x: x.get('entry_date', '1900-01-01'), reverse=True)
                 ]
-                st.dataframe(pd.DataFrame(display_data), hide_index=True, use_container_width=True)
-
-            with perf_sub_tab_map[f"{_('edit_performances_sub_tab_label', lang)}"]:
-                # st.subheader(_("edit_performances_sub_tab_label", lang))
-                if not all_records_loaded:
-                    st.info("No performances logged in the system.")
-                else:
-                    all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
-                    training_session_options = {log['id']: f"{log.get('date')} - {log.get('place', 'N/A')}" for log in training_log_loaded}
-                    perf_log_data = [
-                        {
-                            "id": rec["id"],
-                            _("user_col", lang): rec["user"],
-                            _("history_discipline_col", lang): _(f"disciplines.{rec['discipline']}", lang),
-                            _("link_training_session_label", lang): training_session_options.get(rec.get("linked_training_session_id")),
-                            _("history_performance_col", lang): rec["original_performance_str"],
-                            _("history_delete_col_editor", lang): False
-                        }
-                        for rec in sorted(all_records_loaded, key=lambda x: x.get('entry_date', '1900-01-01'), reverse=True)
-                    ]
-                    session_display_to_id = {v: k for k, v in training_session_options.items()}
-                    discipline_labels = [_("disciplines."+k, lang) for k in discipline_keys]
-                    discipline_label_to_key = {label: key for label, key in zip(discipline_labels, discipline_keys)}
-                    
-                    with st.form(key="all_performances_edit_form", border=False):
-                        edited_perf_log_df = st.data_editor(
-                            pd.DataFrame(perf_log_data),
-                            column_config={
-                                "id": None,
-                                _("user_col", lang): st.column_config.SelectboxColumn(options=all_known_users_list, required=True),
-                                _("history_discipline_col", lang): st.column_config.SelectboxColumn(options=discipline_labels, required=True),
-                                _("link_training_session_label", lang): st.column_config.SelectboxColumn(options=list(training_session_options.values()), required=True),
-                                _("history_performance_col", lang): st.column_config.TextColumn(required=True),
-                                _("history_delete_col_editor", lang): st.column_config.CheckboxColumn()
-                            },
-                            num_rows="dynamic", hide_index=True, key="all_perf_editor", use_container_width=True
-                        )
-                        if st.form_submit_button(_("save_all_performances_button", lang)):
-                            new_records = []
-                            for row in edited_perf_log_df.to_dict('records'):
-                                if row[_("history_delete_col_editor", lang)]: continue
-                                perf_str = str(row[_("history_performance_col", lang)]).strip()
-                                discipline = discipline_label_to_key.get(row[_("history_discipline_col", lang)])
-                                parsed_val = parse_static_time_to_seconds(perf_str, lang) if is_time_based_discipline(discipline) else parse_distance_to_meters(perf_str, lang)
-                                if parsed_val is None:
-                                    st.error(f"Invalid performance '{perf_str}' for {row[_('user_col', lang)]}. Skipping.")
-                                    new_records.append(next((r for r in all_records_loaded if r['id'] == row['id']), None))
-                                else:
-                                    original_rec = next((r for r in all_records_loaded if r['id'] == row['id']), {})
-                                    new_records.append({
-                                        "id": row.get("id") or uuid.uuid4().hex, "user": row[_("user_col", lang)], "discipline": discipline,
-                                        "linked_training_session_id": session_display_to_id.get(row[_("link_training_session_label", lang)]),
-                                        "original_performance_str": perf_str, "parsed_value": parsed_val,
-                                        "entry_date": original_rec.get('entry_date', date.today().isoformat())
-                                    })
-                            save_records([r for r in new_records if r is not None])
-                            load_records.clear()
-                            st.success(_("all_performances_updated_success", lang))
-                            st.rerun()
+                session_display_to_id = {v: k for k, v in training_session_options.items()}
+                discipline_labels = [_("disciplines."+k, lang) for k in discipline_keys]
+                discipline_label_to_key = {label: key for label, key in zip(discipline_labels, discipline_keys)}
+                
+                with st.form(key="all_performances_edit_form", border=False):
+                    edited_perf_log_df = st.data_editor(
+                        pd.DataFrame(perf_log_data),
+                        column_config={
+                            "id": None,
+                            _("user_col", lang): st.column_config.SelectboxColumn(options=all_known_users_list, required=True),
+                            _("history_discipline_col", lang): st.column_config.SelectboxColumn(options=discipline_labels, required=True),
+                            _("link_training_session_label", lang): st.column_config.SelectboxColumn(options=list(training_session_options.values()), required=True),
+                            _("history_performance_col", lang): st.column_config.TextColumn(required=True),
+                            _("history_delete_col_editor", lang): st.column_config.CheckboxColumn()
+                        },
+                        num_rows="dynamic", hide_index=True, key="all_perf_editor", use_container_width=True
+                    )
+                    if st.form_submit_button(_("save_all_performances_button", lang)):
+                        new_records = []
+                        for row in edited_perf_log_df.to_dict('records'):
+                            if row[_("history_delete_col_editor", lang)]: continue
+                            perf_str = str(row[_("history_performance_col", lang)]).strip()
+                            discipline = discipline_label_to_key.get(row[_("history_discipline_col", lang)])
+                            parsed_val = parse_static_time_to_seconds(perf_str, lang) if is_time_based_discipline(discipline) else parse_distance_to_meters(perf_str, lang)
+                            if parsed_val is None:
+                                st.error(f"Invalid performance '{perf_str}' for {row[_('user_col', lang)]}. Skipping.")
+                                # Try to retrieve the original record if it exists and parsed_val is None
+                                original_rec_if_exists = next((r for r in all_records_loaded if r['id'] == row['id']), None)
+                                if original_rec_if_exists:
+                                    new_records.append(original_rec_if_exists)
+                            else:
+                                original_rec = next((r for r in all_records_loaded if r['id'] == row['id']), {})
+                                new_records.append({
+                                    "id": row.get("id") or uuid.uuid4().hex, "user": row[_("user_col", lang)], "discipline": discipline,
+                                    "linked_training_session_id": session_display_to_id.get(row[_("link_training_session_label", lang)]),
+                                    "original_performance_str": perf_str, "parsed_value": parsed_val,
+                                    "entry_date": original_rec.get('entry_date', date.today().isoformat())
+                                })
+                        save_records([r for r in new_records if r is not None]) # Filter out None entries if any skipped due to errors
+                        st.success(_("all_performances_updated_success", lang))
+                        st.rerun()
 
     # --- Unified Feedbacks Tab ---
     with tab_map[tab_label_main_feedback_log]:
@@ -1333,7 +1418,7 @@ def main_app():
                             import toml
                             prompts_instructions = toml.load("./prompts.toml")
                             adeps_coaching_instructions = prompts_instructions['feedback']['adeps_coaching_instructions']
-                            huron_spirit = prompts_instructions['feedback']['huron_spirit']                          
+                            huron_spirit = prompts_instructions['feedback']['huron_spirit']                  
                             comparatif_brevets = prompts_instructions['feedback']['comparatif_brevets']  
                             motivations_text = user_profile_data.get("motivations", "")
                             objectifs_text = user_profile_data.get("projection_3_ans", "")
@@ -1380,6 +1465,7 @@ def main_app():
                         filter_user = st.selectbox(_("filter_by_freediver_label", lang), [_("all_freedivers_option", lang)] + all_known_users_list, key="fb_overview_user")
                     with col2:
                         session_options = {s['id']: f"{s.get('date', 'N/A')} - {s.get('place', 'N/A')}" for s in training_log_loaded}
+                        session_options[None] = _("no_specific_session_option", lang)
                         filter_session_id = st.selectbox(_("filter_by_training_session_label", lang), [_("all_sessions_option", lang)] + list(session_options.keys()), format_func=lambda x: session_options.get(x, x), key="fb_overview_session")
                     with col3:
                         instructors = sorted(list(set(fb['instructor_name'] for fb in instructor_feedback_loaded)))
@@ -1440,7 +1526,7 @@ def main_app():
                                     _("feedback_date_col", lang): st.column_config.DateColumn(required=True, format="YYYY-MM-DD"),
                                     _("feedback_for_freediver_label", lang): st.column_config.SelectboxColumn(options=all_known_users_list, required=True),
                                     _("instructor_name_label", lang): st.column_config.SelectboxColumn(options=all_known_users_list, required=True),
-                                    _("link_training_session_label", lang): st.column_config.SelectboxColumn(options=session_options.values(), required=True),
+                                    _("link_training_session_label", lang): st.column_config.SelectboxColumn(options=list(session_options.values()), required=True),
                                     _("feedback_text_label", lang): st.column_config.TextColumn(required=True),
                                     _("history_delete_col_editor", lang): st.column_config.CheckboxColumn()
                                 },
@@ -1464,7 +1550,6 @@ def main_app():
                                             "training_session_id": session_display_to_id.get(row[_("link_training_session_label", lang)])
                                         })
                                 save_instructor_feedback(new_feedback_list)
-                                load_instructor_feedback.clear()
                                 st.success(_("feedback_log_updated_success", lang))
                                 st.rerun()
             
@@ -1507,10 +1592,10 @@ def main_app():
                         new_names_from_editor = {row[_("freediver_name_col_editor", lang)].strip() for row in edited_rows}
                         
                         # Handle user deletion
-                        for user in list(final_profiles.keys()):
-                            if user not in new_names_from_editor:
-                                del final_profiles[user]
-                                
+                        users_to_delete = [user for user in list(final_profiles.keys()) if user not in new_names_from_editor]
+                        for user_to_del in users_to_delete:
+                            del final_profiles[user_to_del]
+
                         name_map = {}
                         all_new_names_list = [row[_("freediver_name_col_editor", lang)].strip() for row in edited_rows if row[_("freediver_name_col_editor", lang)]]
                         if len(all_new_names_list) != len(set(all_new_names_list)):
@@ -1521,7 +1606,7 @@ def main_app():
                                 new_name = row[_("freediver_name_col_editor", lang)].strip()
                                 if not new_name: continue
 
-                                profile_data = final_profiles.get(original_name, {}).copy()
+                                profile_data = final_profiles.get(original_name, {}).copy() # Get existing profile or empty
                                 
                                 cert_date_val = row[_("certification_date_col_editor", lang)]
                                 profile_data["certification"] = row[_("certification_col_editor", lang)]
@@ -1531,6 +1616,7 @@ def main_app():
                                 
                                 if original_name and original_name != new_name:
                                     name_map[original_name] = new_name
+                                    # If name changed, remove old entry if it still exists
                                     if original_name in final_profiles:
                                         del final_profiles[original_name]
                                 
@@ -1549,9 +1635,6 @@ def main_app():
                             save_records(all_records_loaded)
                             save_instructor_feedback(instructor_feedback_loaded)
                             
-                            load_user_profiles.clear()
-                            load_records.clear()
-                            load_instructor_feedback.clear()
                             st.success(_("freedivers_updated_success", lang))
                             st.rerun()
 
