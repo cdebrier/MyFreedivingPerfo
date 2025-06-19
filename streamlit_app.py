@@ -41,7 +41,7 @@ FEEDBACK_TAG_BADGE_CONFIG = {
     "#apnée/stretching": {"color": "blue", "icon": ":material/fitness_center:"},
     "#apnée/statique": {"color": "orange", "icon": ":material/timer:"}, # 'orange' is a standard named color
     "#apnée/dynamique": {"color": "red", "icon": ":material/run_circle:"},
-    "#apnée/respiration": {"color": "blue", "icon": ":material/lungs:"},
+    "#apnée/respiration": {"color": "blue", "icon": ":material/rib_cage:"},
     "#apnée/profondeur": {"color": "violet", "icon": ":material/water_drop:"}, # Changed from hex to 'violet' named color
 }
 
@@ -59,7 +59,7 @@ TRANSLATIONS = {
         "add_new_user_option": "✨ Ajouter un nouvel apnéiste...",
         "existing_user_selected": "Apnéiste **{user}** confirmé.",
         "log_performance_header": "✏️ Nouvelle Performance",
-        "profile_header_sidebar": "👤 Profil Apnéiste",
+        "profile_header_sidebar": "👤 Mon Profil",
         "select_user_first_warning": "Connectez-vous pour enregistrer des performances.",
         "logging_for": "Enregistrement pour : **{user}**",
         "link_training_session_label": "Activité",
@@ -773,7 +773,7 @@ def main_app():
     
     with st.sidebar:
         st.success(f"**📒  Journal de {current_user}**")
-        st.info(f"Ce journal est un outil qui te permet de suivre 👀 tes **performances** et **activités**. Complète ton **profil** pour générer un **feedback** personnalisé 💡, intégrant les retours de tes encadrants. A bientôt 👌")
+        st.info(f"👀 Suis tes **performances** et **activités** et complète ton **profil** pour générer un **feedback personnalisé** intégrant les retours de tes encadrants. A bientôt 👌")
         if st.button(_("logout_button", lang)):
             st.session_state['authentication_status'] = False
             st.session_state['name'] = None
@@ -1016,7 +1016,7 @@ def main_app():
             current_main_tab_index = tabs_to_display_names.index(st.session_state.current_main_tab_label)
 
         selected_main_tab_label = st.selectbox(
-            label="",
+            label="Activités / Performances / Feedbacks",
             options=tabs_to_display_names,
             index=current_main_tab_index,
             key="main_navigation_selector",
