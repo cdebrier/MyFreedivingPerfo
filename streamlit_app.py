@@ -100,7 +100,7 @@ TRANSLATIONS = {
         "seconds_unit": "secondes",
         "meters_unit": "mètres",
         "minutes_unit": "minutes",
-        "history_table_subheader": "📜 Tableau de l'Historique (Modifiable)",
+        "history_table_subheader": "📜 Historique des Performances (éditable)",
         "full_history_subheader": "📜 Historique Complet",
         "history_event_name_col": "Nom Événement",
         "history_event_date_col": "Date Événement",
@@ -136,7 +136,7 @@ TRANSLATIONS = {
             "July": "Juillet", "August": "Août", "September": "Septembre", "October": "Octobre", "November": "Novembre", "December": "Décembre"
         },
         "performances_main_tab_title": "📊 Performances",
-        "club_performances_overview_tab_label": "🏆 Classement [A]",
+        "club_performances_overview_tab_label": "🏆 Performances du Club par Apnéiste [A]",
         "select_discipline_for_ranking": "Sélectionnez la discipline pour le classement :",
         "podium_header": "🏆 Podium",
         "full_ranking_header": "📋 Classement Complet",
@@ -179,8 +179,8 @@ TRANSLATIONS = {
         "no_record_found_for_editing": "Erreur : Impossible de trouver l'enregistrement à modifier.",
         "performance_updated_success": "Performance mise à jour avec succès.",
         "history_updated_success": "Historique mis à jour avec succès.",
-        "club_performances_tab_title": "📈 Performances du Club",
-        "club_level_performance_tab_title": "📈 Performances du Club",
+        "club_performances_tab_title": "📈 Performances du Club par Brevet",
+        "club_level_performance_tab_title": "📈 Performances du Club par Brevet",
         "no_data_for_club_performance_display": "Aucune donnée de performance disponible pour le club dans cette discipline.",
         "quarterly_average_label": "Moyenne Trimestrielle",
         "freedivers_tab_title": "🐟 Apnéistes [A]",
@@ -195,7 +195,7 @@ TRANSLATIONS = {
         "pb_depth_col_editor": "PB Prof. (CWT/FIM)",
         "pb_vwt_nlt_col_editor": "PB Prof. (VWT/NLT)",
         "pb_16x25_col_editor": "PB 16x25m",
-        "save_freedivers_changes_button": "💾 Sauvegarder les Modifications des Apnéistes",
+        "save_freedivers_changes_button": "💾 Sauvegarder les Modifications",
         "freedivers_updated_success": "Données des apnéistes mises à jour avec succès.",
         "freediver_name_conflict_error": "Erreur : Le nom '{new_name}' est déjà utilisé par un autre apnéiste. Veuillez choisir un nom unique.",
         "original_name_col_editor_hidden": "nom_original",
@@ -210,11 +210,11 @@ TRANSLATIONS = {
         "training_session_saved_success": "Activité enregistrée !",
         "training_description_empty_error": "La description de l'activité ne peut pas être vide.",
         "training_log_table_header": "📋 Activités (Modifiable)",
-        "save_training_log_changes_button": "💾 Sauvegarder l'Activités",
+        "save_training_log_changes_button": "💾 Sauvegarder les Modifications",
         "training_log_updated_success": "Activités mise à jour avec succès.",
         "performances_overview_tab_label": "📅 Journal des Performances [A]",
-        "edit_performances_sub_tab_label": "📝 Editer les Performances [A]",
-        "save_all_performances_button": "💾 Sauvegarder les Modifications du Journal",
+        "edit_performances_sub_tab_label": "📝 Éditer des Performances [A]",
+        "save_all_performances_button": "💾 Sauvegarder les Modifications",
         "all_performances_updated_success": "Journal des performances mis à jour avec succès.",
         "feedback_log_tab_label": "💬 Feedbacks",
         "my_feedback_tab_label": "💬 Mon Feedback",
@@ -222,7 +222,7 @@ TRANSLATIONS = {
         "feedback_summary_header": "Résumé des feedbacks",
         "no_feedback_to_summarize": "Aucun feedback à résumer pour le moment.",
         "feedbacks_overview_tab_label": "📅 Journal des Feedbacks [A]",
-        "edit_feedbacks_sub_tab_label": "📝 Editer les Feedbacks [A]",
+        "edit_feedbacks_sub_tab_label": "📝 Éditer des Feedbacks [A]",
         "log_feedback_header_sidebar": "📝 Feedback Instructeur",
         "feedback_for_freediver_label": "Apnéiste",
         "feedback_log_tab_title" : "💬 Feedbacks",
@@ -233,7 +233,7 @@ TRANSLATIONS = {
         "feedback_saved_success": "Feedback enregistré avec succès !",
         "feedback_text_empty_error": "Le texte du feedback ne peut pas être vide.",
         "feedback_log_table_header": "📅 Journal des Feedbacks (Modifiable)",
-        "save_feedback_log_changes_button": "💾 Sauvegarder Modifs. Journal Feedback",
+        "save_feedback_log_changes_button": "💾 Sauvegarder les Modifications",
         "feedback_log_updated_success": "Journal des feedbacks mis à jour.",
         "no_feedback_for_user": "Aucun feedback reçu pour l'instant.",
         "no_feedback_in_log": "Aucun feedback enregistré dans le système.",
@@ -243,7 +243,7 @@ TRANSLATIONS = {
         "select_instructor_prompt": "Sélectionnez l'Instructeur",
         "detailed_training_sessions_subheader": "Activités",
         "training_sessions_sub_tab_label": "🗓️ Journal d'Activités",
-        "edit_training_sessions_sub_tab_label": "✏️ Editer les Activités [A]",
+        "edit_training_sessions_sub_tab_label": "✏️ Éditer des Activités [A]",
         "no_description_available": "Aucune description disponible.",
         "no_training_sessions_logged": "Aucune activité enregistrée pour le moment.",
         "filter_by_freediver_label": "Filtrer par Apnéiste :",
@@ -267,7 +267,7 @@ TRANSLATIONS = {
         "login_welcome": "Veuillez vous connecter pour continuer.",
         "logout_button": "Déconnexion",        
         "journal_freedivers_tab_label": "📅 Journal des apnéistes [A]",
-        "edit_freedivers_sub_tab_label": "✏️ Éditer les apnéistes [A]",
+        "edit_freedivers_sub_tab_label": "✏️ Éditer des apnéistes [A]",
     }
 }
 
@@ -1113,7 +1113,7 @@ def main_app():
                                 styled_text = style_feedback_text(entry.get('description', _("no_description_available", lang)))
                                 st.markdown(styled_text, unsafe_allow_html=True)
                                 
-            elif is_admin_view_authorized and selected_training_sub_tab_label == sub_tab_definitions[1]: # Editer les Activités [A]
+            elif is_admin_view_authorized and selected_training_sub_tab_label == sub_tab_definitions[1]: # Éditer les Activités [A]
                 if not training_log_loaded:
                     st.info(_("no_training_sessions_logged", lang))
                 else:
@@ -1714,7 +1714,7 @@ def main_app():
                         # Alterner la colonne pour la prochaine fiche
                         current_col = 1 - current_col
 
-            elif selected_freedivers_sub_tab_label == freedivers_sub_tab_labels[1]: # Editer les apnéistes (existing content moved here)
+            elif selected_freedivers_sub_tab_label == freedivers_sub_tab_labels[1]: # Éditer les apnéistes (existing content moved here)
                 # st.subheader(_("edit_freedivers_header", lang))
                 all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
                 freedivers_data_for_editor = []
