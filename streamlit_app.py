@@ -12,15 +12,6 @@ import gspread
 from google.oauth2 import service_account
 import toml # Added for prompts loading
 
-# --- Google Sheets Configuration ---
-# These will be loaded from st.secrets
-# SPREADSHEET_URLS = {
-#      "records": "YOUR_RECORDS_GOOGLE_SHEET_URL",
-#      "user_profiles": "YOUR_USER_PROFILES_GOOGLE_SHEET_URL",
-#      "training_log": "YOUR_TRAINING_LOG_GOOGLE_SHEET_URL",
-#      "instructor_feedback": "YOUR_INSTRUCTOR_FEEDBACK_GOOGLE_SHEET_URL",
-# }
-
 # --- Privileged User Configuration ---
 PRIVILEGED_USERS = ["Philippe K.", "Vincent C.", "Charles D.B.", "Rémy L.", "Gregory D."]
 SUPER_PRIVILEGED_USERS = ['Charles D.B.']
