@@ -991,7 +991,8 @@ def main_app():
                     )
                     st.write(f"{_('instructor_name_label', lang)} {current_user}")
                     st.text_area(
-                        _("feedback_text_label", lang), value=st.session_state.feedback_text_buffer,
+                        _("feedback_text_label", lang), 
+                        # value=st.session_state.feedback_text_buffer,
                         key="feedback_text_area_key_in_form"
                     )
                     if st.form_submit_button(_("save_feedback_button", lang)):
