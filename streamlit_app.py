@@ -293,9 +293,13 @@ def _(key, lang='fr', **kwargs):
         return key
 
 # --- Helper for anonymization ---
-def get_display_name(user_name, user_profiles, lang):
-    if user_name and user_name in user_profiles:
-        if user_profiles[user_name].get("anonymize_results", False):
+def get_display_name(user_name, user_profiles_current_load, lang): # Renamed arg for clarity
+    # Forcing a fresh load inside this function to ensure it always gets the latest profile data
+    # This is a robust way to handle display of potentially changing profile flags like anonymization.
+    latest_user_profiles = load_user_profiles() 
+
+    if user_name and user_name in latest_user_profiles:         
+        if latest_user_profiles[user_name].get("anonymize_results", False):
             return _("anonymous_freediver_name", lang)
     return user_name
 
@@ -408,12 +412,21 @@ def load_user_profiles():
             profile_data['id'] = uuid.uuid4().hex
             updated = True
         
-        # Ensure new boolean fields have a default if missing
-        if 'anonymize_results' not in profile_data:
-            profile_data['anonymize_results'] = False
+        # Ensure new boolean fields have a default if missing AND convert any string "TRUE"/"FALSE" to bool
+        anonymize_val = profile_data.get('anonymize_results', False)
+        if isinstance(anonymize_val, str): # Handle string "TRUE"/"FALSE" from GSheets
+            profile_data['anonymize_results'] = anonymize_val.lower() == 'true'
             updated = True
-        if 'consent_ai_feedback' not in profile_data:
-            profile_data['consent_ai_feedback'] = False
+        elif not isinstance(anonymize_val, bool): # Ensure it's a boolean if not already
+            profile_data['anonymize_results'] = bool(anonymize_val)
+            updated = True
+
+        consent_val = profile_data.get('consent_ai_feedback', False)
+        if isinstance(consent_val, str): # Handle string "TRUE"/"FALSE" from GSheets
+            profile_data['consent_ai_feedback'] = consent_val.lower() == 'true'
+            updated = True
+        elif not isinstance(consent_val, bool): # Ensure it's a boolean if not already
+            profile_data['consent_ai_feedback'] = bool(consent_val)
             updated = True
         
         # Ensure new text area fields have a default if missing
@@ -457,9 +470,9 @@ def save_user_profiles(profiles):
         row = []
         for header in expected_headers:
             if header == "consent_ai_feedback":
-                row.append(profile_data.get(header, False)) # False by default for AI consent
+                row.append(bool(profile_data.get(header, False))) # Ensure writing as bool
             elif header == "anonymize_results":
-                row.append(profile_data.get(header, False)) # False by default for anonymization
+                row.append(bool(profile_data.get(header, False))) # Ensure writing as bool
             elif header == "certification_date":
                 date_val = profile_data.get(header)
                 row.append(date_val if pd.notna(date_val) else None)
@@ -795,6 +808,7 @@ def main_app():
             
         # Profile Section
         # IMPORTANT: Reload user profiles here to ensure latest data is displayed in the sidebar form
+        # This line was the root cause for the checkbox not reflecting the saved value.
         current_user_profile_data_sidebar = load_user_profiles().get(current_user, {}) 
         
         with st.expander(_("profile_header_sidebar", lang)):
@@ -828,12 +842,12 @@ def main_app():
                 )
                 st.checkbox(
                     _("anonymize_results_label", lang), 
-                    value=current_user_profile_data_sidebar.get("anonymize_results", False), 
+                    value=current_user_profile_data_sidebar.get("anonymize_results", False), # This now directly uses the fresh data
                     key="anonymize_profile_form_sb"
                 )
                 st.checkbox(
                     _("consent_ai_feedback_label", lang), 
-                    value=current_user_profile_data_sidebar.get("consent_ai_feedback", False), 
+                    value=current_user_profile_data_sidebar.get("consent_ai_feedback", False), # This now directly uses the fresh data
                     key="consent_ai_feedback_profile_form_sb"
                 )
                 st.text_area(
