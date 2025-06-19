@@ -185,7 +185,6 @@ TRANSLATIONS = {
         "quarterly_average_label": "Moyenne Trimestrielle",
         "freedivers_tab_title": "🫂 Apnéistes [A]",
         "edit_freedivers_header": "🫂 Gérer les Apnéistes",
-        "freediver_name_col_editor": "Nom Apnéiste (Prénom L.)",
         "set_reset_password_col_editor": "Définir/Réinitialiser Mot de Passe",
         "set_reset_password_help": "Entrez un nouveau mot de passe pour le définir ou le réinitialiser. Laissez vide pour conserver le mot de passe actuel.",
         "certification_col_editor": "Niveau de Brevet",
@@ -267,7 +266,9 @@ TRANSLATIONS = {
         "no_feedbacks_match_filters": "Aucun feedback ne correspond aux filtres actuels.",
         "login_error": "Nom d'utilisateur ou mot de passe incorrect.",
         "login_welcome": "Veuillez vous connecter pour continuer.",
-        "logout_button": "Déconnexion"
+        "logout_button": "Déconnexion",
+        "journal_freedivers_tab_label": "🗓️ Journal des apnéistes [A]",
+        "edit_freedivers_sub_tab_label": "✏️ Éditer les apnéistes [A]",
     }
 }
 
@@ -429,6 +430,20 @@ def load_user_profiles():
             profile_data['consent_ai_feedback'] = bool(consent_val)
             updated = True
         
+        # New: Handle 'hashed_password' and 'lifras_id' fields
+        if 'hashed_password' not in profile_data or not profile_data['hashed_password']:
+            # Migration logic: if there's a lifras_id and no hashed_password, hash the lifras_id as initial password
+            # IMPORTANT: After this migration, you should ideally clear lifras_id from being treated as password.
+            # A more robust solution might involve a separate password reset mechanism for users.
+            lifras_id_as_pass = str(profile_data.get("lifras_id", "")).strip()
+            if lifras_id_as_pass:
+                profile_data['hashed_password'] = bcrypt.hashpw(lifras_id_as_pass.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                updated = True
+            else:
+                # No lifras_id either, set a default "changeme" hashed password
+                profile_data['hashed_password'] = bcrypt.hashpw("changeme".encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                updated = True
+        
         # Ensure new text area fields have a default if missing
         if 'motivations' not in profile_data:
             profile_data['motivations'] = ""
@@ -441,7 +456,7 @@ def load_user_profiles():
             updated = True
     
     if updated:
-        save_user_profiles(profiles) # Save after migration
+        save_user_profiles(profiles)
     return profiles
 
 def save_user_profiles(profiles):
@@ -462,7 +477,8 @@ def save_user_profiles(profiles):
     expected_headers = [
         "user_name", "id", "certification", "certification_date", 
         "lifras_id", "anonymize_results", "consent_ai_feedback", 
-        "motivations", "projection_3_ans", "portrait_photo_text"
+        "motivations", "projection_3_ans", "portrait_photo_text",
+        "hashed_password" # Added new header for hashed password
     ]
     
     data_to_write = [expected_headers] 
@@ -476,6 +492,8 @@ def save_user_profiles(profiles):
             elif header == "certification_date":
                 date_val = profile_data.get(header)
                 row.append(date_val if pd.notna(date_val) else None)
+            elif header == "hashed_password":
+                row.append(profile_data.get(header, '')) # Store hashed password as string
             else:
                 row.append(profile_data.get(header, "")) # Empty string by default for other text fields
         data_to_write.append(row)
@@ -1625,95 +1643,140 @@ def main_app():
                                 st.rerun()
             
             with tab_map.get(tab_label_freedivers, st.empty()):
-                # st.subheader(_("edit_freedivers_header", lang))
-                all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
-                freedivers_data_for_editor = []
-                # Ensure we load fresh user profiles here too for the editor's initial state
-                fresh_user_profiles_for_editor = load_user_profiles() 
-
-                for user_name in all_known_users_list:
-                    profile = fresh_user_profiles_for_editor.get(user_name, {})
-                    cert_date_obj = None
-                    if profile.get("certification_date"):
-                        try: cert_date_obj = date.fromisoformat(profile["certification_date"])
-                        except (ValueError, TypeError): pass
-                    freedivers_data_for_editor.append({
-                        "original_name": user_name,
-                        _("freediver_name_col_editor", lang): user_name,
-                        _("certification_col_editor", lang): profile.get("certification", _("no_certification_option", lang)),
-                        _("certification_date_col_editor", lang): cert_date_obj,
-                        _("lifras_id_col_editor", lang): profile.get("lifras_id", ""),
-                        _("anonymize_results_col_editor", lang): profile.get("anonymize_results", False)
-                    })
+                # Add new sub-tab labels for Freedivers management
+                freedivers_sub_tab_labels = [
+                    _("journal_freedivers_tab_label", lang), # Utilisation de la clé traduite
+                    _("edit_freedivers_sub_tab_label", lang) # Utilisation de la clé traduite
+                ]
+                freedivers_sub_tabs = st.tabs(freedivers_sub_tab_labels)
                 
-                with st.form(key="freedivers_editor_form", border=False):
-                    edited_freedivers_df = st.data_editor(
-                        pd.DataFrame(freedivers_data_for_editor),
-                        column_config={
-                            "original_name": None,
-                            _("freediver_name_col_editor", lang): st.column_config.TextColumn(required=True),
-                            _("certification_col_editor", lang): st.column_config.SelectboxColumn(options=[_("no_certification_option", lang)] + list(_("certification_levels", lang).keys())),
-                            _("certification_date_col_editor", lang): st.column_config.DateColumn(format="YYYY-MM-DD"),
-                            _("lifras_id_col_editor", lang): st.column_config.TextColumn(),
-                            _("anonymize_results_col_editor", lang): st.column_config.CheckboxColumn()
-                        },
-                        key="freedivers_data_editor", num_rows="dynamic", hide_index=True
-                    )
-                    if st.form_submit_button(_("save_freedivers_changes_button", lang)):
-                        edited_rows = edited_freedivers_df.to_dict('records')
+                with freedivers_sub_tabs[0]: # Journal des apnéistes
+                    # st.subheader(_("journal_freedivers_tab_label", lang))
+                    all_known_users_sorted = sorted(list(user_profiles.keys()))
+                    if not all_known_users_sorted:
+                        st.info(_("no_users_yet", lang))
+                    else:
+                        # Création de deux colonnes pour l'affichage des profils
+                        cols = st.columns(2) 
                         
-                        # Load fresh profiles before making changes
-                        final_profiles = load_user_profiles() 
-                        new_names_from_editor = {row[_("freediver_name_col_editor", lang)].strip() for row in edited_rows}
-                        
-                        # Handle user deletion
-                        users_to_delete = [user for user in list(final_profiles.keys()) if user not in new_names_from_editor]
-                        for user_to_del in users_to_delete:
-                            del final_profiles[user_to_del]
+                        # Pour alterner l'affichage entre les deux colonnes
+                        current_col = 0 
 
-                        name_map = {}
-                        all_new_names_list = [row[_("freediver_name_col_editor", lang)].strip() for row in edited_rows if row[_("freediver_name_col_editor", lang)]]
-                        if len(all_new_names_list) != len(set(all_new_names_list)):
-                            st.error("Duplicate names found. Please ensure all names are unique.")
-                        else:
-                            for row in edited_rows:
-                                original_name = row.get("original_name")
-                                new_name = row[_("freediver_name_col_editor", lang)].strip()
-                                if not new_name: continue
-
-                                profile_data = final_profiles.get(original_name, {}).copy() # Get existing profile or empty
-                                
-                                cert_date_val = row[_("certification_date_col_editor", lang)]
-                                profile_data["certification"] = row[_("certification_col_editor", lang)]
-                                profile_data["certification_date"] = cert_date_val.isoformat() if pd.notna(cert_date_val) and isinstance(cert_date_val, (date, datetime)) else None
-                                profile_data["lifras_id"] = str(row[_("lifras_id_col_editor", lang)]).strip() if pd.notna(row[_("lifras_id_col_editor", lang)]) else ""
-                                profile_data["anonymize_results"] = bool(row[_("anonymize_results_col_editor", lang)])
-                                # Ensure consent_ai_feedback is also handled here if editing profiles directly
-                                profile_data["consent_ai_feedback"] = profile.get("consent_ai_feedback", False) # Maintain existing value or default to False
-                                
-                                if original_name and original_name != new_name:
-                                    name_map[original_name] = new_name
-                                    # If name changed, remove old entry if it still exists
-                                    if original_name in final_profiles:
-                                        del final_profiles[original_name]
-                                
-                                final_profiles[new_name] = profile_data
-
-                            if name_map:
-                                for rec in all_records_loaded:
-                                    rec["user"] = name_map.get(rec.get("user"), rec.get("user"))
-                                for fb in instructor_feedback_loaded:
-                                    fb["diver_name"] = name_map.get(fb.get("diver_name"), fb.get("diver_name"))
-                                    fb["instructor_name"] = name_map.get(fb.get("instructor_name"), fb.get("instructor_name"))
-                                if st.session_state.get("name") in name_map:
-                                    st.session_state["name"] = name_map[st.session_state.get("name")]
+                        for user_name_display in all_known_users_sorted:
+                            # Sélection de la colonne actuelle
+                            with cols[current_col]:
+                                profile_data_display = user_profiles.get(user_name_display, {})
+                                with st.expander(f"**{user_name_display}** : {profile_data_display.get('certification', _('no_certification_option', lang))} depuis le {profile_data_display.get('certification_date', 'N/A')}", expanded=True):
+                                    st.markdown(f"**Motivations :**<br>{profile_data_display.get('motivations', 'N/A')}", unsafe_allow_html=True)
+                                    st.markdown(f"**Projections :**<br>{profile_data_display.get('projection_3_ans', 'N/A')}", unsafe_allow_html=True)
+                                    st.markdown(f"**Portrait :**<br>{profile_data_display.get('portrait_photo_text', 'N/A')}", unsafe_allow_html=True)
                             
-                            save_user_profiles(final_profiles) # This clears relevant caches
-                            save_records(all_records_loaded)
-                            save_instructor_feedback(instructor_feedback_loaded)
+                            # Alterner la colonne pour la prochaine fiche
+                            current_col = 1 - current_col
+
+                with freedivers_sub_tabs[1]: # Editer les apnéistes (existing content moved here)
+                    # st.subheader(_("edit_freedivers_header", lang))
+                    all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
+                    freedivers_data_for_editor = []
+                    # Ensure we load fresh user profiles here too for the editor's initial state
+                    fresh_user_profiles_for_editor = load_user_profiles() 
+
+                    for user_name in all_known_users_list:
+                        profile = fresh_user_profiles_for_editor.get(user_name, {})
+                        cert_date_obj = None
+                        if profile.get("certification_date"):
+                            try: cert_date_obj = date.fromisoformat(profile["certification_date"])
+                            except (ValueError, TypeError): pass
+                        freedivers_data_for_editor.append({
+                            "original_name": user_name,
+                            _("freediver_name_col_editor", lang): user_name,
+                            _("certification_col_editor", lang): profile.get("certification", _("no_certification_option", lang)),
+                            _("certification_date_col_editor", lang): cert_date_obj,
+                            _("lifras_id_col_editor", lang): profile.get("lifras_id", ""),
+                            _("anonymize_results_col_editor", lang): profile.get("anonymize_results", False),
+                            # Add a temporary field for new password input in the data_editor
+                            _("set_reset_password_col_editor", lang): "" 
+                        })
+                    
+                    with st.form(key="freedivers_editor_form", border=False):
+                        edited_freedivers_df = st.data_editor(
+                            pd.DataFrame(freedivers_data_for_editor),
+                            column_config={
+                                "original_name": None,
+                                _("freediver_name_col_editor", lang): st.column_config.TextColumn(required=True),
+                                _("certification_col_editor", lang): st.column_config.SelectboxColumn(options=[_("no_certification_option", lang)] + list(_("certification_levels", lang).keys())),
+                                _("certification_date_col_editor", lang): st.column_config.DateColumn(format="YYYY-MM-DD"),
+                                _("lifras_id_col_editor", lang): st.column_config.TextColumn(),
+                                _("anonymize_results_col_editor", lang): st.column_config.CheckboxColumn(),
+                                # Configure the password input column as a text input (type="password" does not work in data_editor)
+                                _("set_reset_password_col_editor", lang): st.column_config.TextColumn(
+                                    label=_("set_reset_password_col_editor", lang),
+                                    help=_("set_reset_password_help", lang),
+                                    # No 'type="password"' support in data_editor, so value will be visible after typing.
+                                    # A separate form would be more secure for password input.
+                                )
+                            },
+                            key="freedivers_data_editor", num_rows="dynamic", hide_index=True
+                        )
+                        if st.form_submit_button(_("save_freedivers_changes_button", lang)):
+                            edited_rows = edited_freedivers_df.to_dict('records')
                             
-                            st.success(_("freedivers_updated_success", lang))
-                            st.rerun()
+                            # Load fresh profiles before making changes
+                            final_profiles = load_user_profiles() 
+                            new_names_from_editor = {row[_("freediver_name_col_editor", lang)].strip() for row in edited_rows}
+                            
+                            # Handle user deletion
+                            users_to_delete = [user for user in list(final_profiles.keys()) if user not in new_names_from_editor]
+                            for user_to_del in users_to_delete:
+                                del final_profiles[user_to_del]
+
+                            name_map = {}
+                            all_new_names_list = [row[_("freediver_name_col_editor", lang)].strip() for row in edited_rows if row[_("freediver_name_col_editor", lang)]]
+                            if len(all_new_names_list) != len(set(all_new_names_list)):
+                                st.error("Duplicate names found. Please ensure all names are unique.")
+                            else:
+                                for row in edited_rows:
+                                    original_name = row.get("original_name")
+                                    new_name = row[_("freediver_name_col_editor", lang)].strip()
+                                    if not new_name: continue
+
+                                    profile_data = final_profiles.get(original_name, {}).copy() # Get existing profile or empty
+                                    
+                                    cert_date_val = row[_("certification_date_col_editor", lang)]
+                                    profile_data["certification"] = row[_("certification_col_editor", lang)]
+                                    profile_data["certification_date"] = cert_date_val.isoformat() if pd.notna(cert_date_val) and isinstance(cert_date_val, (date, datetime)) else None
+                                    profile_data["lifras_id"] = str(row[_("lifras_id_col_editor", lang)]).strip() if pd.notna(row[_("lifras_id_col_editor", lang)]) else ""
+                                    profile_data["anonymize_results"] = bool(row[_("anonymize_results_col_editor", lang)])
+                                    profile_data["consent_ai_feedback"] = bool(profile.get("consent_ai_feedback", False)) # Ensure bool conversion
+                                    
+                                    # Handle new password input from the editor
+                                    new_password_for_hash = row.get(_("set_reset_password_col_editor", lang))
+                                    if new_password_for_hash: # Only update if a new password was typed
+                                        profile_data["hashed_password"] = bcrypt.hashpw(new_password_for_hash.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                                    
+                                    if original_name and original_name != new_name:
+                                        name_map[original_name] = new_name
+                                        # If name changed, remove old entry if it still exists
+                                        if original_name in final_profiles:
+                                            del final_profiles[original_name]
+                                    
+                                    final_profiles[new_name] = profile_data
+
+                                if name_map:
+                                    for rec in all_records_loaded:
+                                        rec["user"] = name_map.get(rec.get("user"), rec.get("user"))
+                                    for fb in instructor_feedback_loaded:
+                                        fb["diver_name"] = name_map.get(fb.get("diver_name"), fb.get("diver_name"))
+                                        fb["instructor_name"] = name_map.get(fb.get("instructor_name"), fb.get("instructor_name"))
+                                    if st.session_state.get("name") in name_map:
+                                        st.session_state["name"] = name_map[st.session_state.get("name")]
+                                
+                                save_user_profiles(final_profiles) # This clears relevant caches
+                                save_records(all_records_loaded)
+                                save_instructor_feedback(instructor_feedback_loaded)
+                                
+                                st.success(_("freedivers_updated_success", lang))
+                                st.rerun()
 
 # --- Main Execution ---
 def main():
