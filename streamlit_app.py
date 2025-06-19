@@ -574,33 +574,31 @@ def get_auth_config():
     Loads authenticator config. Since user profiles are now in GSheets,
     this function will generate credentials based on GSheets data.
     """
-    profiles = load_user_profiles() # Load profiles from GSheets
-    training_logs = load_training_log() # Need training logs for load_records migration
-    all_records = load_records(training_logs) # Load records to get all users
+    # Optimized: Only load user profiles, no need for training_logs or all_records for auth config
+    profiles = load_user_profiles() 
 
-    all_users = sorted(list(set(r['user'] for r in all_records).union(set(profiles.keys()))))
+    all_users = sorted(list(profiles.keys())) # Get users directly from profiles
     
     credentials = {'usernames': {}}
     
     for user_name in all_users:
         user_profile = profiles.get(user_name, {})
         
-        # --- FIX START ---
-        # Ensure lifras_id is a string before stripping
-        lifras_id = str(user_profile.get("lifras_id", "")).strip()
-        # --- FIX END ---
+        # Retrieve the pre-hashed password directly
+        stored_password_hash = user_profile.get("hashed_password")
 
-        plain_password = lifras_id if lifras_id else "changeme"
-        
-        password_bytes = plain_password.encode('utf-8')
-        salt = bcrypt.gensalt()
-        hashed_password_bytes = bcrypt.hashpw(password_bytes, salt)
+        if not stored_password_hash:
+            # Fallback for new users or if migration didn't set a hash
+            # Consider adding a more explicit admin flow to set initial passwords
+            st.warning(f"No hashed password found for {user_name}. Using default 'changeme'. Please set a secure password via admin panel.")
+            # Hash 'changeme' on the fly for login if no hash found in GSheet
+            stored_password_hash = bcrypt.hashpw("changeme".encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         
         username_key = ''.join(filter(str.isalnum, user_name)).lower()
         credentials['usernames'][username_key] = {
-            "email": f"{username_key}@example.com",
+            "email": f"{username_key}@example.com", # Generic email, adjust if real emails are available
             "name": user_name,
-            "password": hashed_password_bytes.decode('utf-8')
+            "password": stored_password_hash # Use the pre-hashed password
         }
 
     config = {
@@ -1645,8 +1643,8 @@ def main_app():
             with tab_map.get(tab_label_freedivers, st.empty()):
                 # Add new sub-tab labels for Freedivers management
                 freedivers_sub_tab_labels = [
-                    _("journal_freedivers_tab_label", lang), # Utilisation de la clé traduite
-                    _("edit_freedivers_sub_tab_label", lang) # Utilisation de la clé traduite
+                    _("journal_freedivers_tab_label", lang), # New "Freediver Journal" tab
+                    _("edit_freedivers_sub_tab_label", lang) # Existing "Edit Freedivers" tab
                 ]
                 freedivers_sub_tabs = st.tabs(freedivers_sub_tab_labels)
                 
@@ -1697,7 +1695,7 @@ def main_app():
                             # Add a temporary field for new password input in the data_editor
                             _("set_reset_password_col_editor", lang): "" 
                         })
-                    
+                
                     with st.form(key="freedivers_editor_form", border=False):
                         edited_freedivers_df = st.data_editor(
                             pd.DataFrame(freedivers_data_for_editor),
