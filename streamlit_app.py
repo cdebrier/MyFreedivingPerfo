@@ -10,14 +10,15 @@ from yaml.loader import SafeLoader
 import bcrypt
 import gspread
 from google.oauth2 import service_account
+import toml # Added for prompts loading
 
 # --- Google Sheets Configuration ---
 # These will be loaded from st.secrets
 # SPREADSHEET_URLS = {
-#     "records": "YOUR_RECORDS_GOOGLE_SHEET_URL",
-#     "user_profiles": "YOUR_USER_PROFILES_GOOGLE_SHEET_URL",
-#     "training_log": "YOUR_TRAINING_LOG_GOOGLE_SHEET_URL",
-#     "instructor_feedback": "YOUR_INSTRUCTOR_FEEDBACK_GOOGLE_SHEET_URL",
+#      "records": "YOUR_RECORDS_GOOGLE_SHEET_URL",
+#      "user_profiles": "YOUR_USER_PROFILES_GOOGLE_SHEET_URL",
+#      "training_log": "YOUR_TRAINING_LOG_GOOGLE_SHEET_URL",
+#      "instructor_feedback": "YOUR_INSTRUCTOR_FEEDBACK_GOOGLE_SHEET_URL",
 # }
 
 # --- Privileged User Configuration ---
@@ -25,7 +26,7 @@ PRIVILEGED_USERS = ["Philippe K.", "Vincent C.", "Charles D.B.", "Rémy L.", "Gr
 SUPER_PRIVILEGED_USERS = ['Charles D.B.']
 
 # Instructor certification levels for different functionalities
-INSTRUCTOR_CERT_LEVELS_FOR_LOGGING_FEEDBACK_SIDEBAR = ["S4", "I1", "I2", "I3"]
+INSTRUCTOR_CERT_LEVELS_FOR_LOGGING_FEEDBACK_SIDEBAR = ["A3", "S4", "I1", "I2", "I3"]
 INSTRUCTOR_CERT_LEVELS_FOR_ADMIN_TABS_AND_DROPDOWNS = ["A3", "S4", "I1", "I2", "I3"]
 
 # --- Discipline Configuration ---
@@ -38,7 +39,7 @@ FEEDBACK_TAG_COLORS = {
     "#apnée/statique": "#FFC107",       # Amber
     "#apnée/dynamique": "#f44336",      # Red
     "#apnée/respiration": "#2196F3",    # Blue
-    "#apnée/profondeur": "#9C27B0",     # Violet (Purple)
+    "#apnée/profondeur": "#9C27B0",      # Violet (Purple)
 }
 
 # --- Language Translations ---
@@ -178,7 +179,6 @@ TRANSLATIONS = {
         "no_record_found_for_editing": "Erreur : Impossible de trouver l'enregistrement à modifier.",
         "performance_updated_success": "Performance mise à jour avec succès.",
         "history_updated_success": "Historique mis à jour avec succès.",
-        "critical_error_edit_id_not_found": "Erreur critique : ID d'enregistrement '{record_id}' à modifier non trouvé dans la liste principale. Modification annulée.",
         "club_performances_tab_title": "📈 Performances du Club",
         "club_level_performance_tab_title": "🏆 Performances du Club",
         "no_data_for_club_performance_display": "Aucune donnée de performance disponible pour le club dans cette discipline.",
@@ -212,8 +212,8 @@ TRANSLATIONS = {
         "training_session_saved_success": "Activité enregistrée !",
         "training_description_empty_error": "La description de l'activité ne peut pas être vide.",
         "training_log_table_header": "📋 Activités (Modifiable)",
-        "save_training_log_changes_button": "💾 Sauvegarder l'Activité",
-        "training_log_updated_success": "Activité mise à jour avec succès.",
+        "save_training_log_changes_button": "💾 Sauvegarder l'Activités",
+        "training_log_updated_success": "Activités mise à jour avec succès.",
         "performances_overview_tab_label": "📅 Journal des Performances [A]",
         "edit_performances_sub_tab_label": "📝 Editer les Performances [A]",
         "save_all_performances_button": "💾 Sauvegarder les Modifications du Journal",
@@ -226,11 +226,11 @@ TRANSLATIONS = {
         "feedbacks_overview_tab_label": "💬 Journal des Feedbacks [A]",
         "edit_feedbacks_sub_tab_label": "📝 Editer les Feedbacks [A]",
         "log_feedback_header_sidebar": "📝 Feedback Instructeur",
-        "feedback_for_freediver_label": "Apnéiste :",
+        "feedback_for_freediver_label": "Apnéiste",
         "feedback_log_tab_title" : "💬 Feedbacks",
         "training_session_label": "Activité Liée :",
-        "instructor_name_label": "Instructeur :",
-        "feedback_text_label": "Feedback :",
+        "instructor_name_label": "Instructeur",
+        "feedback_text_label": "Feedback",
         "save_feedback_button": "💾 Enregistrer Feedback",
         "feedback_saved_success": "Feedback enregistré avec succès !",
         "feedback_text_empty_error": "Le texte du feedback ne peut pas être vide.",
@@ -407,6 +407,25 @@ def load_user_profiles():
         if profile_data.get('id') is None:
             profile_data['id'] = uuid.uuid4().hex
             updated = True
+        
+        # Ensure new boolean fields have a default if missing
+        if 'anonymize_results' not in profile_data:
+            profile_data['anonymize_results'] = False
+            updated = True
+        if 'consent_ai_feedback' not in profile_data:
+            profile_data['consent_ai_feedback'] = False
+            updated = True
+        
+        # Ensure new text area fields have a default if missing
+        if 'motivations' not in profile_data:
+            profile_data['motivations'] = ""
+            updated = True
+        if 'projection_3_ans' not in profile_data:
+            profile_data['projection_3_ans'] = ""
+            updated = True
+        if 'portrait_photo_text' not in profile_data:
+            profile_data['portrait_photo_text'] = ""
+            updated = True
     
     if updated:
         save_user_profiles(profiles) # Save after migration
@@ -421,35 +440,37 @@ def save_user_profiles(profiles):
         sheet.clear()
         return
 
+    # Ensure 'user_name' is a consistent key for all profiles
+    for name, profile in profiles.items():
+        profile['user_name'] = name # Ensure the key used for the dict is stored as a column
+    
     # Définissez explicitement tous les en-têtes que vous attendez dans la feuille
-    # C'est la partie CRUCIALE qui garantit que la colonne "consent_ai_feedback" sera toujours incluse.
+    # C'est la partie CRUCIALE qui garantit que toutes les colonnes seront toujours incluses.
     expected_headers = [
         "user_name", "id", "certification", "certification_date", 
         "lifras_id", "anonymize_results", "consent_ai_feedback", 
         "motivations", "projection_3_ans", "portrait_photo_text"
     ]
     
-    # Assurez-vous que chaque profil a toutes les clés définies dans expected_headers,
-    # avec des valeurs par défaut si elles sont manquantes (False pour les booléens, "" pour les chaînes, None pour les dates)
     data_to_write = [expected_headers] 
     for profile_data in profiles_list:
         row = []
         for header in expected_headers:
             if header == "consent_ai_feedback":
-                row.append(profile_data.get(header, False)) # False par défaut pour le consentement AI
+                row.append(profile_data.get(header, False)) # False by default for AI consent
             elif header == "anonymize_results":
-                row.append(profile_data.get(header, False)) # False par défaut pour l'anonymisation
-            elif header in ["certification_date"]:
-                # Gérer les dates: None si pas de date, sinon la valeur
+                row.append(profile_data.get(header, False)) # False by default for anonymization
+            elif header == "certification_date":
                 date_val = profile_data.get(header)
                 row.append(date_val if pd.notna(date_val) else None)
             else:
-                row.append(profile_data.get(header, "")) # Chaîne vide par défaut pour les autres
+                row.append(profile_data.get(header, "")) # Empty string by default for other text fields
         data_to_write.append(row)
     
     sheet.clear()
     sheet.update(data_to_write)
-    load_user_profiles.clear() # Vider le cache après la sauvegarde
+    load_user_profiles.clear() # Clear cache for user profiles
+    get_auth_config.clear()    # Clear auth config cache as it depends on user profiles
 
 # --- Data Handling for Training Logs ---
 @st.cache_data(ttl=60)
@@ -726,7 +747,8 @@ def display_level_performance_tab(all_records, user_profiles, discipline_keys, l
             text = chart.mark_text(
                 align='center',
                 baseline='bottom',
-                dy=-5,
+                dy=0,
+                dx=20,
                 color='black'
             ).encode(
                 text='formatted_perf:N'
@@ -756,7 +778,8 @@ def main_app():
     # The @st.cache_data decorator will ensure these are read from file only when necessary.
     training_log_loaded = load_training_log()
     all_records_loaded = load_records(training_log_loaded)
-    user_profiles = load_user_profiles()
+    # user_profiles is loaded here but specific widgets in sidebar reload for freshness after save.
+    user_profiles = load_user_profiles() 
     instructor_feedback_loaded = load_instructor_feedback()
 
     current_user = st.session_state.get("name")
@@ -769,12 +792,14 @@ def main_app():
             st.session_state['authentication_status'] = False
             st.session_state['name'] = None
             st.rerun()
-        
+            
         # Profile Section
-        user_profile_data_sidebar = user_profiles.get(current_user, {})
+        # IMPORTANT: Reload user profiles here to ensure latest data is displayed in the sidebar form
+        current_user_profile_data_sidebar = load_user_profiles().get(current_user, {}) 
+        
         with st.expander(_("profile_header_sidebar", lang)):
             with st.form(key="profile_form_sidebar_main", border=False):
-                current_certification_sidebar = user_profile_data_sidebar.get("certification", _("no_certification_option", lang))
+                current_certification_sidebar = current_user_profile_data_sidebar.get("certification", _("no_certification_option", lang))
                 cert_level_keys_from_dict_sidebar = list(TRANSLATIONS[lang]["certification_levels"].keys())
                 actual_selectbox_options_sidebar = [_("no_certification_option", lang)] + cert_level_keys_from_dict_sidebar
                 try:
@@ -787,7 +812,7 @@ def main_app():
                     index=current_cert_index_sidebar, key="certification_select_profile_form_sb"
                 )
 
-                current_cert_date_str_sidebar = user_profile_data_sidebar.get("certification_date")
+                current_cert_date_str_sidebar = current_user_profile_data_sidebar.get("certification_date")
                 current_cert_date_obj_sidebar = None
                 if current_cert_date_str_sidebar:
                     try:
@@ -799,32 +824,37 @@ def main_app():
                     _("certification_date_label", lang), value=current_cert_date_obj_sidebar, key="cert_date_profile_form_sb"
                 )
                 st.text_input(
-                    _("lifras_id_label", lang), value=user_profile_data_sidebar.get("lifras_id", ""), key="lifras_id_profile_form_sb"
+                    _("lifras_id_label", lang), value=current_user_profile_data_sidebar.get("lifras_id", ""), key="lifras_id_profile_form_sb"
                 )
                 st.checkbox(
-                    _("anonymize_results_label", lang), value=user_profile_data_sidebar.get("anonymize_results", False), key="anonymize_profile_form_sb"
+                    _("anonymize_results_label", lang), 
+                    value=current_user_profile_data_sidebar.get("anonymize_results", False), 
+                    key="anonymize_profile_form_sb"
                 )
                 st.checkbox(
-                    _("consent_ai_feedback_label", lang), value=user_profile_data_sidebar.get("consent_ai_feedback", False), key="consent_ai_feedback_profile_form_sb"
+                    _("consent_ai_feedback_label", lang), 
+                    value=current_user_profile_data_sidebar.get("consent_ai_feedback", False), 
+                    key="consent_ai_feedback_profile_form_sb"
                 )
                 st.text_area(
                     "Motivations à faire de l'apnée :",
-                    value=user_profile_data_sidebar.get("motivations", ""),
+                    value=current_user_profile_data_sidebar.get("motivations", ""),
                     key="motivations_profile_form_sb"
                 )
                 st.text_area(
                     "Où vous imaginez vous dans votre pratique de l'apnée dans 3 ans ?",
-                    value=user_profile_data_sidebar.get("projection_3_ans", ""),
+                    value=current_user_profile_data_sidebar.get("projection_3_ans", ""),
                     key="projection_3_ans_profile_form_sb"
                 )
                 st.text_area(
                     "Texte pour le portrait photo",
-                    value=user_profile_data_sidebar.get("portrait_photo_text", ""),
+                    value=current_user_profile_data_sidebar.get("portrait_photo_text", ""),
                     key="portrait_photo_text_profile_form_sb"
                 )
 
                 if st.form_submit_button(_("save_profile_button", lang)):
-                    profiles_to_save = user_profiles.copy()
+                    # Load the latest profiles again just before saving to avoid overwriting recent external changes
+                    profiles_to_save = load_user_profiles() 
                     user_profile = profiles_to_save.get(current_user, {}).copy()
 
                     user_profile["certification"] = st.session_state.certification_select_profile_form_sb
@@ -839,7 +869,7 @@ def main_app():
                     
                     profiles_to_save[current_user] = user_profile
                     
-                    save_user_profiles(profiles_to_save)
+                    save_user_profiles(profiles_to_save) # This function now clears load_user_profiles and get_auth_config
                     st.success(_("profile_saved_success", lang, user=current_user))
                     st.rerun()
 
@@ -1045,7 +1075,7 @@ def main_app():
                             styled_text = style_feedback_text(entry.get('description', _("no_description_available", lang)))
                             st.markdown(styled_text, unsafe_allow_html=True)
                             
-        
+    
         if is_admin_view_authorized and len(training_sub_tabs) > 1:
             with training_sub_tabs[1]:
                 if not training_log_loaded:
@@ -1422,22 +1452,24 @@ def main_app():
 
         with feedback_sub_tab_map[my_feedback_sub_tab_label]:
             user_feedback = [fb for fb in instructor_feedback_loaded if fb.get('diver_name') == current_user]
-            user_profile_data = user_profiles.get(current_user, {})
+            # user_profiles is loaded here but specific widgets in sidebar reload for freshness after save.
+            fresh_user_profiles = load_user_profiles() 
+            user_profile_data = fresh_user_profiles.get(current_user, {})
             has_ai_consent = user_profile_data.get("consent_ai_feedback", False)
             
             if not has_ai_consent:
                 st.warning(_("consent_ai_feedback_missing", lang))
-            else:
-                # Only show "No feedback to summarize" if there's consent AND no feedback
-                if not user_feedback:
-                    st.info(_("no_feedback_to_summarize", lang)) # Or a more appropriate message if you want AI to generate initial guidance
+            
+            # The button to generate feedback should appear if consent is given,
+            # even if there's no feedback yet.
+            if has_ai_consent:
+                if not user_feedback: # Informative message if no feedback is available for summarization
+                    st.info(_("no_feedback_to_summarize", lang)) 
                 
-                # This button should always be available if consent is given
                 if st.button(_("generate_feedback_summary_button", lang)):
-                    # Your AI generation logic here
                     with st.spinner("Génération du résumé..."):
                         all_feedback_text = "\n".join([f"- {fb['feedback_text']}" for fb in user_feedback])
-                        import toml
+                        
                         prompts_instructions = toml.load("./prompts.toml")
                         adeps_coaching_instructions = prompts_instructions['feedback']['adeps_coaching_instructions']
                         huron_spirit = prompts_instructions['feedback']['huron_spirit']            
@@ -1450,7 +1482,7 @@ def main_app():
                         Ce feedback est donné par d'autres apnéistes et instructeurs. 
                         Tu es un coach d'apnée tel que décrit ici \n{adeps_coaching_instructions}. 
                         Tu dois analyser ces feedbacks et en tirer un résumé constructif de maximum 10 phrases pour l'apnéiste afin qu'il puisse s'améliorer. 
-                        Tu dois prendre en compte le niveau actuel de l'apnéiste qui est le suivant : {user_profiles.get(current_user, {}).get('certification', 'Non spécifié')}.  
+                        Tu dois prendre en compte le niveau actuel de l'apnéiste qui est le suivant : {user_profile_data.get('certification', 'Non spécifié')}.  
                         Tu dois également prendre en compte ses motivations à pratiquer l'apnée : {motivations_text}. 
                         Ainsi que ses objectifs de progression : {objectifs_text}. 
                         Et sa vision de l'apnée : {vision_text}. 
@@ -1473,10 +1505,10 @@ def main_app():
                             st.session_state['feedback_summary'] = summary_text.text
                         except Exception as e:
                             st.error(f"Erreur lors de la génération du résumé : {e}")
-                
-                # Display the summary if it exists
-                if 'feedback_summary' in st.session_state and st.session_state.feedback_summary:
-                    st.markdown(st.session_state['feedback_summary'])
+                            st.session_state['feedback_summary'] = None # Clear summary on error
+                            
+            if 'feedback_summary' in st.session_state and st.session_state.feedback_summary:
+                st.markdown(st.session_state['feedback_summary'])
 
     # Admin-only Sub-Tabs
         if is_admin_view_authorized:
@@ -1508,7 +1540,9 @@ def main_app():
                         for fb in sorted(filtered_feedbacks, key=lambda x: x.get('feedback_date', '1900-01-01'), reverse=True):
                             with st.container(border=True):
                                 session_details = get_training_session_details(fb.get("training_session_id"), training_log_loaded)
-                                st.markdown(f"**{fb['diver_name']}** par **{fb['instructor_name']}** à **{session_details['event_name']}** le **{fb['feedback_date']}**")
+                                # MODIFICATION HERE: Display activity date instead of feedback encoding date
+                                display_date = session_details['event_date'] or _('no_specific_session_option', lang)
+                                st.markdown(f"**{fb['diver_name']}** par **{fb['instructor_name']}** à **{session_details['event_name']}** le **{display_date}**")
                                 st.markdown(fb['feedback_text'], unsafe_allow_html=True)
                                 
 
@@ -1526,7 +1560,7 @@ def main_app():
                             for fb in instructor_feedback_loaded:
                                 dt_obj = None
                                 try:
-                                    dt_obj = date.fromisoformat(fb.get("feedback_date"))
+                                    dt_obj = date.fromisoformat(fb.get("feedback_date")) # Keep original feedback date for editing
                                 except (ValueError, TypeError):
                                     pass
                                 feedback_df_data.append({
@@ -1580,8 +1614,11 @@ def main_app():
                 # st.subheader(_("edit_freedivers_header", lang))
                 all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
                 freedivers_data_for_editor = []
+                # Ensure we load fresh user profiles here too for the editor's initial state
+                fresh_user_profiles_for_editor = load_user_profiles() 
+
                 for user_name in all_known_users_list:
-                    profile = user_profiles.get(user_name, {})
+                    profile = fresh_user_profiles_for_editor.get(user_name, {})
                     cert_date_obj = None
                     if profile.get("certification_date"):
                         try: cert_date_obj = date.fromisoformat(profile["certification_date"])
@@ -1611,7 +1648,8 @@ def main_app():
                     if st.form_submit_button(_("save_freedivers_changes_button", lang)):
                         edited_rows = edited_freedivers_df.to_dict('records')
                         
-                        final_profiles = user_profiles.copy()
+                        # Load fresh profiles before making changes
+                        final_profiles = load_user_profiles() 
                         new_names_from_editor = {row[_("freediver_name_col_editor", lang)].strip() for row in edited_rows}
                         
                         # Handle user deletion
@@ -1636,6 +1674,8 @@ def main_app():
                                 profile_data["certification_date"] = cert_date_val.isoformat() if pd.notna(cert_date_val) and isinstance(cert_date_val, (date, datetime)) else None
                                 profile_data["lifras_id"] = str(row[_("lifras_id_col_editor", lang)]).strip() if pd.notna(row[_("lifras_id_col_editor", lang)]) else ""
                                 profile_data["anonymize_results"] = bool(row[_("anonymize_results_col_editor", lang)])
+                                # Ensure consent_ai_feedback is also handled here if editing profiles directly
+                                profile_data["consent_ai_feedback"] = profile.get("consent_ai_feedback", False) # Maintain existing value or default to False
                                 
                                 if original_name and original_name != new_name:
                                     name_map[original_name] = new_name
@@ -1654,7 +1694,7 @@ def main_app():
                                 if st.session_state.get("name") in name_map:
                                     st.session_state["name"] = name_map[st.session_state.get("name")]
                             
-                            save_user_profiles(final_profiles)
+                            save_user_profiles(final_profiles) # This clears relevant caches
                             save_records(all_records_loaded)
                             save_instructor_feedback(instructor_feedback_loaded)
                             
