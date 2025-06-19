@@ -12,6 +12,15 @@ import gspread
 from google.oauth2 import service_account
 import toml # Added for prompts loading
 
+# --- Google Sheets Configuration ---
+# These will be loaded from st.secrets
+# SPREADSHEET_URLS = {
+#      "records": "YOUR_RECORDS_GOOGLE_SHEET_URL",
+#      "user_profiles": "YOUR_USER_PROFILES_GOOGLE_SHEET_URL",
+#      "training_log": "YOUR_TRAINING_LOG_GOOGLE_SHEET_URL",
+#      "instructor_feedback": "YOUR_INSTRUCTOR_FEEDBACK_GOOGLE_SHEET_URL",
+# }
+
 # --- Privileged User Configuration ---
 PRIVILEGED_USERS = ["Philippe K.", "Vincent C.", "Charles D.B.", "Rémy L.", "Gregory D."]
 SUPER_PRIVILEGED_USERS = ['Charles D.B.']
@@ -182,8 +191,7 @@ TRANSLATIONS = {
         "certification_date_col_editor": "Date Brevet",
         "lifras_id_col_editor": "ID LIFRAS",
         "pb_sta_col_editor": "PB STA",
-        "pb_dynbf_col_editor": "PB DYN-BF",
-        "pb_dnf_col_editor": "PB DNF",
+        "pb_dynbf_col_editor": "PB DNF",
         "pb_depth_col_editor": "PB Prof. (CWT/FIM)",
         "pb_vwt_nlt_col_editor": "PB Prof. (VWT/NLT)",
         "pb_16x25_col_editor": "PB 16x25m",
@@ -257,7 +265,7 @@ TRANSLATIONS = {
         "no_feedbacks_match_filters": "Aucun feedback ne correspond aux filtres actuels.",
         "login_error": "Nom d'utilisateur ou mot de passe incorrect.",
         "login_welcome": "Veuillez vous connecter pour continuer.",
-        "logout_button": "Déconnexion",
+        "logout_button": "Déconnexion",        
         "journal_freedivers_tab_label": "🗓️ Journal des apnéistes [A]",
         "edit_freedivers_sub_tab_label": "✏️ Éditer les apnéistes [A]",
     }
@@ -395,60 +403,37 @@ def load_user_profiles():
     # Convert list of dicts to the dictionary format expected by the app {username: profile_data}
     profiles = {p['user_name']: p for p in profiles_list if 'user_name' in p}
     
-    # Ensure 'user_name' column exists in the sheet. If not, add a migration.
-    # For initial setup, it's simpler to manually create the sheet with the expected header.
-    # Also, ensure all existing users have an 'id' for authentication later.
-    updated = False
+    # We no longer trigger save_user_profiles from here for migration/updates
+    # These operations will now only happen when explicitly saving a user profile via the forms.
     for user_name, profile_data in profiles.items():
+        # Ensure 'id' exists (still good for new profiles created outside app or very old ones)
         if profile_data.get('id') is None:
             profile_data['id'] = uuid.uuid4().hex
-            updated = True
+            # No 'updated = True' to trigger save here, rely on explicit saves.
         
-        # Ensure new boolean fields have a default if missing AND convert any string "TRUE"/"FALSE" to bool
-        anonymize_val = profile_data.get('anonymize_results', False)
-        if isinstance(anonymize_val, str): # Handle string "TRUE"/"FALSE" from GSheets
-            profile_data['anonymize_results'] = anonymize_val.lower() == 'true'
-            updated = True
-        elif not isinstance(anonymize_val, bool): # Ensure it's a boolean if not already
-            profile_data['anonymize_results'] = bool(anonymize_val)
-            updated = True
+        # Ensure boolean fields are correctly converted from potentially string "TRUE"/"FALSE"
+        # This is for reading only, ensuring the in-memory representation is correct.
+        for bool_field in ['anonymize_results', 'consent_ai_feedback']:
+            val = profile_data.get(bool_field, False)
+            if isinstance(val, str):
+                profile_data[bool_field] = val.lower() == 'true'
+            elif not isinstance(val, bool):
+                profile_data[bool_field] = bool(val)
 
-        consent_val = profile_data.get('consent_ai_feedback', False)
-        if isinstance(consent_val, str): # Handle string "TRUE"/"FALSE" from GSheets
-            profile_data['consent_ai_feedback'] = consent_val.lower() == 'true'
-            updated = True
-        elif not isinstance(consent_val, bool): # Ensure it's a boolean if not already
-            profile_data['consent_ai_feedback'] = bool(consent_val)
-            updated = True
+        # Ensure text area fields have a default if missing (in-memory only)
+        for text_field in ['motivations', 'projection_3_ans', 'portrait_photo_text']:
+            if text_field not in profile_data:
+                profile_data[text_field] = ""
         
-        # New: Handle 'hashed_password' and 'lifras_id' fields
-        if 'hashed_password' not in profile_data or not profile_data['hashed_password']:
-            # Migration logic: if there's a lifras_id and no hashed_password, hash the lifras_id as initial password
-            # IMPORTANT: After this migration, you should ideally clear lifras_id from being treated as password.
-            # A more robust solution might involve a separate password reset mechanism for users.
-            lifras_id_as_pass = str(profile_data.get("lifras_id", "")).strip()
-            if lifras_id_as_pass:
-                profile_data['hashed_password'] = bcrypt.hashpw(lifras_id_as_pass.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-                updated = True
-            else:
-                # No lifras_id either, set a default "changeme" hashed password
-                profile_data['hashed_password'] = bcrypt.hashpw("changeme".encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-                updated = True
-        
-        # Ensure new text area fields have a default if missing
-        if 'motivations' not in profile_data:
-            profile_data['motivations'] = ""
-            updated = True
-        if 'projection_3_ans' not in profile_data:
-            profile_data['projection_3_ans'] = ""
-            updated = True
-        if 'portrait_photo_text' not in profile_data:
-            profile_data['portrait_photo_text'] = ""
-            updated = True
+        # Handle 'hashed_password' (in-memory only)
+        # If a hashed_password is NOT present when loading, it means it's an old user or newly created outside the app.
+        # We will NOT hash the lifras_id here and force a save.
+        # Instead, get_auth_config() will handle the fallback for login if 'hashed_password' is missing.
+        # The admin panel will be the place to set/migrate passwords definitively.
+        if 'hashed_password' not in profile_data:
+            profile_data['hashed_password'] = '' # Ensure the key exists, but don't compute/save here
     
-    if updated:
-        save_user_profiles(profiles)
-    return profiles
+    return profiles # Return profiles without triggering a save
 
 def save_user_profiles(profiles):
     client = get_gsheets_client()
@@ -568,7 +553,8 @@ def get_auth_config():
     # Optimized: Only load user profiles, no need for training_logs or all_records for auth config
     profiles = load_user_profiles() 
 
-    all_users = sorted(list(profiles.keys())) # Get users directly from profiles
+    # Only get users from the profiles loaded, as this is for authentication
+    all_users = sorted(list(profiles.keys())) 
     
     credentials = {'usernames': {}}
     
@@ -1682,9 +1668,9 @@ def main_app():
                             _("certification_col_editor", lang): profile.get("certification", _("no_certification_option", lang)),
                             _("certification_date_col_editor", lang): cert_date_obj,
                             _("lifras_id_col_editor", lang): profile.get("lifras_id", ""),
-                            _("anonymize_results_col_editor", lang): profile.get("anonymize_results", False),
+                            _("anonymize_results_col_editor", lang): profile.get("anonymize_results", False)
                             # Add a temporary field for new password input in the data_editor
-                            _("set_reset_password_col_editor", lang): "" 
+                            # _("set_reset_password_col_editor", lang): "" 
                         })
                 
                     with st.form(key="freedivers_editor_form", border=False):
@@ -1696,14 +1682,14 @@ def main_app():
                                 _("certification_col_editor", lang): st.column_config.SelectboxColumn(options=[_("no_certification_option", lang)] + list(_("certification_levels", lang).keys())),
                                 _("certification_date_col_editor", lang): st.column_config.DateColumn(format="YYYY-MM-DD"),
                                 _("lifras_id_col_editor", lang): st.column_config.TextColumn(),
-                                _("anonymize_results_col_editor", lang): st.column_config.CheckboxColumn(),
+                                _("anonymize_results_col_editor", lang): st.column_config.CheckboxColumn()
                                 # Configure the password input column as a text input (type="password" does not work in data_editor)
-                                _("set_reset_password_col_editor", lang): st.column_config.TextColumn(
-                                    label=_("set_reset_password_col_editor", lang),
-                                    help=_("set_reset_password_help", lang),
+                                # _("set_reset_password_col_editor", lang): st.column_config.TextColumn(
+                                #     label=_("set_reset_password_col_editor", lang),
+                                #     help=_("set_reset_password_help", lang),
                                     # No 'type="password"' support in data_editor, so value will be visible after typing.
                                     # A separate form would be more secure for password input.
-                                )
+                                # )
                             },
                             key="freedivers_data_editor", num_rows="dynamic", hide_index=True
                         )
