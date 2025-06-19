@@ -136,7 +136,7 @@ TRANSLATIONS = {
             "July": "Juillet", "August": "Août", "September": "Septembre", "October": "Octobre", "November": "Novembre", "December": "Décembre"
         },
         "performances_main_tab_title": "📊 Performances",
-        "club_performances_overview_tab_label": "📊 Performances du Club par Apnéiste [A]",
+        "club_performances_overview_tab_label": "🏆 Classement [A]",
         "select_discipline_for_ranking": "Sélectionnez la discipline pour le classement :",
         "podium_header": "🏆 Podium",
         "full_ranking_header": "📋 Classement Complet",
@@ -180,11 +180,11 @@ TRANSLATIONS = {
         "performance_updated_success": "Performance mise à jour avec succès.",
         "history_updated_success": "Historique mis à jour avec succès.",
         "club_performances_tab_title": "📈 Performances du Club",
-        "club_level_performance_tab_title": "📊 Performances du Club par Brevet",
+        "club_level_performance_tab_title": "📈 Performances du Club",
         "no_data_for_club_performance_display": "Aucune donnée de performance disponible pour le club dans cette discipline.",
         "quarterly_average_label": "Moyenne Trimestrielle",
-        "freedivers_tab_title": "🫂 Apnéistes [A]",
-        "edit_freedivers_header": "🫂 Gérer les Apnéistes",
+        "freedivers_tab_title": "🐟 Apnéistes [A]",
+        "edit_freedivers_header": "🐟 Gérer les Apnéistes",
         "set_reset_password_col_editor": "Définir/Réinitialiser Mot de Passe",
         "set_reset_password_help": "Entrez un nouveau mot de passe pour le définir ou le réinitialiser. Laissez vide pour conserver le mot de passe actuel.",
         "certification_col_editor": "Niveau de Brevet",
@@ -221,7 +221,7 @@ TRANSLATIONS = {
         "generate_feedback_summary_button": "Générer le résumé des feedbacks",
         "feedback_summary_header": "Résumé des feedbacks",
         "no_feedback_to_summarize": "Aucun feedback à résumer pour le moment.",
-        "feedbacks_overview_tab_label": "💬 Journal des Feedbacks [A]",
+        "feedbacks_overview_tab_label": "📅 Journal des Feedbacks [A]",
         "edit_feedbacks_sub_tab_label": "📝 Editer les Feedbacks [A]",
         "log_feedback_header_sidebar": "📝 Feedback Instructeur",
         "feedback_for_freediver_label": "Apnéiste",
@@ -232,7 +232,7 @@ TRANSLATIONS = {
         "save_feedback_button": "💾 Enregistrer Feedback",
         "feedback_saved_success": "Feedback enregistré avec succès !",
         "feedback_text_empty_error": "Le texte du feedback ne peut pas être vide.",
-        "feedback_log_table_header": "📋 Journal des Feedbacks (Modifiable)",
+        "feedback_log_table_header": "📅 Journal des Feedbacks (Modifiable)",
         "save_feedback_log_changes_button": "💾 Sauvegarder Modifs. Journal Feedback",
         "feedback_log_updated_success": "Journal des feedbacks mis à jour.",
         "no_feedback_for_user": "Aucun feedback reçu pour l'instant.",
@@ -266,7 +266,7 @@ TRANSLATIONS = {
         "login_error": "Nom d'utilisateur ou mot de passe incorrect.",
         "login_welcome": "Veuillez vous connecter pour continuer.",
         "logout_button": "Déconnexion",        
-        "journal_freedivers_tab_label": "🗓️ Journal des apnéistes [A]",
+        "journal_freedivers_tab_label": "📅 Journal des apnéistes [A]",
         "edit_freedivers_sub_tab_label": "✏️ Éditer les apnéistes [A]",
     }
 }
@@ -335,7 +335,7 @@ def get_sheet_by_url(client, url, worksheet_name='Sheet1'): # Added worksheet_na
         return None
 
 # --- Data Handling for Performance Records ---
-@st.cache_data(ttl=60) # Cache data for 60 seconds
+@st.cache_data(ttl=60, show_spinner="Chargement des performances...") # Cache data for 60 seconds
 def load_records(training_logs):
     client = get_gsheets_client()
     # Pass the specific worksheet name for records
@@ -388,13 +388,12 @@ def save_records(records):
     headers = list(records[0].keys())
     data_to_write = [headers] + [[record.get(h) for h in headers] for record in records]
     
-    # Clear existing content and write all data back
     sheet.clear()
     sheet.update(data_to_write)
     load_records.clear() # Clear cache after saving
 
 # --- Data Handling for User Profiles ---
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=60, show_spinner="Chargement des profils utilisateurs...")
 def load_user_profiles():
     client = get_gsheets_client()
     sheet = get_sheet_by_url(client, st.secrets["gsheets"]["user_profiles_sheet_url"], 'user_profiles') # <-- Change 'Sheet1'
@@ -480,7 +479,7 @@ def save_user_profiles(profiles):
     get_auth_config.clear()     # Clear auth config cache as it depends on user profiles
 
 # --- Data Handling for Training Logs ---
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=60, show_spinner="Chargement des activités...")
 def load_training_log():
     client = get_gsheets_client()
     sheet = get_sheet_by_url(client, st.secrets["gsheets"]["training_log_sheet_url"], 'training_log') # <-- Change 'Sheet1'
@@ -512,7 +511,7 @@ def save_training_log(logs):
     load_training_log.clear() # Clear cache after saving
 
 # --- Data Handling for Instructor Feedback ---
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=60, show_spinner="Chargement des feedbacks...")
 def load_instructor_feedback():
     client = get_gsheets_client()
     sheet = get_sheet_by_url(client, st.secrets["gsheets"]["instructor_feedback_sheet_url"], 'instructor_feedback') # <-- Change 'Sheet1'
@@ -991,8 +990,7 @@ def main_app():
                     )
                     st.write(f"{_('instructor_name_label', lang)} {current_user}")
                     st.text_area(
-                        _("feedback_text_label", lang), 
-                        # value=st.session_state.feedback_text_buffer,
+                        _("feedback_text_label", lang), value=st.session_state.feedback_text_buffer,
                         key="feedback_text_area_key_in_form"
                     )
                     if st.form_submit_button(_("save_feedback_button", lang)):
@@ -1038,6 +1036,7 @@ def main_app():
         tabs_to_display_names.append(f"{tab_label_freedivers}")
     
     # --- Main Tab Selection using st.selectbox in columns for robust persistence ---
+    # Ces colonnes sont pour la navigation principale (main_navigation_selector) et les sous-onglets du tab actif.
     col_main_nav1, col_main_nav2 = st.columns(2)
 
     with col_main_nav1:
@@ -1084,11 +1083,11 @@ def main_app():
                     months_translated = [_("months." + m, lang) for m in months_en]
                     all_tags = sorted(list(FEEDBACK_TAG_COLORS.keys()))
                     
-                    col1, col2, col3, col4 = st.columns(4)
-                    with col1: selected_year = st.selectbox(_("filter_by_year_label", lang), [_("all_years_option", lang)] + years, key="training_year_filter")
-                    with col2: selected_month_name = st.selectbox(_("filter_by_month_label", lang), [_("all_months_option", lang)] + months_translated, key="training_month_filter")
-                    with col3: selected_place = st.selectbox(_("filter_by_place_label", lang), [_("all_places_option", lang)] + places, key="training_place_filter")
-                    with col4: selected_tag = st.selectbox(_("filter_by_tag_label", lang), [_("all_tags_option", lang)] + all_tags, key="training_tag_filter")
+                    col1_f, col2_f, col3_f, col4_f = st.columns(4) # Renamed filter columns to avoid conflict with main nav columns
+                    with col1_f: selected_year = st.selectbox(_("filter_by_year_label", lang), [_("all_years_option", lang)] + years, key="training_year_filter")
+                    with col2_f: selected_month_name = st.selectbox(_("filter_by_month_label", lang), [_("all_months_option", lang)] + months_translated, key="training_month_filter")
+                    with col3_f: selected_place = st.selectbox(_("filter_by_place_label", lang), [_("all_places_option", lang)] + places, key="training_place_filter")
+                    with col4_f: selected_tag = st.selectbox(_("filter_by_tag_label", lang), [_("all_tags_option", lang)] + all_tags, key="training_tag_filter")
 
                     filtered_logs = training_log_loaded
                     if selected_year != _("all_years_option", lang): filtered_logs = [log for log in filtered_logs if log.get('date') and datetime.fromisoformat(log['date']).year == selected_year]
@@ -1383,7 +1382,7 @@ def main_app():
                             if not sorted_rankings_tab:
                                 st.info(_("no_ranking_data", lang))
                             else:
-                                # st.subheader(_("full_ranking_header", lang)) # Label moved to selectbox
+                                # st.subheader(_("full_ranking_header", lang)) # Label déplacé vers selectbox
                                 ranking_table_data = [
                                     {
                                         _("rank_col", lang): rank_idx + 1,
@@ -1399,13 +1398,13 @@ def main_app():
             elif is_admin_view_authorized and selected_perf_sub_tab_label == f"{_('performances_overview_tab_label', lang)}":
                 # st.subheader(_("performances_overview_tab_label", lang))
                 all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
-                col1, col2, col3 = st.columns(3)
-                with col1: filter_user_perf = st.selectbox(_("filter_by_freediver_label", lang), [_("all_freedivers_option", lang)] + all_known_users_list, key="perf_log_user_filter_overview")
-                with col2:
+                col1_f, col2_f, col3_f = st.columns(3) # Renamed filter columns
+                with col1_f: filter_user_perf = st.selectbox(_("filter_by_freediver_label", lang), [_("all_freedivers_option", lang)] + all_known_users_list, key="perf_log_user_filter_overview")
+                with col2_f:
                     session_options = {s['id']: f"{s['date']} - {s['place']}" for s in training_log_loaded}
                     session_options[None] = _("no_specific_session_option", lang) # Add None option for unlinked records
                     filter_session_id_perf = st.selectbox(_("filter_by_training_session_label", lang), [_("all_sessions_option", lang)] + list(session_options.keys()), format_func=lambda x: session_options.get(x, x), key="perf_log_session_filter_overview")
-                with col3:  
+                with col3_f:  
                     filter_discipline_perf = st.selectbox(
                         _("filter_by_discipline_label", lang),
                         options=[_("all_disciplines_option", lang)] + discipline_keys,
@@ -1575,14 +1574,14 @@ def main_app():
 
             elif is_admin_view_authorized and selected_feedback_sub_tab_label == f"{_('feedbacks_overview_tab_label', lang)}":
                 all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
-                col1, col2, col3 = st.columns(3)
-                with col1:
+                col1_f, col2_f, col3_f = st.columns(3) # Renamed filter columns
+                with col1_f:
                     filter_user = st.selectbox(_("filter_by_freediver_label", lang), [_("all_freedivers_option", lang)] + all_known_users_list, key="fb_overview_user")
-                with col2:
+                with col2_f:
                     session_options = {s['id']: f"{s.get('date', 'N/A')} - {s.get('place', 'N/A')}" for s in training_log_loaded}
                     session_options[None] = _("no_specific_session_option", lang)
                     filter_session_id = st.selectbox(_("filter_by_training_session_label", lang), [_("all_sessions_option", lang)] + list(session_options.keys()), format_func=lambda x: session_options.get(x, x), key="fb_overview_session")
-                with col3:
+                with col3_f:
                     instructors = sorted(list(set(fb['instructor_name'] for fb in instructor_feedback_loaded)))
                     filter_instructor = st.selectbox(_("filter_by_instructor_label", lang), [_("all_instructors_option", lang)] + instructors, key="fb_overview_instructor")
 
@@ -1822,6 +1821,7 @@ def main_app():
 # --- Main Execution ---
 def main():
     """Main function to run the Streamlit app."""
+    # --- Initialisation de toutes les variables de session_state au début ---
     if 'language' not in st.session_state:
         st.session_state.language = 'fr'
     if 'authentication_status' not in st.session_state:
@@ -1829,11 +1829,11 @@ def main():
     if 'name' not in st.session_state:
         st.session_state['name'] = None
     
-    # Initialize session state for active tab labels
+    # Pour la navigation principale (selectbox)
     if 'current_main_tab_label' not in st.session_state:
         st.session_state.current_main_tab_label = TRANSLATIONS['fr']['training_log_tab_title'] # Default to "Activités" tab
 
-    # For sub-tabs, also store the label for selectbox control
+    # Pour les sous-onglets (selectbox)
     if 'selected_training_sub_tab_label' not in st.session_state:
         st.session_state.selected_training_sub_tab_label = TRANSLATIONS['fr']['training_sessions_sub_tab_label']
     if 'selected_perf_sub_tab_label' not in st.session_state:
@@ -1847,7 +1847,7 @@ def main():
     if 'selected_freedivers_sub_tab_label' not in st.session_state:
         st.session_state.selected_freedivers_sub_tab_label = TRANSLATIONS['fr']['journal_freedivers_tab_label']
 
-
+    # Buffers pour les inputs des formulaires
     if 'training_place_buffer' not in st.session_state:
         st.session_state.training_place_buffer = ""
     if 'training_desc_buffer' not in st.session_state:
@@ -1859,7 +1859,11 @@ def main():
     if 'feedback_training_session_buffer' not in st.session_state:
         st.session_state.feedback_training_session_buffer = ""
     if 'feedback_text_buffer' not in st.session_state:
+        st.session_state.feedback_text_buffer = "" # Initialisation correcte
+    if 'feedback_summary' not in st.session_state:
         st.session_state.feedback_summary = None
+    # --- Fin de l'initialisation des variables de session_state ---
+
 
     st.set_page_config(page_title=_("page_title", st.session_state.language), layout="wide", initial_sidebar_state="expanded", page_icon="🌊",)
 
