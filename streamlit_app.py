@@ -68,7 +68,7 @@ TRANSLATIONS = {
         "discipline": "Discipline",
         "performance_value": "Valeur de la performance",
         "sta_help": "Format : MM:SS (ex: 03:45). Les millisecondes seront ignorées à l'affichage.",
-        "dyn_depth_help": "Format : Nombre, optionnellement suivi de 'm' (ex: 75 ou 75m)",
+        "dyn_depth_help": "Format : \n\nPour les distances : un nombre, optionnellement suivi de 'm' (ex: 75 ou 75m). \n\nPour les durées, utilisez MM:SS (ex. 03:20).",
         "save_performance_button": "💾 Enregistrer la performance",
         "performance_value_empty_error": "La valeur de la performance ne peut pas être vide.",
         "event_name_empty_error": "Le nom de l'événement ne peut pas être vide (si aucune session d'entraînement n'est liée).",
