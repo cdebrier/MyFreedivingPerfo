@@ -773,8 +773,7 @@ def main_app():
     
     with st.sidebar:
         st.success(f"**📒  Journal de {current_user}**")
-        st.info(f"Ce journal te permet de garder une trace de tes **performances**, de tes **activités**, et de générer un **feedback personalisé**.")
-        st.info(f"Tu peux également mettre à jour ton **profil d'apnéiste**. N'oublie pas de sauvegarder tes modifications !")
+        st.info(f"Ce journal est un outil qui te permet de suivre 👀 tes **performances** et **activités**. Complète ton **profil** pour générer un **feedback** personnalisé 💡, intégrant les retours de tes encadrants. A bientôt 👌")
         if st.button(_("logout_button", lang)):
             st.session_state['authentication_status'] = False
             st.session_state['name'] = None
