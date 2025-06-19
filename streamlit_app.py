@@ -772,9 +772,9 @@ def main_app():
     is_super_admin_view_authorized = current_user in SUPER_PRIVILEGED_USERS
     
     with st.sidebar:
-        st.success(f"**Bienvenue {current_user}**")
-        st.info(f"Ce journal te permet de garder une trace de tes **performances**, de tes **activités d'entraînement**, et des **feedbacks reçus** de tes instructeurs.")
-        st.info(f"Tu peux également mettre à jour ton **profil d'apnéiste** et tes **informations de certification**. N'oublie pas de sauvegarder tes modifications !")
+        st.success(f"**📒  Journal de {current_user}**")
+        st.info(f"Ce journal te permet de garder une trace de tes **performances**, de tes **activités**, et de générer un **feedback personalisé**.")
+        st.info(f"Tu peux également mettre à jour ton **profil d'apnéiste**. N'oublie pas de sauvegarder tes modifications !")
         if st.button(_("logout_button", lang)):
             st.session_state['authentication_status'] = False
             st.session_state['name'] = None
