@@ -773,7 +773,7 @@ def main_app():
     
     with st.sidebar:
         st.success(f"**📒  Journal de {current_user}**")
-        st.info(f"Suis tes **performances** et **activités** et complète ton **profil** pour générer un **feedback personnalisé** intégrant les retours de tes encadrants 👀. A bientôt !")
+        st.info(f"Suis tes **performances** et **activités** et complète ton **profil** pour générer un **feedback personnalisé** intégrant les retours de tes encadrants 👀.")
         if st.button(_("logout_button", lang)):
             st.session_state['authentication_status'] = False
             st.session_state['name'] = None
