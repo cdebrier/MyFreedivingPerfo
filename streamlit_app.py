@@ -283,13 +283,17 @@ TRANSLATIONS = {
         "wish_description_empty_error": "La description du souhait ne peut pas être vide.",
         "wishes_main_tab_title": "💡 Souhaits",
         "wishes_log_sub_tab_label": "📅 Journal des Souhaits [A]",
-        "wishes_summary_sub_tab_label": "📝 Résumé des Souhaits [A]",
+        "wishes_summary_sub_tab_label": "📝 Synthèse des Souhaits [A]",
         "no_wishes_logged": "Aucun souhait enregistré pour le moment.",
-        "generate_wishes_summary_button": "Générer le résumé des souhaits",
-        "wishes_summary_header": "Résumé des Souhaits",
+        "generate_wishes_summary_button": "Générer la synthèse des souhaits",
+        "wishes_summary_header": "Synthèse des Souhaits",
         "no_wishes_to_summarize": "Aucun souhait à résumer pour le moment.",
         "wish_date_col": "Date du Souhait",
         "wish_by": "Souhait de {user} le {date}",
+        "edit_wishes_sub_tab_label": "✏️ Éditer des Souhaits [A]",
+        "save_wishes_changes_button": "💾 Sauvegarder les Modifications des Souhaits",
+        "wishes_updated_success": "Souhaits mis à jour avec succès.",
+
 
     }
 }
@@ -1713,8 +1717,9 @@ def main_app():
             wishes_sub_tabs_labels = [
                 _("wishes_log_sub_tab_label", lang),
                 _("wishes_summary_sub_tab_label", lang),
+                _("edit_wishes_sub_tab_label", lang),  # Nouveau sous-onglet ajouté
             ]
-            
+
             with col_main_nav2:
                 selected_wishes_sub_tab_index = 0
                 if st.session_state.selected_wishes_sub_tab_label in wishes_sub_tabs_labels:
@@ -1727,6 +1732,10 @@ def main_app():
                     key="wishes_sub_tabs_selectbox",
                     on_change=lambda: st.session_state.update(selected_wishes_sub_tab_label=st.session_state.wishes_sub_tabs_selectbox)
                 )
+
+            if 'selected_wishes_sub_tab_label' not in st.session_state:
+                st.session_state.selected_wishes_sub_tab_label = TRANSLATIONS['fr']['wishes_log_sub_tab_label']
+
 
             if selected_wishes_sub_tab_label == _("wishes_log_sub_tab_label", lang):
                 if not all_wishes_loaded:
@@ -1744,20 +1753,21 @@ def main_app():
                     st.info(_("no_wishes_to_summarize", lang))
                 else:
                     if st.button(_("generate_wishes_summary_button", lang)):
-                        with st.spinner("Génération du résumé des souhaits..."):
+                        with st.spinner("Génération de la synthèse des souhaits..."):
                             all_wishes_text = "\n".join([f"- Souhait de {get_display_name(w.get('user_name'), user_profiles, lang)}: {w.get('description')}" for w in all_wishes_loaded])
                             
                             prompt = f"""
-                            Tu es un assistant de direction pour un club d'apnée.
+                            Tu es un assistant pour un club d'apnée.
                             Ta mission est d'analyser et de synthétiser une liste de souhaits et suggestions émises par les membres du club.
-                            Produis un résumé clair, concis et structuré qui met en évidence les thèmes principaux, les suggestions récurrentes et les idées les plus pertinentes.
-                            Le but est de fournir au comité du club un aperçu actionnable pour améliorer l'expérience des membres.
+                            Produis un résumé clair, concis et structuré qui met en évidence les suggestions récurrentes et les idées les plus pertinentes.
+                            Le but est de fournir aux encadrants du club un aperçu actionnable pour améliorer l'expérience des membres.
 
                             Voici la liste des souhaits à analyser :
                             {all_wishes_text}
 
-                            Ton résumé doit être présenté sous forme de points clés, en regroupant les idées similaires.
+                            Ton résumé doit être présenté sous forme de points clés.
                             Adopte un ton neutre et informatif.
+                            Sois concis.
                             """
                             try:
                                 from google import genai
@@ -1766,11 +1776,66 @@ def main_app():
                                 summary_text = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
                                 st.session_state['wishes_summary'] = summary_text.text
                             except Exception as e:
-                                st.error(f"Erreur lors de la génération du résumé des souhaits : {e}")
+                                st.error(f"Erreur lors de la génération de la synthèse des souhaits : {e}")
                                 st.session_state['wishes_summary'] = "Impossible de générer le résumé."
 
                 if 'wishes_summary' in st.session_state and st.session_state.wishes_summary:
                     st.markdown(st.session_state['wishes_summary'])
+
+            elif selected_wishes_sub_tab_label == _("edit_wishes_sub_tab_label", lang):
+                if not all_wishes_loaded:
+                    st.info(_("no_wishes_logged", lang))
+                else:
+                    with st.form(key="wishes_edit_form", border=False):
+                        all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
+                        
+                        wishes_df_data = []
+                        for wish in all_wishes_loaded:
+                            dt_obj = None
+                            try:
+                                dt_obj = date.fromisoformat(wish.get("date"))
+                            except (ValueError, TypeError):
+                                pass
+                            wishes_df_data.append({
+                                "id": wish["id"],
+                                _("wish_date_col", lang): dt_obj,
+                                _("user_col", lang): wish["user_name"],
+                                _("wish_description_label", lang): wish["description"],
+                                _("history_delete_col_editor", lang): False
+                            })
+
+                        wishes_df = pd.DataFrame(wishes_df_data)
+
+                        edited_wishes_df = st.data_editor(
+                            wishes_df,
+                            column_config={
+                                "id": None,
+                                _("wish_date_col", lang): st.column_config.DateColumn(required=True, format="YYYY-MM-DD"),
+                                _("user_col", lang): st.column_config.SelectboxColumn(options=all_known_users_list, required=True),
+                                _("wish_description_label", lang): st.column_config.TextColumn(required=True),
+                                _("history_delete_col_editor", lang): st.column_config.CheckboxColumn()
+                            },
+                            num_rows="dynamic",
+                            hide_index=True,
+                            key="wishes_editor",
+                            use_container_width=True
+                        )
+
+                        if st.form_submit_button(_("save_wishes_changes_button", lang)):
+                            new_wishes_list = []
+                            for row in edited_wishes_df.to_dict('records'):
+                                if not row[_("history_delete_col_editor", lang)]:
+                                    date_val = row[_("wish_date_col", lang)]
+                                    new_wishes_list.append({
+                                        "id": row.get("id") or uuid.uuid4().hex,
+                                        "date": date_val.isoformat() if isinstance(date_val, date) else str(date_val),
+                                        "user_name": row[_("user_col", lang)],
+                                        "description": row[_("wish_description_label", lang)].strip()
+                                    })
+                            save_wishes(new_wishes_list)
+                            st.success(_("wishes_updated_success", lang))
+                            st.rerun()
+
 
 
     elif selected_main_tab_label == tab_label_freedivers:
