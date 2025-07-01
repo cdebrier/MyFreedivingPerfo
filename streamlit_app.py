@@ -208,8 +208,8 @@ TRANSLATIONS = {
         "training_log_tab_title": "📅 Activités",
         "log_training_header_sidebar": "🏋️ Nouvelle Activité",
         "training_date_label": "Date de l'Activité",
-        "training_place_label": "Lieu",
-        "training_description_label": "Description",
+        "training_place_label": "Lieu de l'Activité",
+        "training_description_label": "Description de l'Activité",
         "save_training_button": "💾 Enregistrer l'Activité",
         "training_session_saved_success": "Activé enregistrée !",
         "training_description_empty_error": "La description de l'activité ne peut pas être vide.",
@@ -233,6 +233,7 @@ TRANSLATIONS = {
         "training_session_label": "Activité Liée :",
         "instructor_name_label": "Instructeur",
         "feedback_text_label": "Feedback",
+        "feedback_text_area_ph": "Note ton feedback ici afin de guider les autres encadrants lors des prochaines sorties, et fournir de la matière pour générer un feedback à l'apnéiste.",
         "save_feedback_button": "💾 Enregistrer Feedback",
         "feedback_saved_success": "Feedback enregistré avec succès !",
         "feedback_text_empty_error": "Le texte du feedback ne peut pas être vide.",
@@ -276,6 +277,7 @@ TRANSLATIONS = {
         # --- Wish Translations ---
         "wish_header_sidebar": "💡 Nouveau Souhait",
         "wish_description_label": "Description du souhait",
+        "wish_description_label_ph": "Décris tes souhaits, tes envies, tes suggestions, ce qui te passe par la tête :) ... Par exemple : j'aimerais davantage de jeux, de défis, de sorties en mer, de sessions en piscine, de cours théoriques, etc.",
         "save_wish_button": "💾 Enregistrer le Souhait",
         "wish_saved_success": "Souhait enregistré avec succès !",
         "wish_description_empty_error": "La description du souhait ne peut pas être vide.",
@@ -884,17 +886,20 @@ def main_app():
                 st.text_area(
                     "Motivations à faire de l'apnée :",
                     value=current_user_profile_data_sidebar.get("motivations", ""),
-                    key="motivations_profile_form_sb"
+                    key="motivations_profile_form_sb",
+                    height=300
                 )
                 st.text_area(
                     "Où vous imaginez vous dans votre pratique de l'apnée dans 3 ans ?",
                     value=current_user_profile_data_sidebar.get("projection_3_ans", ""),
-                    key="projection_3_ans_profile_form_sb"
+                    key="projection_3_ans_profile_form_sb",
+                    height=250
                 )
                 st.text_area(
                     "Texte pour le portrait photo",
                     value=current_user_profile_data_sidebar.get("portrait_photo_text", ""),
-                    key="portrait_photo_text_profile_form_sb"
+                    key="portrait_photo_text_profile_form_sb",
+                    height=250
                 )
 
                 if st.form_submit_button(_("save_profile_button", lang)):
@@ -928,8 +933,8 @@ def main_app():
             st.header(_("log_training_header_sidebar", lang))
             with st.form(key="log_training_form_sidebar"):
                 st.date_input(_("training_date_label", lang), date.today(), key="training_date_form_key")
-                st.text_input(_("training_place_label", lang), value=st.session_state.training_place_buffer, key="training_place_form_key")
-                st.text_area(_("training_description_label", lang), value=st.session_state.training_desc_buffer, key="training_desc_form_key")
+                st.text_input(_("training_place_label", lang), value=st.session_state.training_place_buffer, key="training_place_form_key", placeholder=_("training_place_label", lang))
+                st.text_area(_("training_description_label", lang), value=st.session_state.training_desc_buffer, key="training_desc_form_key", placeholder=_("training_description_label", lang), height=250)
                 if st.form_submit_button(_("save_training_button", lang)):
                     desc_to_save = st.session_state.training_desc_form_key.strip()
                     place_to_save = st.session_state.training_place_form_key.strip()
@@ -966,7 +971,7 @@ def main_app():
                 performance_help_text_perf_form = _("sta_help", lang) if is_time_based_discipline(log_discipline_original_key_perf_form) else _("dyn_depth_help", lang)
                 st.text_input(
                     _("performance_value", lang), value=st.session_state.log_perf_input_buffer,
-                    help=performance_help_text_perf_form, key="log_perf_input_form_widget_key"
+                    help=performance_help_text_perf_form, key="log_perf_input_form_widget_key", placeholder=_("performance_value", lang)
                 )
                 if st.form_submit_button(_("save_performance_button", lang)):
                     current_log_perf_str = st.session_state.log_perf_input_form_widget_key.strip()
@@ -1002,6 +1007,8 @@ def main_app():
                     except (ValueError, KeyError):
                         st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
 
+                    # st.write(f"{_('instructor_name_label', lang)} {current_user}")
+
                     st.selectbox(
                         _("feedback_for_freediver_label", lang), options=freediver_options_for_feedback,
                         index=default_fb_user_idx, key="feedback_for_user_selectbox_key_in_form"
@@ -1021,10 +1028,10 @@ def main_app():
                         _("training_session_label", lang), options=training_session_options_display_fb_form,
                         index=default_fb_ts_idx, key="feedback_training_session_selectbox_key_in_form"
                     )
-                    st.write(f"{_('instructor_name_label', lang)} {current_user}")
+                    
                     st.text_area(
                         _("feedback_text_label", lang), value=st.session_state.feedback_text_buffer,
-                        key="feedback_text_area_key_in_form"
+                        key="feedback_text_area_key_in_form", height=200, placeholder=_("feedback_text_area_ph", lang)
                     )
                     if st.form_submit_button(_("save_feedback_button", lang)):
                         sel_fb_for_user = st.session_state["feedback_for_user_selectbox_key_in_form"]
@@ -1053,7 +1060,7 @@ def main_app():
         # --- Sidebar Wish Form ---
         st.header(_("wish_header_sidebar", lang))
         with st.form(key="log_wish_form_sidebar"):
-            wish_description = st.text_area(_("wish_description_label", lang), key="wish_description_form_key")
+            wish_description = st.text_area(_("wish_description_label", lang), key="wish_description_form_key", placeholder=_("wish_description_label_ph", lang), height=300)
             if st.form_submit_button(_("save_wish_button", lang)):
                 desc_to_save = wish_description.strip()
                 if not desc_to_save:
@@ -1939,6 +1946,38 @@ def main():
         st.session_state.wishes_summary = None
 
     st.set_page_config(page_title=_("page_title", st.session_state.language), layout="wide", initial_sidebar_state="expanded", page_icon="🌊",)
+
+    # st.markdown("""
+    #     <style>
+    #         [data-testid="stSidebar"] [data-testid="stForm"] {
+    #             background: #DCE6F4;
+    #         }
+    #     </style>
+    #     """, unsafe_allow_html=True)
+    st.markdown("""
+        <style>
+            [data-testid="stSidebar"] [data-testid="stForm"] {
+                background: white;
+                border: 2px solid #DCE6F4;
+                border-radius: 10px; /* Coins arrondis pour le formulaire */
+                padding: 20px; /* Espace intérieur pour ne pas coller au bord */
+            }
+
+            [data-testid="stTextInput"] input,
+            [data-testid="stNumberInput"] input,
+            [data-testid="stDateInput"] input,
+            [data-testid="stTimeInput"] input,
+            [data-testid="stTextArea"] textarea {
+                border: 1px dashed #EEEEEE;
+                border-radius: 5px;
+            }
+
+            [data-testid="stExpander"] details {
+                border: none !important;
+                box-shadow: none !important; /* Enlève aussi l'ombre qui peut ressembler à une bordure */
+            }
+        </style>
+        """, unsafe_allow_html=True)
 
     config = get_auth_config()
 
