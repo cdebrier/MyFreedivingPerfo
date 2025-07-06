@@ -293,6 +293,16 @@ TRANSLATIONS = {
         "edit_wishes_sub_tab_label": "✏️ Éditer des Souhaits [A]",
         "save_wishes_changes_button": "💾 Sauvegarder les Modifications des Souhaits",
         "wishes_updated_success": "Souhaits mis à jour avec succès.",
+        "training_suggestion_tab_label": "💡 Suggestion d'entraînement [A]",
+        "generate_training_suggestion_button": "💡 Proposer une nouvelle séance",
+        "generating_training_suggestion_spinner": "🤖 Création d'une séance créative en cours...",
+        "training_suggestion_header": "Générateur de Séances pour Encadrants",
+        "training_suggestion_intro": "Cliquez sur le bouton pour générer une suggestion de séance créative pour le groupe, basée sur les dernières activités du club et conçue pour varier les plaisirs !",
+        "no_data_for_suggestion": "Pas assez de données d'activités pour générer une suggestion. Veuillez d'abord enregistrer des activités.",
+        "suggestion_copy_helper": "Voici une suggestion de séance. Vous pouvez la copier et la coller dans la description d'une nouvelle activité.",
+        "suggestion_generation_error": "Désolé, la génération de la suggestion a échoué. Veuillez réessayer.",
+        "api_call_error": "Erreur lors de l'appel à l'API de génération : {e}"
+        
 
 
     }
@@ -1122,11 +1132,14 @@ def main_app():
 
     if selected_main_tab_label == tab_label_main_training_log:
         with st.container():
+            # La définition des onglets pour le menu déroulant
             sub_tab_definitions = [_("training_sessions_sub_tab_label", lang)]
             if is_admin_view_authorized:
+                sub_tab_definitions.append(_("training_suggestion_tab_label", lang))
                 sub_tab_definitions.append(f"{_('edit_training_sessions_sub_tab_label', lang)}")
 
             with col_main_nav2:
+                # Le code du menu déroulant reste le même
                 selected_training_sub_tab_index = 0
                 if st.session_state.selected_training_sub_tab_label in sub_tab_definitions:
                     selected_training_sub_tab_index = sub_tab_definitions.index(st.session_state.selected_training_sub_tab_label)
@@ -1139,7 +1152,12 @@ def main_app():
                     on_change=lambda: st.session_state.update(selected_training_sub_tab_label=st.session_state.training_sub_tabs_selectbox)
                 )
 
-            if selected_training_sub_tab_label == sub_tab_definitions[0]:
+            # --- CORRECTION DE LA LOGIQUE D'AFFICHAGE ---
+            # On utilise maintenant le nom de l'onglet (le texte) pour décider quoi afficher.
+            # C'est plus fiable que la position dans la liste.
+
+            # 1. Onglet "Journal d'Activités" (public)
+            if selected_training_sub_tab_label == _("training_sessions_sub_tab_label", lang):
                 if not training_log_loaded:
                     st.info(_("no_training_sessions_logged", lang))
                 else:
@@ -1147,7 +1165,7 @@ def main_app():
                     places = sorted(list(set(entry['place'] for entry in training_log_loaded if entry.get('place'))))
                     months_en = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
                     months_translated = [_("months." + m, lang) for m in months_en]
-                    all_tags = sorted(list(FEEDBACK_TAG_BADGE_CONFIG.keys())) # Updated to use new tag list
+                    all_tags = sorted(list(FEEDBACK_TAG_BADGE_CONFIG.keys()))
 
                     col1_f, col2_f, col3_f, col4_f = st.columns(4)
                     with col1_f: selected_year = st.selectbox(_("filter_by_year_label", lang), [_("all_years_option", lang)] + years, key="training_year_filter")
@@ -1161,13 +1179,8 @@ def main_app():
                         month_number = months_translated.index(selected_month_name) + 1
                         filtered_logs = [log for log in filtered_logs if log.get('date') and datetime.fromisoformat(log['date']).month == month_number]
                     if selected_place != _("all_places_option", lang): filtered_logs = [log for log in filtered_logs if log.get('place') == selected_place]
-
                     if selected_tag != _("all_tags_option", lang):
-                        logs_with_tag_ids = set()
-                        for log in filtered_logs:
-                            if selected_tag in log.get('description', ''):
-                                logs_with_tag_ids.add(log['id'])
-                        filtered_logs = [log for log in filtered_logs if log.get('id') in logs_with_tag_ids]
+                        filtered_logs = [log for log in filtered_logs if selected_tag in log.get('description', '')]
 
                     if not filtered_logs:
                         st.info("No training sessions match the selected filters.")
@@ -1176,7 +1189,93 @@ def main_app():
                             with st.expander(f"**{entry.get('date', 'N/A')} - {entry.get('place', 'N/A')}**", expanded=True):
                                 style_feedback_text(entry.get('description', _("no_description_available", lang)))
 
-            elif is_admin_view_authorized and selected_training_sub_tab_label == sub_tab_definitions[1]:
+            # 2. Onglet "Suggestion d'entraînement" (admin)
+            elif is_admin_view_authorized and selected_training_sub_tab_label == _("training_suggestion_tab_label", lang):
+                st.header(_("training_suggestion_header", lang))
+                st.info(_("training_suggestion_intro", lang))
+                if not training_log_loaded:
+                    st.warning(_("no_data_for_suggestion", lang))
+                else:
+                    if st.button(_("generate_training_suggestion_button", lang)):
+                        with st.spinner(_("generating_training_suggestion_spinner", lang)):
+                            recent_sessions_desc = "\n".join([f"- {log['date']}: {log['description']}" for log in sorted(training_log_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True)[:20]])
+                            all_profiles = list(user_profiles.values())
+                            cert_counts = pd.Series([p.get('certification', 'Non spécifié') for p in all_profiles]).value_counts().to_dict()
+                            certs_summary_str = ", ".join([f"{count}x {cert}" for cert, count in cert_counts.items()])
+                            prompt = f"""
+                            Tu es un coach d'apnée créatif et expérimenté, responsable de la planification des entraînements pour un club.
+                            Ta mission est de proposer une séance d'entraînement originale et stimulante pour la prochaine session en piscine, destinée à un groupe d'apnéistes de niveaux variés. Évite de proposer des tables standards et répétitives. Sois créatif !
+
+                            **CONTEXTE DU CLUB :**
+                            - **Composition du groupe :** {certs_summary_str}
+                            - **Historique des 20 dernières séances :**
+                            {recent_sessions_desc if recent_sessions_desc else "Aucune session récente."}
+
+                            ---
+
+                            **MISSION :**
+                            Génère une NOUVELLE et **créative** proposition de séance d'entraînement. À chaque fois que tu es appelé, propose quelque chose de différent.
+
+                            **IDÉES POUR T'INSPIRER (n'hésite pas à en inventer d'autres) :**
+                            - **Ateliers techniques :** Focus sur le virage, le palmage, la position du corps, le départ canard.
+                            - **Jeux :** Relais, chasse au trésor, parcours d'obstacles, longueurs à plusieurs, etc.
+                            - **Tables pyramidales :** Augmenter puis diminuer la difficulté (distance ou temps d'apnée).
+                            - **Entraînements "Fun" :** Séances à thème (ex: "No Limits" en piscine avec des gueuses légères), apnée en marchant, etc.
+                            - **Scénarios de sécurité :** Exercices de sauvetage, remorquage, gestion de la syncope.
+                            - **Séries "hypoxiques" ou "hypercapniques" variées :** Changer les temps de repos, les distances, etc.
+
+                            **FORMAT OBLIGATOIRE :**
+                            La sortie doit impérativement contenir les trois sections suivantes, dans cet ordre, et utiliser les tags spécifiés. Le texte doit être en français.
+
+                            1.  **Échauffement & Thème de la séance :**
+                                - Utilise le tag `#apnée/stretching` et/ou `#apnée/respiration`.
+                                - Décris un échauffement adapté et présente clairement le thème créatif de la séance.
+                                - Durée de la séance : 30 minutes maximum.
+
+                            2.  **Apnée Statique:**
+                                - Utilise le tag `#apnée/statique`. Il s'agit d'une séance d'apnée statique en piscine.
+                                - Détaille l'exercice principal, le jeu, ou l'atelier technique. Sois précis sur les règles, les distances, les temps de repos, et comment l'adapter aux différents niveaux du groupe.
+                                - Durée de la séance : 30 minutes maximum.
+                                
+                            3.  **Apnée Dynamique :**
+                                - Utilise le tag `#apnée/dynamique`. Il s'agit d'une séance d'apnée dynamique en piscine.
+                                - Détaille l'exercice principal, le jeu, ou l'atelier technique. Sois précis sur les règles, les distances, les temps de repos, et comment l'adapter aux différents niveaux du groupe.
+                                - Durée de la séance : 60 minutes maximum.
+
+                            **TON & STYLE :**
+                            - Rédige un texte engageant et facile à lire pour les coachs.
+                            - Va droit au but. Ne rajoute ni introduction, ni conclusion superflue.
+                            - Le format doit être similaire à celui des exemples d'activités qui t'ont été fournis dans le journal d'activités.
+                            - Utilise des phrases courtes et claires. Evite les liste à puces.
+
+                            ** SOURCES **
+                            Tu peux utiliser les sources suivantes pour puiser des idées supplémentaires:
+                            - https://conseilsport.decathlon.fr/session-dapnee-les-bonnes-pratiques
+                            - https://www.abyss-garden.com/fr/actualites/303/exercices-apnee-pour-progresser/
+                            - https://www.cibpl.fr/wp-content/uploads/2020/09/Lentrainement_F_Lemaitre.pdf
+                            - https://www.guide-piscine.fr/apnee/exercices-d-apnee-pour-progresser-3482_A
+                            - https://apnee.weebly.com/apneacutee-dynamique.html
+                            - https://apnee.weebly.com/ (incluant également toutes les pages du site)
+                            - https://www.lesapneistesanonymes.ch/exercices/marche-en-apnee/
+                            - https://www.subchandlers.com/blog/apnee-freedive/conseils-apnee/conseils-progresser-apnee/?srsltid=AfmBOoo5e3OIA3eByp7Y1RjBTMzmNbCNPHP9z1Sfd-4r3lEBNmfw9CJK
+                            https://www.espace-apnee.fr/telechargement-apnee/send/5-entrainement/42-programmer-entrainement-apnee-dynamique
+                            """
+                            try:
+                                from google import genai
+                                api_key = st.secrets["genai"]["key"]
+                                client = genai.Client(api_key=api_key)
+                                suggestion_response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+                                if suggestion_response.text:
+                                    # st.info(_("suggestion_copy_helper", lang))
+                                    # with st.container(border=True):
+                                    style_feedback_text(suggestion_response.text)
+                                else:
+                                    st.error(_("suggestion_generation_error", lang))
+                            except Exception as e:
+                                st.error(_("api_call_error", lang, e=e))
+
+            # 3. Onglet "Éditer des Activités" (admin)
+            elif is_admin_view_authorized and selected_training_sub_tab_label == f"{_('edit_training_sessions_sub_tab_label', lang)}":
                 if not training_log_loaded:
                     st.info(_("no_training_sessions_logged", lang))
                 else:
@@ -1205,22 +1304,14 @@ def main_app():
                         if st.form_submit_button(_("save_training_log_changes_button", lang)):
                             new_log_list = []
                             for row in edited_training_df.to_dict('records'):
-                                if row[_("history_delete_col_editor", lang)]:
-                                    continue
-
-                                record_id = row.get("id") or uuid.uuid4().hex
-                                new_log_list.append({
-                                    "id": record_id,
-                                    "date": row[_("training_date_label", lang)].isoformat() if isinstance(row[_("training_date_label", lang)], date) else str(row[_("training_date_label", lang)]),
-                                    "place": row[_("training_place_label", lang)],
-                                    "description": row[_("training_description_label", lang)]
-                                })
-
-                            deleted_ids = set(log['id'] for log in training_log_loaded) - set(log['id'] for log in new_log_list if log.get('id'))
-                            if deleted_ids:
-                                for rec in all_records_loaded:
-                                    if rec.get('linked_training_session_id') in deleted_ids: rec['linked_training_session_id'] = None
-                                save_records(all_records_loaded)
+                                if not row[_("history_delete_col_editor", lang)]:
+                                    record_id = row.get("id") or uuid.uuid4().hex
+                                    new_log_list.append({
+                                        "id": record_id,
+                                        "date": row[_("training_date_label", lang)].isoformat() if isinstance(row[_("training_date_label", lang)], date) else str(row[_("training_date_label", lang)]),
+                                        "place": row[_("training_place_label", lang)],
+                                        "description": row[_("training_description_label", lang)]
+                                    })
                             save_training_log(new_log_list)
                             st.success(_("training_log_updated_success", lang))
                             st.rerun()
