@@ -306,6 +306,9 @@ TRANSLATIONS = {
         "suggestion_generation_error": "Désolé, la génération de la suggestion a échoué. Veuillez réessayer.",
         "api_call_error": "Erreur lors de l'appel à l'API de génération : {e}",
         "avg_performance_by_certification_header" : "📊 Performance Moyenne par Niveau de Brevet",
+        "freediver_certification_summary_header": "🔢 Apnéistes par Niveau de Brevet",
+        "freediver_certification_chart_tab_label": "📊 Apnéistes par Brevet [A]", # <--- AJOUTEZ CETTE LIGNE
+        "count_col": "Nombre"
         
     }
 }
@@ -1982,7 +1985,8 @@ def main_app():
         with st.container():
             freedivers_sub_tab_labels = [
                 _("journal_freedivers_tab_label", lang),
-                _("edit_freedivers_sub_tab_label", lang)
+                _("edit_freedivers_sub_tab_label", lang),
+                _("freediver_certification_chart_tab_label", lang) # <-- Ligne ajoutée
             ]
 
             with col_main_nav2:
@@ -2037,82 +2041,7 @@ def main_app():
                         _("anonymize_results_col_editor", lang): profile.get("anonymize_results", False)
                     })
 
-                # st.dataframe(pd.DataFrame(freedivers_data_for_editor)['Niveau de Brevet'].value_counts().reindex(['NB', 'A1', 'A2', 'A3', 'S4', 'I1', 'I2', 'I3']), use_container_width=True)
-
-                cert_order = ['NB', 'A1', 'A2', 'A3', 'S4', 'I1', 'I2', 'I3']
-                counts_df = (pd.DataFrame(freedivers_data_for_editor)['Niveau de Brevet']
-                            .value_counts()
-                            .reindex(cert_order)
-                            .fillna(0)
-                            .astype(int)
-                            .reset_index()
-                            )
-
-                # On renomme les colonnes pour plus de clarté dans le code du graphique
-                counts_df.columns = ['Niveau', 'Nombre']
-
-
-                # --- 2. Création du graphique Altair ---
-
-                # Optionnel : Définir une palette de couleurs personnalisée
-                cert_colors = [
-                    "#D074B9",  # NB - Non-Breveté (Pink/Purple)
-                    "#67C27F",  # A1 - Apnéiste Débutant (Green)
-                    "#F2B760",  # A2 - Apnéiste Avancé (Light Orange)
-                    "#F28F3B",  # A3 - Apnéiste Expert (Dark Orange)
-                    "#2F788C",  # S4 - Assistant-Instructeur (Blue/Teal)
-                    "#265F70",  # I1 - A darker shade for instructors
-                    "#1D4654",  # I2 - Even darker
-                    "#132D38",  # I3 - Darkest
-                    "#CCCCCC"   # No Certification (Grey)
-                ]
-                # Création du graphique de base
-                chart = alt.Chart(counts_df).mark_bar().encode(
-                    # Axe Y : Les niveaux de certification (catégoriel)
-                    y=alt.Y('Niveau:N', 
-                            title="Niveau de Brevet", 
-                            sort=cert_order # On applique le tri personnalisé
-                        ),
-                    
-                    # Axe X : Le nombre de plongeurs (quantitatif)
-                    x=alt.X('Nombre:Q', 
-                            title="Nombre d'apnéistes"
-                        ),
-                    
-                    # Couleur : Une couleur par niveau, sans afficher la légende
-                    color=alt.Color('Niveau:N',
-                                    scale=alt.Scale(domain=cert_order, range=cert_colors),
-                                    legend=None
-                                ),
-                    
-                    # Tooltip : Infos affichées au survol de la souris
-                    tooltip=[
-                        alt.Tooltip('Niveau', title="Niveau"),
-                        alt.Tooltip('Nombre', title="Total")
-                    ]
-                )
-
-                # Ajout des labels (le nombre) sur chaque barre
-                text = chart.mark_text(
-                    align='left',
-                    baseline='middle',
-                    dx=5,  # Petit décalage horizontal pour ne pas coller à la barre
-                    color='black',
-                    fontSize=12
-                ).encode(
-                    text='Nombre:Q' # Le texte à afficher est la valeur de la colonne 'Nombre'
-                )
-
-                # Combinaison du graphique et des textes, et ajout des propriétés
-                final_chart = (chart + text).properties(
-                    title="Nombre de plongeurs par niveau de brevet",
-                    height=300
-                )
-
-
-                # --- 3. Affichage dans Streamlit ---
-                st.altair_chart(final_chart, use_container_width=True)
-
+                
                 with st.form(key="freedivers_editor_form", border=False):
                     edited_freedivers_df = st.data_editor(
                         pd.DataFrame(freedivers_data_for_editor),
@@ -2181,6 +2110,46 @@ def main_app():
 
                             st.success(_("freedivers_updated_success", lang))
                             st.rerun()
+
+            elif selected_freedivers_sub_tab_label == _("freediver_certification_chart_tab_label", lang):
+                # st.header(_("freediver_certification_summary_header", lang))
+
+                # On doit recréer les données nécessaires pour le graphique ici
+                all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
+                freedivers_data_for_chart = []
+                fresh_user_profiles_for_chart = load_user_profiles()
+
+                for user_name in all_known_users_list:
+                    profile = fresh_user_profiles_for_chart.get(user_name, {})
+                    freedivers_data_for_chart.append({
+                        _("certification_col_editor", lang): profile.get("certification", _("no_certification_option", lang)),
+                    })
+                
+                # --- COLLEZ LE CODE DU GRAPHIQUE ICI ---
+                cert_order = ['NB', 'A1', 'A2', 'A3', 'S4', 'I1', 'I2', 'I3']
+                # Notez le changement de 'freedivers_data_for_editor' à 'freedivers_data_for_chart'
+                counts_df = (pd.DataFrame(freedivers_data_for_chart)[_("certification_col_editor", lang)]
+                            .value_counts()
+                            .reindex(cert_order)
+                            .fillna(0)
+                            .astype(int)
+                            .reset_index()
+                            )
+                counts_df.columns = ['Niveau', 'Nombre']
+
+                cert_colors = [
+                    "#D074B9", "#67C27F", "#F2B760", "#F28F3B", "#2F788C",
+                    "#265F70", "#1D4654", "#132D38", "#CCCCCC"
+                ]
+                chart = alt.Chart(counts_df).mark_bar().encode(
+                    y=alt.Y('Niveau:N', title="Niveau de Brevet", sort=cert_order),
+                    x=alt.X('Nombre:Q', title="Nombre d'apnéistes"),
+                    color=alt.Color('Niveau:N', scale=alt.Scale(domain=cert_order, range=cert_colors), legend=None),
+                    tooltip=[alt.Tooltip('Niveau', title="Niveau"), alt.Tooltip('Nombre', title="Total")]
+                )
+                text = chart.mark_text(align='left', baseline='middle', dx=5, color='black', fontSize=12).encode(text='Nombre:Q')
+                final_chart = (chart + text).properties(title="Nombre d'apnéistes par niveau de brevet", height=300)
+                st.altair_chart(final_chart, use_container_width=True)
 
 # --- Main Execution ---
 def main():
