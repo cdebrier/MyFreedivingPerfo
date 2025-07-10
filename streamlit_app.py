@@ -589,7 +589,7 @@ def save_wishes(wishes_data):
 
 
 # --- Authentication Config Handling ---
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=300, show_spinner="Authentification...")
 def get_auth_config():
     """
     Loads authenticator config. Since user profiles are now in GSheets,
