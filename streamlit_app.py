@@ -212,6 +212,7 @@ TRANSLATIONS = {
         "training_date_label": "Date de l'Activité",
         "training_place_label": "Lieu de l'Activité",
         "training_description_label": "Description de l'Activité",
+        "training_description_placeholder":"Décris l'activité ici. Utilise des tags (#apnée/statique, #apnée/profondeur, ...) pour catégoriser l'activité et faciliter la recherche ultérieure. Tu peux aussi inclure des détails comme le lieu, les conditions, les participants, les objectifs de la séance, etc.",
         "save_training_button": "💾 Enregistrer l'Activité",
         "training_session_saved_success": "Activé enregistrée !",
         "training_description_empty_error": "La description de l'activité ne peut pas être vide.",
@@ -235,7 +236,7 @@ TRANSLATIONS = {
         "training_session_label": "Activité Liée :",
         "instructor_name_label": "Encadrant",
         "feedback_text_label": "Feedback",
-        "feedback_text_area_ph": "Note ton feedback ici afin de guider les autres encadrants lors des prochaines sorties, et fournir de la matière pour générer un feedback à l'apnéiste.",
+        "feedback_text_area_ph": "Encode ton feedback sur un.e apnéiste ici afin de guider les autres encadrants lors des prochaines sorties. Ton feedback est aussi utilisé pour générer un feedback à l'apnéiste.",
         "save_feedback_button": "💾 Enregistrer Feedback",
         "feedback_saved_success": "Feedback enregistré avec succès !",
         "feedback_text_empty_error": "Le texte du feedback ne peut pas être vide.",
@@ -279,7 +280,7 @@ TRANSLATIONS = {
         # --- Wish Translations ---
         "wish_header_sidebar": "💡 Nouveau Souhait",
         "wish_description_label": "Description du souhait",
-        "wish_description_label_ph": "Décris tes souhaits, tes envies, tes suggestions, ce qui te passe par la tête :) ... Par exemple : j'aimerais davantage de jeux, de défis, de sorties en mer, de sessions en piscine, de cours théoriques, etc.",
+        "wish_description_label_ph": "Décris tes souhaits, tes envies, tes suggestions, ce qui te passe par la tête :) ... Par exemple : j'aimerais davantage de jeux, de challenge, de sorties en mer et/ou en piscine, de cours théoriques, de séances filmées, etc.",
         "save_wish_button": "💾 Enregistrer le Souhait",
         "wish_saved_success": "Souhait enregistré avec succès !",
         "wish_description_empty_error": "La description du souhait ne peut pas être vide.",
@@ -952,7 +953,7 @@ def main_app():
             with st.form(key="log_training_form_sidebar"):
                 st.date_input(_("training_date_label", lang), date.today(), key="training_date_form_key")
                 st.text_input(_("training_place_label", lang), value=st.session_state.training_place_buffer, key="training_place_form_key", placeholder=_("training_place_label", lang))
-                st.text_area(_("training_description_label", lang), value=st.session_state.training_desc_buffer, key="training_desc_form_key", placeholder=_("training_description_label", lang), height=250)
+                st.text_area(_("training_description_label", lang), value=st.session_state.training_desc_buffer, key="training_desc_form_key", placeholder=_("training_description_placeholder", lang), height=250)
                 if st.form_submit_button(_("save_training_button", lang)):
                     desc_to_save = st.session_state.training_desc_form_key.strip()
                     place_to_save = st.session_state.training_place_form_key.strip()
@@ -1188,7 +1189,7 @@ def main_app():
                         filtered_logs = [log for log in filtered_logs if selected_tag in log.get('description', '')]
 
                     if not filtered_logs:
-                        st.info("No training sessions match the selected filters.")
+                        st.info("Aucune activité ne correspond aux filtres sélectionnés.")
                     else:
                         for entry in sorted(filtered_logs, key=lambda x: x.get('date', '1900-01-01'), reverse=True):
                             with st.expander(f"**{entry.get('date', 'N/A')} - {entry.get('place', 'N/A')}**", expanded=True):
