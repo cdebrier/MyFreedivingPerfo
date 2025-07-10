@@ -2142,7 +2142,7 @@ def main_app():
                     "#265F70", "#1D4654", "#132D38", "#CCCCCC"
                 ]
                 chart = alt.Chart(counts_df).mark_bar().encode(
-                    y=alt.Y('Niveau:N', title="Niveau de Brevet", sort=cert_order),
+                    y=alt.Y('Niveau:N', title="Niveau de Brevet", sort=cert_order[::-1] ),
                     x=alt.X('Nombre:Q', title="Nombre d'apnéistes"),
                     color=alt.Color('Niveau:N', scale=alt.Scale(domain=cert_order, range=cert_colors), legend=None),
                     tooltip=[alt.Tooltip('Niveau', title="Niveau"), alt.Tooltip('Nombre', title="Total")]
