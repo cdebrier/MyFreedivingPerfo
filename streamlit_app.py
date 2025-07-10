@@ -51,7 +51,7 @@ FEEDBACK_TAG_BADGE_CONFIG = {
 TRANSLATIONS = {
     "fr": {
         "page_title": "MacaJournal",
-        "app_title": "📘 Mon Journal Mac@pnée",
+        "app_title": "📒 Mon Journal Mac@pnée",
         "user_management_header": "👤 Gestion des Apnéistes",
         "no_users_yet": "Aucun apnéiste pour le moment. Ajoutez-en un via l'onglet Apnéistes.",
         "enter_freediver_name_sidebar": "Entrez le nom du Nouvel Apnéiste (Format: Prénom L.)",
@@ -68,16 +68,17 @@ TRANSLATIONS = {
         "no_specific_session_option": "Événement personnalisé / Aucune session spécifique",
         "entry_date_label": "Date d'Entrée",
         "discipline": "Discipline",
-        "performance_value": "Valeur de la performance",
+        "performance_value": "Encode ta performance ici",
+        "performance_value_label":"Performance",
         "sta_help": "Format : MM:SS (ex: 03:45). Les millisecondes seront ignorées à l'affichage.",
-        "dyn_depth_help": "Format : \n\nPour les distances : un nombre, optionnellement suivi de 'm' (ex: 75 ou 75m). \n\nPour les durées, utilisez MM:SS (ex. 03:20).",
+        "dyn_depth_help": "Distances : un nombre entier, optionnellement suivi de 'm' (ex: **75** ou **75m**). \n\nDurées : Minutes:Secondes MM:SS (ex. **03:20**).",
         "save_performance_button": "💾 Enregistrer la performance",
         "performance_value_empty_error": "La valeur de la performance ne peut pas être vide.",
         "event_name_empty_error": "Le nom de l'événement ne peut pas être vide (si aucune session d'entraînement n'est liée).",
         "performance_saved_success": "Performance enregistrée pour {user} !",
         "process_performance_error": "Échec du traitement de la valeur de performance. Veuillez vérifier le format.",
         "my_performances_header": "📬 Mes Performances ({user})",
-        "personal_records_tab_label": "📊 Mes Performances",
+        "personal_records_tab_label": "📈 Mes Performances",
         "select_user_to_view_personal_records": "Veuillez vous connecter pour voir vos records personnels.",
         "no_performances_yet": "Aucune performance enregistrée pour cet apnéiste. Ajoutez-en via la barre latérale !",
         "personal_bests_subheader": "🌟 Records Personnels",
@@ -91,12 +92,12 @@ TRANSLATIONS = {
             "16x25m Speed Endurance": "Record 16x25m"
         },
         "club_best_labels": {
-            "Dynamic Bi-fins (DYN-BF)": "Record Club DYNB",
-            "Static Apnea (STA)": "Record Club STA",
-            "Dynamic No-fins (DNF)": "Record Club DNF",
-            "Depth (CWT/FIM)": "Record Club CWT/FIM",
-            "Depth (VWT/NLT)": "Record Club VWT/NLT",
-            "16x25m Speed Endurance": "Record Club 16x25m"
+            "Dynamic Bi-fins (DYN-BF)": "Record DYNB",
+            "Static Apnea (STA)": "Record STA",
+            "Dynamic No-fins (DNF)": "Record DNF",
+            "Depth (CWT/FIM)": "Record CWT/FIM",
+            "Depth (VWT/NLT)": "Record VWT/NLT",
+            "16x25m Speed Endurance": "Record 16x25m"
         },
         "achieved_at_event_on_date_caption": "Par {user} à {event_name} le {event_date}",
         "achieved_on_event_caption": "{event_name}, {event_date}",
@@ -140,8 +141,8 @@ TRANSLATIONS = {
             "January": "Janvier", "February": "Février", "March": "Mars", "April": "Avril", "May": "Mai", "June": "Juin",
             "July": "Juillet", "August": "Août", "September": "Septembre", "October": "Octobre", "November": "Novembre", "December": "Décembre"
         },
-        "performances_main_tab_title": "📊 Performances",
-        "club_performances_overview_tab_label": "🏆 Performances du Club par Apnéiste [A]",
+        "performances_main_tab_title": "📈 Performances",
+        "club_performances_overview_tab_label": "🏆 Performances du Club / Apnéiste [A]",
         "select_discipline_for_ranking": "Sélectionnez la discipline pour le classement :",
         "podium_header": "🏆 Podium",
         "full_ranking_header": "📋 Classement Complet",
@@ -157,7 +158,7 @@ TRANSLATIONS = {
         "lifras_id_label": "ID LIFRAS :",
         "anonymize_results_label": "Anonymiser mes résultats",
         "anonymize_results_col_editor": "Anonymiser ?",
-        "anonymous_freediver_name": "Apnéiste Anonyme",
+        "anonymous_freediver_name": "😎",
         "save_profile_button": "💾 Enregistrer le Profil",
         "profile_saved_success": "Profil enregistré avec succès pour {user} !",
         "select_user_to_edit_profile": "Connectez-vous pour voir ou modifier votre profil.",
@@ -166,7 +167,7 @@ TRANSLATIONS = {
             "A1": "A1", "A2": "A2", "A3": "A3", "S4": "S4",
             "I1": "I1", "I2": "I2", "I3": "I3", "NB": "NB"
         },
-        "certification_stats_header": "📊 Statistiques par Niveau de Brevet",
+        "certification_stats_header": "📈 Statistiques par Niveau de Brevet",
         "certification_level_col": "Niveau de Brevet",
         "min_performance_col": "Perf. Min",
         "max_performance_col": "Perf. Max",
@@ -184,12 +185,12 @@ TRANSLATIONS = {
         "no_record_found_for_editing": "Erreur : Impossible de trouver l'enregistrement à modifier.",
         "performance_updated_success": "Performance mise à jour avec succès.",
         "history_updated_success": "Historique mis à jour avec succès.",
-        "club_performances_tab_title": "📈 Performances du Club par Brevet",
-        "club_level_performance_tab_title": "📈 Performances du Club par Brevet",
+        "club_performances_tab_title": "📊 Performances du Club / Brevet",
+        "club_level_performance_tab_title": "📊 Performances du Club / Brevet",
         "no_data_for_club_performance_display": "Aucune donnée de performance disponible pour le club dans cette discipline.",
         "quarterly_average_label": "Moyenne Trimestrielle",
-        "freedivers_tab_title": "🐟 Apnéistes",
-        "edit_freedivers_header": "🐟 Gérer les Apnéistes",
+        "freedivers_tab_title": "🤿 Apnéistes",
+        "edit_freedivers_header": "🤿 Gérer les Apnéistes",
         "set_reset_password_col_editor": "Définir/Réinitialiser Mot de Passe",
         "set_reset_password_help": "Entrez un nouveau mot de passe pour le définir ou le réinitialiser. Laissez vide pour conserver le mot de passe actuel.",
         "certification_col_editor": "Niveau de Brevet",
@@ -217,7 +218,7 @@ TRANSLATIONS = {
         "training_log_table_header": "📋 Activités (Modifiable)",
         "save_training_log_changes_button": "💾 Sauvegarder les Modifications",
         "training_log_updated_success": "Activités mise à jour avec succès.",
-        "performances_overview_tab_label": "📅 Journal des Performances [A]",
+        "performances_overview_tab_label": "📒 Journal des Performances [A]",
         "edit_performances_sub_tab_label": "📝 Éditer des Performances [A]",
         "save_all_performances_button": "💾 Sauvegarder les Modifications",
         "all_performances_updated_success": "Journal des performances mis à jour avec succès.",
@@ -226,7 +227,7 @@ TRANSLATIONS = {
         "generate_feedback_summary_button": "Générer le résumé des feedbacks",
         "feedback_summary_header": "Résumé des feedbacks",
         "no_feedback_to_summarize": "Aucun feedback à résumer pour le moment.",
-        "feedbacks_overview_tab_label": "📅 Journal des Feedbacks [A]",
+        "feedbacks_overview_tab_label": "📒 Journal des Feedbacks [A]",
         "edit_feedbacks_sub_tab_label": "📝 Éditer des Feedbacks [A]",
         "log_feedback_header_sidebar": "💬 Feedback Encadrant",
         "feedback_for_freediver_label": "Apnéiste",
@@ -238,7 +239,7 @@ TRANSLATIONS = {
         "save_feedback_button": "💾 Enregistrer Feedback",
         "feedback_saved_success": "Feedback enregistré avec succès !",
         "feedback_text_empty_error": "Le texte du feedback ne peut pas être vide.",
-        "feedback_log_table_header": "📅 Journal des Feedbacks (Modifiable)",
+        "feedback_log_table_header": "📒 Journal des Feedbacks (Modifiable)",
         "save_feedback_log_changes_button": "💾 Sauvegarder les Modifications",
         "feedback_log_updated_success": "Journal des feedbacks mis à jour.",
         "no_feedback_for_user": "Aucun feedback reçu pour l'instant.",
@@ -248,7 +249,7 @@ TRANSLATIONS = {
         "select_freediver_prompt": "Sélectionnez l'Apnéiste",
         "select_instructor_prompt": "Sélectionnez l'Encadrant",
         "detailed_training_sessions_subheader": "Activités",
-        "training_sessions_sub_tab_label": "🗓️ Journal d'Activités",
+        "training_sessions_sub_tab_label": "📒 Journal d'Activités",
         "edit_training_sessions_sub_tab_label": "✏️ Éditer des Activités [A]",
         "no_description_available": "Aucune description disponible.",
         "no_training_sessions_logged": "Aucune activité enregistrée pour le moment.",
@@ -272,7 +273,7 @@ TRANSLATIONS = {
         "login_error": "Nom d'utilisateur ou mot de passe incorrect.",
         "login_welcome": "Veuillez vous connecter pour continuer.",
         "logout_button": "Déconnexion",
-        "journal_freedivers_tab_label": "📅 Journal des apnéistes [A]",
+        "journal_freedivers_tab_label": "📒 Journal des apnéistes [A]",
         "edit_freedivers_sub_tab_label": "✏️ Éditer des apnéistes [A]",
         "freediver_name_col_editor": "Nom de l'Apnéiste",
         # --- Wish Translations ---
@@ -283,7 +284,7 @@ TRANSLATIONS = {
         "wish_saved_success": "Souhait enregistré avec succès !",
         "wish_description_empty_error": "La description du souhait ne peut pas être vide.",
         "wishes_main_tab_title": "💡 Souhaits",
-        "wishes_log_sub_tab_label": "📅 Journal des Souhaits [A]",
+        "wishes_log_sub_tab_label": "📒 Journal des Souhaits [A]",
         "wishes_summary_sub_tab_label": "📝 Synthèse des Souhaits [A]",
         "no_wishes_logged": "Aucun souhait enregistré pour le moment.",
         "generate_wishes_summary_button": "Générer la synthèse des souhaits",
@@ -294,18 +295,17 @@ TRANSLATIONS = {
         "edit_wishes_sub_tab_label": "✏️ Éditer des Souhaits [A]",
         "save_wishes_changes_button": "💾 Sauvegarder les Modifications des Souhaits",
         "wishes_updated_success": "Souhaits mis à jour avec succès.",
-        "training_suggestion_tab_label": "💡 Suggestion d'entraînement [A]",
-        "generate_training_suggestion_button": "💡 Proposer une nouvelle séance",
+        "training_suggestion_tab_label": "💡 Suggestion d'Activité [A]",
+        "generate_training_suggestion_button": "💡 Générer une nouvelle séance en piscine",
         "generating_training_suggestion_spinner": "🤖 Création d'une séance créative en cours...",
         "training_suggestion_header": "Générateur de Séances pour Encadrants",
         "training_suggestion_intro": "En cliquant sur le bouton - autant de fois que tu le souhaites - tu vas obtenir une suggestion de séance pour le groupe, basée sur les dernières activités du club et conçue pour varier les plaisirs !",
         "no_data_for_suggestion": "Pas assez de données d'activités pour générer une suggestion. Veuillez d'abord enregistrer des activités.",
         "suggestion_copy_helper": "Voici une suggestion de séance. Vous pouvez la copier et la coller dans la description d'une nouvelle activité.",
         "suggestion_generation_error": "Désolé, la génération de la suggestion a échoué. Veuillez réessayer.",
-        "api_call_error": "Erreur lors de l'appel à l'API de génération : {e}"
+        "api_call_error": "Erreur lors de l'appel à l'API de génération : {e}",
+        "avg_performance_by_certification_header" : "📊 Performance Moyenne par Niveau de Brevet",
         
-
-
     }
 }
 
@@ -804,8 +804,10 @@ def display_level_performance_tab(all_records, user_profiles, discipline_keys, l
                     alt.Tooltip('formatted_perf', title=_("avg_performance_col", lang))
                 ]
             ).properties(
-                width=alt.Step(40),
-                height=250
+                width=alt.Step(40),  # controls width of bar.
+                height=450, # fixed height for better readability
+                title=f"{_('avg_performance_by_certification_header', lang)} - {_('disciplines.' + disc_key, lang)}"
+
             )
 
             text = chart.mark_text(
@@ -813,7 +815,9 @@ def display_level_performance_tab(all_records, user_profiles, discipline_keys, l
                 baseline='bottom',
                 dy=0,
                 dx=20,
-                color='black'
+                color='black',
+                fontSize=14,
+                fontWeight='bold'
             ).encode(
                 text='formatted_perf:N'
             )
@@ -849,17 +853,14 @@ def main_app():
     is_super_admin_view_authorized = current_user in SUPER_PRIVILEGED_USERS
 
     with st.sidebar:
-        st.success(f"Journal de **{current_user}**", icon="📒")
+        
 
         st.info(f"Suis tes **performances** et **activités** et complète ton **profil** pour générer un **feedback personnalisé** intégrant les retours de tes encadrants 👀.")
         
-        if st.button(_("logout_button", lang)):
-            st.session_state['authentication_status'] = False
-            st.session_state['name'] = None
-            st.rerun()
-
+        st.success(f"Journal de **{current_user}**", icon="📒")
         # Profile Section
         current_user_profile_data_sidebar = load_user_profiles().get(current_user, {})
+
 
         with st.expander(_("profile_header_sidebar", lang)):
             with st.form(key="profile_form_sidebar_main", border=False):
@@ -987,7 +988,7 @@ def main_app():
                 log_discipline_original_key_perf_form = [k for k, v in TRANSLATIONS[lang]['disciplines'].items() if v == selected_translated_discipline][0]
                 performance_help_text_perf_form = _("sta_help", lang) if is_time_based_discipline(log_discipline_original_key_perf_form) else _("dyn_depth_help", lang)
                 st.text_input(
-                    _("performance_value", lang), value=st.session_state.log_perf_input_buffer,
+                    _("performance_value_label", lang), value=st.session_state.log_perf_input_buffer,
                     help=performance_help_text_perf_form, key="log_perf_input_form_widget_key", placeholder=_("performance_value", lang)
                 )
                 if st.form_submit_button(_("save_performance_button", lang)):
@@ -1095,6 +1096,12 @@ def main_app():
                     st.rerun()
 
 
+        if st.button(_("logout_button", lang)):
+            st.session_state['authentication_status'] = False
+            st.session_state['name'] = None
+            st.rerun()
+
+
     st.title(_("app_title", lang))
 
     # Define all possible tab labels
@@ -1136,8 +1143,8 @@ def main_app():
             # La définition des onglets pour le menu déroulant
             sub_tab_definitions = [_("training_sessions_sub_tab_label", lang)]
             if is_admin_view_authorized:
-                sub_tab_definitions.append(_("training_suggestion_tab_label", lang))
                 sub_tab_definitions.append(f"{_('edit_training_sessions_sub_tab_label', lang)}")
+                sub_tab_definitions.append(_("training_suggestion_tab_label", lang))
 
             with col_main_nav2:
                 # Le code du menu déroulant reste le même
@@ -1984,10 +1991,11 @@ def main_app():
                     for user_name_display in all_known_users_sorted:
                         with cols[current_col]:
                             profile_data_display = user_profiles.get(user_name_display, {})
-                            with st.expander(f"**{user_name_display}** : {profile_data_display.get('certification', _('no_certification_option', lang))} depuis le {profile_data_display.get('certification_date', 'N/A')}", expanded=True):
-                                st.markdown(f"**Motivations :**<br>{profile_data_display.get('motivations', 'N/A')}", unsafe_allow_html=True)
-                                st.markdown(f"**Projections :**<br>{profile_data_display.get('projection_3_ans', 'N/A')}", unsafe_allow_html=True)
-                                st.markdown(f"**Portrait :**<br>{profile_data_display.get('portrait_photo_text', 'N/A')}", unsafe_allow_html=True)
+                            with st.container(border=True):
+                                with st.expander(f"**{user_name_display}** : {profile_data_display.get('certification', _('no_certification_option', lang))} depuis le {profile_data_display.get('certification_date', 'N/A')}", expanded=True):
+                                    st.markdown(f"**Motivations :**<br>{profile_data_display.get('motivations', 'N/A')}", unsafe_allow_html=True)
+                                    st.markdown(f"**Projections :**<br>{profile_data_display.get('projection_3_ans', 'N/A')}", unsafe_allow_html=True)
+                                    st.markdown(f"**Portrait :**<br>{profile_data_display.get('portrait_photo_text', 'N/A')}", unsafe_allow_html=True)
 
                         current_col = 1 - current_col
 
@@ -2138,7 +2146,7 @@ def main():
         <style>
             [data-testid="stSidebar"] [data-testid="stForm"] {
                 background: white;
-                border: 2px solid #DCE6F4;
+                border: 3px solid #DCE6F4;
                 border-radius: 10px; /* Coins arrondis pour le formulaire */
                 padding: 20px; /* Espace intérieur pour ne pas coller au bord */
             }
@@ -2148,8 +2156,8 @@ def main():
             [data-testid="stDateInput"] input,
             [data-testid="stTimeInput"] input,
             [data-testid="stTextArea"] textarea {
-                border: 1px solid #FAFAFA;
-                border-radius: 5px;
+                border: 0px solid #FAFAFA;
+                border-radius: 0px;
             }
 
             [data-testid="stExpander"] details {
