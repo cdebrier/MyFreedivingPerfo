@@ -42,6 +42,7 @@ FEEDBACK_TAG_BADGE_CONFIG = {
     "#apnée/stretching": {"color": "blue", "icon": ":material/fitness_center:"},
     "#apnée/statique": {"color": "orange", "icon": ":material/timer:"}, # 'orange' is a standard named color
     "#apnée/dynamique": {"color": "red", "icon": ":material/run_circle:"},
+    "#apnée/dnf": {"color": "red", "icon": ":material/barefoot:"},
     "#apnée/respiration": {"color": "blue", "icon": ":material/rib_cage:"},
     "#apnée/profondeur": {"color": "violet", "icon": ":material/water_drop:"}, # Changed from hex to 'violet' named color
 }
@@ -50,7 +51,7 @@ FEEDBACK_TAG_BADGE_CONFIG = {
 TRANSLATIONS = {
     "fr": {
         "page_title": "MacaJournal",
-        "app_title": "🌊 Mon Journal Mac@pnée",
+        "app_title": "📘 Mon Journal Mac@pnée",
         "user_management_header": "👤 Gestion des Apnéistes",
         "no_users_yet": "Aucun apnéiste pour le moment. Ajoutez-en un via l'onglet Apnéistes.",
         "enter_freediver_name_sidebar": "Entrez le nom du Nouvel Apnéiste (Format: Prénom L.)",
@@ -59,7 +60,7 @@ TRANSLATIONS = {
         "select_user_or_add": "Sélectionnez un apnéiste",
         "add_new_user_option": "✨ Ajouter un nouvel apnéiste...",
         "existing_user_selected": "Apnéiste **{user}** confirmé.",
-        "log_performance_header": "✏️ Nouvelle Performance",
+        "log_performance_header": "📊 Nouvelle Performance",
         "profile_header_sidebar": "👤 Mon Profil",
         "select_user_first_warning": "Connectez-vous pour enregistrer des performances.",
         "logging_for": "Enregistrement pour : **{user}**",
@@ -206,7 +207,7 @@ TRANSLATIONS = {
         "freediver_certification_summary_header": "🔢 Apnéistes par Niveau de Brevet",
         "count_col": "Nombre",
         "training_log_tab_title": "📅 Activités",
-        "log_training_header_sidebar": "🏋️ Nouvelle Activité",
+        "log_training_header_sidebar": "🏊 Nouvelle Activité",
         "training_date_label": "Date de l'Activité",
         "training_place_label": "Lieu de l'Activité",
         "training_description_label": "Description de l'Activité",
@@ -227,11 +228,11 @@ TRANSLATIONS = {
         "no_feedback_to_summarize": "Aucun feedback à résumer pour le moment.",
         "feedbacks_overview_tab_label": "📅 Journal des Feedbacks [A]",
         "edit_feedbacks_sub_tab_label": "📝 Éditer des Feedbacks [A]",
-        "log_feedback_header_sidebar": "📝 Feedback Instructeur",
+        "log_feedback_header_sidebar": "📝 Feedback Encadrant",
         "feedback_for_freediver_label": "Apnéiste",
         "feedback_log_tab_title" : "💬 Feedbacks",
         "training_session_label": "Activité Liée :",
-        "instructor_name_label": "Instructeur",
+        "instructor_name_label": "Encadrant",
         "feedback_text_label": "Feedback",
         "feedback_text_area_ph": "Note ton feedback ici afin de guider les autres encadrants lors des prochaines sorties, et fournir de la matière pour générer un feedback à l'apnéiste.",
         "save_feedback_button": "💾 Enregistrer Feedback",
@@ -245,7 +246,7 @@ TRANSLATIONS = {
         "feedback_date_col": "Date Feedback",
         "select_training_prompt": "Sélectionnez une session (optionnel)",
         "select_freediver_prompt": "Sélectionnez l'Apnéiste",
-        "select_instructor_prompt": "Sélectionnez l'Instructeur",
+        "select_instructor_prompt": "Sélectionnez l'Encadrant",
         "detailed_training_sessions_subheader": "Activités",
         "training_sessions_sub_tab_label": "🗓️ Journal d'Activités",
         "edit_training_sessions_sub_tab_label": "✏️ Éditer des Activités [A]",
@@ -253,11 +254,11 @@ TRANSLATIONS = {
         "no_training_sessions_logged": "Aucune activité enregistrée pour le moment.",
         "filter_by_freediver_label": "Filtrer par Apnéiste :",
         "filter_by_training_session_label": "Filtrer par Activité :",
-        "filter_by_instructor_label": "Filtrer par Instructeur :",
+        "filter_by_instructor_label": "Filtrer par Encadrant :",
         "filter_by_discipline_label": "Filtrer par Discipline :",
         "all_freedivers_option": "Tous les Apnéistes",
         "all_sessions_option": "Toutes les Sessions",
-        "all_instructors_option": "Tous les Instructeurs",
+        "all_instructors_option": "Tous les Encadrants",
         "all_disciplines_option": "Toutes les Disciplines",
         "filter_by_year_label": "Filtrer par Année :",
         "filter_by_month_label": "Filtrer par Mois :",
@@ -297,7 +298,7 @@ TRANSLATIONS = {
         "generate_training_suggestion_button": "💡 Proposer une nouvelle séance",
         "generating_training_suggestion_spinner": "🤖 Création d'une séance créative en cours...",
         "training_suggestion_header": "Générateur de Séances pour Encadrants",
-        "training_suggestion_intro": "Cliquez sur le bouton pour générer une suggestion de séance créative pour le groupe, basée sur les dernières activités du club et conçue pour varier les plaisirs !",
+        "training_suggestion_intro": "En cliquant sur le bouton - autant de fois que tu le souhaites - tu vas obtenir une suggestion de séance pour le groupe, basée sur les dernières activités du club et conçue pour varier les plaisirs !",
         "no_data_for_suggestion": "Pas assez de données d'activités pour générer une suggestion. Veuillez d'abord enregistrer des activités.",
         "suggestion_copy_helper": "Voici une suggestion de séance. Vous pouvez la copier et la coller dans la description d'une nouvelle activité.",
         "suggestion_generation_error": "Désolé, la génération de la suggestion a échoué. Veuillez réessayer.",
@@ -1152,9 +1153,6 @@ def main_app():
                     on_change=lambda: st.session_state.update(selected_training_sub_tab_label=st.session_state.training_sub_tabs_selectbox)
                 )
 
-            # --- CORRECTION DE LA LOGIQUE D'AFFICHAGE ---
-            # On utilise maintenant le nom de l'onglet (le texte) pour décider quoi afficher.
-            # C'est plus fiable que la position dans la liste.
 
             # 1. Onglet "Journal d'Activités" (public)
             if selected_training_sub_tab_label == _("training_sessions_sub_tab_label", lang):
@@ -1187,11 +1185,12 @@ def main_app():
                     else:
                         for entry in sorted(filtered_logs, key=lambda x: x.get('date', '1900-01-01'), reverse=True):
                             with st.expander(f"**{entry.get('date', 'N/A')} - {entry.get('place', 'N/A')}**", expanded=True):
-                                style_feedback_text(entry.get('description', _("no_description_available", lang)))
+                                with st.container(border=True):
+                                    style_feedback_text(entry.get('description', _("no_description_available", lang)))
 
             # 2. Onglet "Suggestion d'entraînement" (admin)
             elif is_admin_view_authorized and selected_training_sub_tab_label == _("training_suggestion_tab_label", lang):
-                st.header(_("training_suggestion_header", lang))
+                # st.header(_("training_suggestion_header", lang))
                 st.info(_("training_suggestion_intro", lang))
                 if not training_log_loaded:
                     st.warning(_("no_data_for_suggestion", lang))
@@ -1204,7 +1203,8 @@ def main_app():
                             certs_summary_str = ", ".join([f"{count}x {cert}" for cert, count in cert_counts.items()])
                             prompt = f"""
                             Tu es un coach d'apnée créatif et expérimenté, responsable de la planification des entraînements pour un club.
-                            Ta mission est de proposer une séance d'entraînement originale et stimulante pour la prochaine session en piscine, destinée à un groupe d'apnéistes de niveaux variés. Évite de proposer des tables standards et répétitives. Sois créatif !
+                            Ta mission est de proposer une séance d'entraînement originale et stimulante pour la prochaine session en piscine, destinée à un groupe d'apnéistes de niveaux variés.
+                            Évite de proposer des tables standards et répétitives. Sois créatif, mais pas trop !
 
                             **CONTEXTE DU CLUB :**
                             - **Composition du groupe :** {certs_summary_str}
@@ -1214,39 +1214,60 @@ def main_app():
                             ---
 
                             **MISSION :**
-                            Génère une NOUVELLE et **créative** proposition de séance d'entraînement. À chaque fois que tu es appelé, propose quelque chose de différent.
-
-                            **IDÉES POUR T'INSPIRER (n'hésite pas à en inventer d'autres) :**
-                            - **Ateliers techniques :** Focus sur le virage, le palmage, la position du corps, le départ canard.
-                            - **Jeux :** Relais, chasse au trésor, parcours d'obstacles, longueurs à plusieurs, etc.
-                            - **Tables pyramidales :** Augmenter puis diminuer la difficulté (distance ou temps d'apnée).
-                            - **Entraînements "Fun" :** Séances à thème (ex: "No Limits" en piscine avec des gueuses légères), apnée en marchant, etc.
-                            - **Scénarios de sécurité :** Exercices de sauvetage, remorquage, gestion de la syncope.
-                            - **Séries "hypoxiques" ou "hypercapniques" variées :** Changer les temps de repos, les distances, etc.
+                            Génère une proposition de séance d'entraînement.
+                            À chaque fois que tu es appelé, propose quelque chose de différent.
 
                             **FORMAT OBLIGATOIRE :**
                             La sortie doit impérativement contenir les trois sections suivantes, dans cet ordre, et utiliser les tags spécifiés. Le texte doit être en français.
 
                             1.  **Échauffement & Thème de la séance :**
-                                - Utilise le tag `#apnée/stretching` et/ou `#apnée/respiration`.
+                                - Utilise le tag "#apnée/stretching" et/ou "#apnée/respiration".
                                 - Décris un échauffement adapté et présente clairement le thème créatif de la séance.
                                 - Durée de la séance : 30 minutes maximum.
+                                - Le stretching et la respiration se font sur le bord du bassin, à sec, pas dans l'eau.
 
                             2.  **Apnée Statique:**
-                                - Utilise le tag `#apnée/statique`. Il s'agit d'une séance d'apnée statique en piscine.
+                                - Utilise le tag "#apnée/statique". Il s'agit d'une séance d'apnée statique en piscine.
                                 - Détaille l'exercice principal, le jeu, ou l'atelier technique. Sois précis sur les règles, les distances, les temps de repos, et comment l'adapter aux différents niveaux du groupe.
                                 - Durée de la séance : 30 minutes maximum.
+                                - L'apnée statique se fait en surface, pas en immersion.
                                 
                             3.  **Apnée Dynamique :**
-                                - Utilise le tag `#apnée/dynamique`. Il s'agit d'une séance d'apnée dynamique en piscine.
+                                - Utilise le tag "#apnée/dynamique". Il s'agit d'une séance d'apnée dynamique en piscine.
                                 - Détaille l'exercice principal, le jeu, ou l'atelier technique. Sois précis sur les règles, les distances, les temps de repos, et comment l'adapter aux différents niveaux du groupe.
                                 - Durée de la séance : 60 minutes maximum.
+                                - L'apnée dynamique se fait en immersion, pas en surface.
 
-                            **TON & STYLE :**
+                            **TON & STYLE**
                             - Rédige un texte engageant et facile à lire pour les coachs.
                             - Va droit au but. Ne rajoute ni introduction, ni conclusion superflue.
                             - Le format doit être similaire à celui des exemples d'activités qui t'ont été fournis dans le journal d'activités.
-                            - Utilise des phrases courtes et claires. Evite les liste à puces.
+                            - Utilise des phrases courtes et claires. 
+                            - Utlise peu de bullet lites, sauf pour les règles ou consignes spécifiques.
+                            - Utilise des hashtags pour chaque section comme indiqué ci-dessus.
+                            - Évite les répétitions et les formulations redondantes.
+                            - Ne mentionne pas les sources ou références externes dans le texte principal.
+                            - Ne mentionne pas que tu es une IA ou un modèle de langage.
+                            - Ne mentionne pas les contraintes techniques de l'outil utilisé pour générer la séance.
+                            - Ne mentionne pas que la séance est générée automatiquement.
+                            - Ne mentionne pas les niveaux des participants, juste adapte les exercices en conséquence.
+                            
+
+                            ** MATERIEL **
+                            En terme de matériel tu as accès à ce qui suit:
+                            - Piscine 25m
+                            - Palmes, masque, tuba
+                            - Poids légers (1-2kg)
+                            - Ceinture de lestage
+                            - Chronomètre
+                            - Cordes
+                            - Planches en mousse de piscine
+                            - Balles de golf jaune fluo
+                            - Anneaux de plongée
+                            - Bouées d'apnée ronde
+                            - Longes
+
+                            
 
                             ** SOURCES **
                             Tu peux utiliser les sources suivantes pour puiser des idées supplémentaires:
@@ -1260,6 +1281,7 @@ def main_app():
                             - https://www.subchandlers.com/blog/apnee-freedive/conseils-apnee/conseils-progresser-apnee/?srsltid=AfmBOoo5e3OIA3eByp7Y1RjBTMzmNbCNPHP9z1Sfd-4r3lEBNmfw9CJK
                             https://www.espace-apnee.fr/telechargement-apnee/send/5-entrainement/42-programmer-entrainement-apnee-dynamique
                             """
+
                             try:
                                 from google import genai
                                 api_key = st.secrets["genai"]["key"]
@@ -2103,7 +2125,7 @@ def main():
     if 'wishes_summary' not in st.session_state:
         st.session_state.wishes_summary = None
 
-    st.set_page_config(page_title=_("page_title", st.session_state.language), layout="wide", initial_sidebar_state="expanded", page_icon="🌊",)
+    st.set_page_config(page_title=_("page_title", st.session_state.language), layout="wide", initial_sidebar_state="expanded", page_icon="📘",)
 
     # st.markdown("""
     #     <style>
