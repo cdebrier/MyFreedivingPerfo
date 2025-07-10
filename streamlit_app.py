@@ -286,7 +286,7 @@ TRANSLATIONS = {
         "wish_description_empty_error": "La description du souhait ne peut pas être vide.",
         "wishes_main_tab_title": "💡 Souhaits",
         "wishes_log_sub_tab_label": "📒 Journal des Souhaits [A]",
-        "wishes_summary_sub_tab_label": "📝 Synthèse des Souhaits [A]",
+        "wishes_summary_sub_tab_label": "💡 Synthèse des Souhaits [A]",
         "no_wishes_logged": "Aucun souhait enregistré pour le moment.",
         "generate_wishes_summary_button": "Générer la synthèse des souhaits",
         "wishes_summary_header": "Synthèse des Souhaits",
@@ -1839,8 +1839,8 @@ def main_app():
         with st.container():
             wishes_sub_tabs_labels = [
                 _("wishes_log_sub_tab_label", lang),
-                _("wishes_summary_sub_tab_label", lang),
-                _("edit_wishes_sub_tab_label", lang),  # Nouveau sous-onglet ajouté
+                _("edit_wishes_sub_tab_label", lang),  
+                _("wishes_summary_sub_tab_label", lang)
             ]
 
             with col_main_nav2:
@@ -1868,7 +1868,8 @@ def main_app():
                     for wish in sorted(all_wishes_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True):
                         display_user = get_display_name(wish.get('user_name'), user_profiles, lang)
                         with st.expander(_("wish_by", user=display_user, date=wish.get('date', 'N/A')), expanded=True):
-                            st.markdown(wish.get('description', ''))
+                            with st.container(border=True):
+                                st.markdown(wish.get('description', ''))
 
             elif selected_wishes_sub_tab_label == _("wishes_summary_sub_tab_label", lang):
                 # st.subheader(_("wishes_summary_header", lang))
@@ -1882,15 +1883,31 @@ def main_app():
                             prompt = f"""
                             Tu es un assistant pour un club d'apnée.
                             Ta mission est d'analyser et de synthétiser une liste de souhaits et suggestions émises par les membres du club.
-                            Produis un résumé clair, concis et structuré qui met en évidence les suggestions récurrentes et les idées les plus pertinentes.
+                            Produis un résumé clair, concis et structuré qui met en évidence les suggestions récurrentes et pertinentes.
                             Le but est de fournir aux encadrants du club un aperçu actionnable pour améliorer l'expérience des membres.
 
                             Voici la liste des souhaits à analyser :
                             {all_wishes_text}
 
-                            Ton résumé doit être présenté sous forme de points clés.
                             Adopte un ton neutre et informatif.
                             Sois concis.
+                            S'il y a des souhaits qui citent nommément un encadrant, tu peux le rapporter ainsi. Le but est de s'améliorer.
+                            Ne fais pas de liste à puces.
+                            Ne mentionne pas le nombre de fois qu'un souhait a été exprimé.
+                            Ne fais pas de recommandations, ne propose pas de solutions.
+                            Concentre-toi uniquement sur les souhaits exprimés.
+
+                            Ton résumé doit être présenté sous forme de tableaux. 
+                            Il faut deux tableaux :
+                            1) Les points positifs
+                            2) Les points négatifs
+
+                            Chaque tableau doit comprendre deux colonnes: 
+                            1) Une colonne avec le point positif ou négatif, récurrent ou unique.
+                            2) Une colonne qui reprend des examples de souhaits associés.
+
+                            Dans chaque tableau, il me faut un maximum de 5 lignes. 
+                            Il faut donc que tu regroupes les souhaits et leurs exemples en thèmes simliaires. 
                             """
                             try:
                                 from google import genai
@@ -2134,7 +2151,7 @@ def main():
     if 'wishes_summary' not in st.session_state:
         st.session_state.wishes_summary = None
 
-    st.set_page_config(page_title=_("page_title", st.session_state.language), layout="wide", initial_sidebar_state="expanded", page_icon="📘",)
+    st.set_page_config(page_title=_("page_title", st.session_state.language), layout="wide", initial_sidebar_state="expanded", page_icon="📒",)
 
     # st.markdown("""
     #     <style>
