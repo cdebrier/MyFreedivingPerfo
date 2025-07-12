@@ -70,6 +70,8 @@ TRANSLATIONS = {
         "discipline": "Discipline",
         "performance_value": "Encode ta performance ici",
         "performance_value_label":"Performance",
+        "performance_comment_label": "Commentaire", # NOUVELLE TRADUCTION
+        "performance_comment_placeholder": "Notes sur la séance, sensations, matériel, etc.", # NOUVELLE TRADUCTION
         "sta_help": "Format : MM:SS (ex: 03:45). Les millisecondes seront ignorées à l'affichage.",
         "dyn_depth_help": "Distances : un nombre entier, optionnellement suivi de 'm' (ex: **75** ou **75m**). \n\nDurées : Minutes:Secondes MM:SS (ex. **03:20**).",
         "save_performance_button": "💾 Enregistrer la performance",
@@ -113,6 +115,7 @@ TRANSLATIONS = {
         "history_entry_date_col": "Date Entrée",
         "history_discipline_col": "Discipline",
         "history_performance_col": "Performance",
+        "history_comment_col": "Commentaire", # NOUVELLE TRADUCTION
         "history_actions_col": "Actions",
         "history_delete_col_editor": "Supprimer ?",
         "no_history_display": "Aucun historique à afficher pour cette discipline.",
@@ -387,6 +390,10 @@ def load_records(training_logs):
         if 'linked_training_session_id' not in record:
             record['linked_training_session_id'] = None
             updated = True
+        # MODIFICATION: Add comment field if it doesn't exist for backward compatibility
+        if 'comment' not in record:
+            record['comment'] = ''
+            updated = True
 
         if record.get('linked_training_session_id') in {log['id'] for log in training_logs}:
             if 'event_name' in record:
@@ -399,23 +406,33 @@ def load_records(training_logs):
                 del record['date']
                 updated = True
 
-    if updated:
-        save_records(records)
+    # Avoid auto-saving on load to prevent potential write conflicts.
+    # The schema will be updated when new data is explicitly saved.
+    # if updated:
+    #     save_records(records)
     return records
 
 def save_records(records):
     client = get_gsheets_client()
     sheet = get_sheet_by_url(client, st.secrets["gsheets"]["records_sheet_url"], 'freediving_records')
 
+    # MODIFICATION: Add 'comment' to the headers list
+    headers = ["id", "user", "entry_date", "discipline", "original_performance_str", "parsed_value", "linked_training_session_id", "comment"]
+
     if not records:
         sheet.clear()
-        # Ensure header is written even if sheet is cleared
-        headers = ["id", "user", "entry_date", "discipline", "original_performance_str", "parsed_value", "linked_training_session_id"]
         sheet.update([headers])
         return
 
-    headers = list(records[0].keys())
-    data_to_write = [headers] + [[record.get(h) for h in headers] for record in records]
+    # Ensure all keys from all records are included to form a complete header set
+    all_keys = set()
+    for record in records:
+        all_keys.update(record.keys())
+    
+    # Combine base headers with any other keys found, maintaining order
+    final_headers = headers + [key for key in all_keys if key not in headers]
+    
+    data_to_write = [final_headers] + [[record.get(h, "") for h in final_headers] for record in records]
 
     sheet.clear()
     sheet.update(data_to_write)
@@ -995,8 +1012,18 @@ def main_app():
                     _("performance_value_label", lang), value=st.session_state.log_perf_input_buffer,
                     help=performance_help_text_perf_form, key="log_perf_input_form_widget_key", placeholder=_("performance_value", lang)
                 )
+                # MODIFICATION: Add comment text area
+                st.text_area(
+                    _("performance_comment_label", lang),
+                    value=st.session_state.log_perf_comment_buffer,
+                    key="log_perf_comment_widget_key",
+                    placeholder=_("performance_comment_placeholder", lang)
+                )
+
                 if st.form_submit_button(_("save_performance_button", lang)):
                     current_log_perf_str = st.session_state.log_perf_input_form_widget_key.strip()
+                    # MODIFICATION: Get comment value
+                    current_log_perf_comment = st.session_state.log_perf_comment_widget_key.strip()
                     if not current_log_perf_str:
                         st.error(_("performance_value_empty_error", lang))
                     else:
@@ -1005,12 +1032,14 @@ def main_app():
                             new_record = {
                                 "id": uuid.uuid4().hex, "user": current_user, "entry_date": date.today().isoformat(),
                                 "discipline": log_discipline_original_key_perf_form, "original_performance_str": current_log_perf_str,
-                                "parsed_value": parsed_value_for_storage, "linked_training_session_id": selected_training_session_id
+                                "parsed_value": parsed_value_for_storage, "linked_training_session_id": selected_training_session_id,
+                                "comment": current_log_perf_comment # MODIFICATION: Add comment to the new record
                             }
                             all_records_loaded.append(new_record)
                             save_records(all_records_loaded)
                             st.success(_("performance_saved_success", lang, user=current_user))
                             st.session_state.log_perf_input_buffer = ""
+                            st.session_state.log_perf_comment_buffer = "" # MODIFICATION: Clear comment buffer
                             st.rerun()
 
         if is_sidebar_instructor_section_visible:
@@ -1259,7 +1288,6 @@ def main_app():
                             - Évite les répétitions et les formulations redondantes.
                             - Ne mentionne pas les sources ou références externes dans le texte principal.
                             - Ne mentionne pas que tu es une IA ou un modèle de langage.
-                            - Ne mentionne pas les contraintes techniques de l'outil utilisé pour générer la séance.
                             - Ne mentionne pas que la séance est générée automatiquement.
                             - Ne mentionne pas les niveaux des participants, juste adapte les exercices en conséquence.
                             
@@ -1413,11 +1441,13 @@ def main_app():
 
                     for i_sub_tab_user, disc_key_sub_tab_user in enumerate(discipline_keys):
                         with personal_sub_tabs_objects[i_sub_tab_user]:
+                            # MODIFICATION: Add "Comment" to the data for the chart
                             chart_data_list = [
                                 {
                                     "Event Date": pd.to_datetime(get_training_session_details(r_chart.get('linked_training_session_id'), training_log_loaded).get('event_date')),
                                     "PerformanceValue": r_chart['parsed_value'],
-                                    "Event Name": get_training_session_details(r_chart.get('linked_training_session_id'), training_log_loaded).get('event_name')
+                                    "Event Name": get_training_session_details(r_chart.get('linked_training_session_id'), training_log_loaded).get('event_name'),
+                                    "Comment": r_chart.get("comment", "")
                                 }
                                 for r_chart in sorted(user_records_for_tab, key=lambda x: get_training_session_details(x.get('linked_training_session_id'), training_log_loaded).get('event_date') or '1900-01-01')
                                 if r_chart['discipline'] == disc_key_sub_tab_user and r_chart.get('parsed_value') is not None and get_training_session_details(r_chart.get('linked_training_session_id'), training_log_loaded).get('event_date')
@@ -1426,7 +1456,8 @@ def main_app():
                             if chart_data_list:
                                 chart_df = pd.DataFrame(chart_data_list)
                                 y_axis_title = _("performance_value", lang)
-                                tooltip_list = ['Event Date:T', 'Event Name:N']
+                                # MODIFICATION: Add "Comment" to the tooltip list
+                                tooltip_list = ['Event Date:T', 'Event Name:N', alt.Tooltip('Comment:N', title=_('history_comment_col', lang))]
                                 if is_time_based_discipline(disc_key_sub_tab_user):
                                     chart_df['PerformanceValueMinutes'] = chart_df['PerformanceValue'] / 60
                                     y_axis_title += f" ({_('minutes_unit', lang)})"
@@ -1453,11 +1484,13 @@ def main_app():
                                 training_session_options[None] = _("no_specific_session_option", lang)
 
                                 session_display_to_id = {v: k for k, v in training_session_options.items()}
+                                # MODIFICATION: Add comment to the history table display
                                 history_for_editor_display = [
                                     {
                                         "id": rec.get("id"),
                                         _("link_training_session_label", lang): training_session_options.get(rec.get("linked_training_session_id"), _("no_specific_session_option", lang)),
                                         _("history_performance_col", lang): rec.get("original_performance_str", ""),
+                                        _("history_comment_col", lang): rec.get("comment", ""),
                                         _("history_delete_col_editor", lang): False
                                     }
                                     for rec in sorted(history_for_editor_raw, key=lambda x: get_training_session_details(x.get('linked_training_session_id'), training_log_loaded).get('event_date') or '1900-01-01', reverse=True)
@@ -1472,13 +1505,14 @@ def main_app():
                                             required=True,
                                             format="%d m"
                                         )
-
+                                    # MODIFICATION: Add comment column to the data editor
                                     edited_df = st.data_editor(
                                         pd.DataFrame(history_for_editor_display),
                                         column_config={
                                             "id": None,
                                             _("link_training_session_label", lang): st.column_config.SelectboxColumn(options=list(training_session_options.values()), required=True),
                                             _("history_performance_col", lang): performance_column_config,
+                                            _("history_comment_col", lang): st.column_config.TextColumn(label=_("history_comment_col", lang)),
                                             _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(label=_("history_delete_col_editor", lang))
                                         },
                                         hide_index=True, key=f"data_editor_{current_user}_{disc_key_sub_tab_user}"
@@ -1498,6 +1532,8 @@ def main_app():
                                                     original_rec['original_performance_str'] = new_perf_str
                                                     original_rec['parsed_value'] = parsed_val
                                                     original_rec['linked_training_session_id'] = new_session_id
+                                                    # MODIFICATION: Save the updated comment
+                                                    original_rec['comment'] = row.get(_("history_comment_col", lang), "").strip()
                                                 else:
                                                     st.error(f"Invalid performance format for '{new_perf_str}'")
                                             records_to_process.append(original_rec)
@@ -1589,12 +1625,14 @@ def main_app():
                 if filter_session_id_perf != _("all_sessions_option", lang): filtered_records = [r for r in filtered_records if r.get('linked_training_session_id') == filter_session_id_perf]
                 if filter_discipline_perf != _("all_disciplines_option", lang): filtered_records = [r for r in filtered_records if r['discipline'] == filter_discipline_perf]
 
+                # MODIFICATION: Add comment to the admin overview table
                 display_data = [
                     {
                         _("user_col", lang): rec["user"],
                         _("history_discipline_col", lang): _(f"disciplines.{rec['discipline']}", lang),
                         _("link_training_session_label", lang): f"{get_training_session_details(rec.get('linked_training_session_id'), training_log_loaded)['event_date']} - {get_training_session_details(rec.get('linked_training_session_id'), training_log_loaded)['event_name']}",
                         _("history_performance_col", lang): rec["original_performance_str"],
+                        _("history_comment_col", lang): rec.get("comment", ""),
                         _("history_entry_date_col", lang): rec["entry_date"]
                     }
                     for rec in sorted(filtered_records, key=lambda x: x.get('entry_date', '1900-01-01'), reverse=True)
@@ -1608,6 +1646,7 @@ def main_app():
                     all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
                     training_session_options = {log['id']: f"{log.get('date')} - {log.get('place', 'N/A')}" for log in training_log_loaded}
                     training_session_options[None] = _("no_specific_session_option", lang)
+                    # MODIFICATION: Add comment to the data prepared for the editor
                     perf_log_data = [
                         {
                             "id": rec["id"],
@@ -1615,6 +1654,7 @@ def main_app():
                             _("history_discipline_col", lang): _(f"disciplines.{rec['discipline']}", lang),
                             _("link_training_session_label", lang): training_session_options.get(rec.get("linked_training_session_id")),
                             _("history_performance_col", lang): rec["original_performance_str"],
+                            _("history_comment_col", lang): rec.get("comment", ""),
                             _("history_delete_col_editor", lang): False
                         }
                         for rec in sorted(all_records_loaded, key=lambda x: x.get('entry_date', '1900-01-01'), reverse=True)
@@ -1624,6 +1664,7 @@ def main_app():
                     discipline_label_to_key = {label: key for label, key in zip(discipline_labels, discipline_keys)}
 
                     with st.form(key="all_performances_edit_form", border=False):
+                        # MODIFICATION: Add comment column to the editor config
                         edited_perf_log_df = st.data_editor(
                             pd.DataFrame(perf_log_data),
                             column_config={
@@ -1632,6 +1673,7 @@ def main_app():
                                 _("history_discipline_col", lang): st.column_config.SelectboxColumn(options=discipline_labels, required=True),
                                 _("link_training_session_label", lang): st.column_config.SelectboxColumn(options=list(training_session_options.values()), required=True),
                                 _("history_performance_col", lang): st.column_config.TextColumn(required=True),
+                                _("history_comment_col", lang): st.column_config.TextColumn(),
                                 _("history_delete_col_editor", lang): st.column_config.CheckboxColumn()
                             },
                             num_rows="dynamic", hide_index=True, key="all_perf_editor", use_container_width=True
@@ -1650,11 +1692,13 @@ def main_app():
                                         new_records.append(original_rec_if_exists)
                                 else:
                                     original_rec = next((r for r in all_records_loaded if r['id'] == row['id']), {})
+                                    # MODIFICATION: Add comment to the record being saved
                                     new_records.append({
                                         "id": row.get("id") or uuid.uuid4().hex, "user": row[_("user_col", lang)], "discipline": discipline,
                                         "linked_training_session_id": session_display_to_id.get(row[_("link_training_session_label", lang)]),
                                         "original_performance_str": perf_str, "parsed_value": parsed_val,
-                                        "entry_date": original_rec.get('entry_date', date.today().isoformat())
+                                        "entry_date": original_rec.get('entry_date', date.today().isoformat()),
+                                        "comment": row.get(_("history_comment_col", lang), "").strip()
                                     })
                             save_records([r for r in new_records if r is not None])
                             st.success(_("all_performances_updated_success", lang))
@@ -1922,8 +1966,8 @@ def main_app():
                                 st.error(f"Erreur lors de la génération de la synthèse des souhaits : {e}")
                                 st.session_state['wishes_summary'] = "Impossible de générer le résumé."
 
-                if 'wishes_summary' in st.session_state and st.session_state.wishes_summary:
-                    st.markdown(st.session_state['wishes_summary'])
+                    if 'wishes_summary' in st.session_state and st.session_state.wishes_summary:
+                        st.markdown(st.session_state['wishes_summary'])
 
             elif selected_wishes_sub_tab_label == _("edit_wishes_sub_tab_label", lang):
                 if not all_wishes_loaded:
@@ -2185,6 +2229,9 @@ def main():
         st.session_state.training_desc_buffer = ""
     if 'log_perf_input_buffer' not in st.session_state:
         st.session_state.log_perf_input_buffer = ""
+    # MODIFICATION: Add buffer for the comment input
+    if 'log_perf_comment_buffer' not in st.session_state:
+        st.session_state.log_perf_comment_buffer = ""
     if 'feedback_for_user_buffer' not in st.session_state:
         st.session_state.feedback_for_user_buffer = ""
     if 'feedback_training_session_buffer' not in st.session_state:
