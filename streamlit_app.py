@@ -60,7 +60,7 @@ TRANSLATIONS = {
         "select_user_or_add": "Sélectionnez un apnéiste",
         "add_new_user_option": "✨ Ajouter un nouvel apnéiste...",
         "existing_user_selected": "Apnéiste **{user}** confirmé.",
-        "log_performance_header": "📊 Nouvelle Performance",
+        "log_performance_header": "📈 Nouvelle Performance",
         "profile_header_sidebar": "👤 Mon Profil",
         "select_user_first_warning": "Connectez-vous pour enregistrer des performances.",
         "logging_for": "Enregistrement pour : **{user}**",
