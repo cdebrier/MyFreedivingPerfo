@@ -111,7 +111,7 @@ TRANSLATIONS = {
         "history_table_subheader": "📜 Historique des Performances (éditable)",
         "full_ranking_subheader": "📜 Historique Complet",
         "history_event_name_col": "Nom Événement",
-        "history_event_date_col": "Date Événement",
+        "history_event_date_col": "Date de l'Activité",
         "history_entry_date_col": "Date Entrée",
         "history_discipline_col": "Discipline",
         "history_performance_col": "Performance",
@@ -1444,9 +1444,9 @@ def main_app():
                             # MODIFICATION: Add "Comment" to the data for the chart
                             chart_data_list = [
                                 {
-                                    "Event Date": pd.to_datetime(get_training_session_details(r_chart.get('linked_training_session_id'), training_log_loaded).get('event_date')),
+                                    "Date": pd.to_datetime(get_training_session_details(r_chart.get('linked_training_session_id'), training_log_loaded).get('event_date')),
                                     "PerformanceValue": r_chart['parsed_value'],
-                                    "Event Name": get_training_session_details(r_chart.get('linked_training_session_id'), training_log_loaded).get('event_name'),
+                                    "Lieu": get_training_session_details(r_chart.get('linked_training_session_id'), training_log_loaded).get('event_name'),
                                     "Comment": r_chart.get("comment", "")
                                 }
                                 for r_chart in sorted(user_records_for_tab, key=lambda x: get_training_session_details(x.get('linked_training_session_id'), training_log_loaded).get('event_date') or '1900-01-01')
@@ -1455,20 +1455,20 @@ def main_app():
                             st.markdown(f"#### {_('performance_evolution_subheader', lang)}")
                             if chart_data_list:
                                 chart_df = pd.DataFrame(chart_data_list)
-                                y_axis_title = _("performance_value", lang)
+                                y_axis_title = _("performance_value_label", lang)
                                 # MODIFICATION: Add "Comment" to the tooltip list
-                                tooltip_list = ['Event Date:T', 'Event Name:N', alt.Tooltip('Comment:N', title=_('history_comment_col', lang))]
+                                tooltip_list = ['Date:T', 'Lieu:N', alt.Tooltip('Comment:N', title=_('history_comment_col', lang))]
                                 if is_time_based_discipline(disc_key_sub_tab_user):
                                     chart_df['PerformanceValueMinutes'] = chart_df['PerformanceValue'] / 60
                                     y_axis_title += f" ({_('minutes_unit', lang)})"
                                     y_encoding_field = 'PerformanceValueMinutes:Q'
-                                    tooltip_list.insert(1, alt.Tooltip('PerformanceValueMinutes:Q', title=_('performance_value', lang) + f" ({_('minutes_unit', lang)})", format=".2f"))
+                                    tooltip_list.insert(1, alt.Tooltip('PerformanceValueMinutes:Q', title="Performance" + f" ({_('minutes_unit', lang)})", format=".2f"))
                                 else:
                                     y_axis_title += f" ({_('meters_unit', lang)})"
                                     y_encoding_field = 'PerformanceValue:Q'
-                                    tooltip_list.insert(1, alt.Tooltip('PerformanceValue:Q', title=_('performance_value', lang) + f" ({_('meters_unit', lang)})"))
-                                chart = alt.Chart(chart_df).mark_line(point=True).encode(
-                                    x=alt.X('Event Date:T', title=_("history_event_date_col", lang)),
+                                    tooltip_list.insert(1, alt.Tooltip('PerformanceValue:Q', title="Performance" + f" ({_('meters_unit', lang)})"))
+                                chart = alt.Chart(chart_df).mark_line(point={'size': 100}).encode(
+                                    x=alt.X('Date:T', title=_("history_event_date_col", lang)),
                                     y=alt.Y(y_encoding_field, title=y_axis_title, scale=alt.Scale(zero=False)),
                                     tooltip=tooltip_list
                                 ).interactive()
