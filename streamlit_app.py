@@ -1956,9 +1956,10 @@ def main_app():
                     
                         session_details = get_training_session_details(fb.get("training_session_id"), training_log_loaded)
                         display_date = session_details['event_date'] or _('no_specific_session_option', lang)
-                        st.markdown(f"**{fb['diver_name']}** par {fb['instructor_name']} à {session_details['event_name']} le {display_date}")
-                        with st.container(border=True):
+                        st.markdown(f"**{fb['diver_name']} par {fb['instructor_name']} à {session_details['event_name']} le {display_date}**")
+                        with st.container(border=False):
                             style_feedback_text(fb['feedback_text'])
+                        st.markdown("") 
 
 
             elif is_admin_view_authorized and selected_feedback_sub_tab_label == f"{_('edit_feedbacks_sub_tab_label', lang)}":
@@ -2059,7 +2060,11 @@ def main_app():
                     # st.subheader(_("wishes_log_sub_tab_label", lang))
                     for wish in sorted(all_wishes_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True):
                         display_user = get_display_name(wish.get('user_name'), user_profiles, lang)
-                        with st.expander(_(f"wish_by", user=display_user, date=wish.get('date', 'N/A')), expanded=True):
+                        
+                        # Construct the full label string first, then wrap it in bold Markdown
+                        expander_label = _("wish_by", user=display_user, date=wish.get('date', 'N/A'))
+                        
+                        with st.expander(f"**{expander_label}**", expanded=True):
                             with st.container(border=False):
                                 st.markdown(wish.get('description', ''))
 
