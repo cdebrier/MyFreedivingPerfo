@@ -312,8 +312,10 @@ TRANSLATIONS = {
         "api_call_error": "Erreur lors de l'appel à l'API de génération : {e}",
         "avg_performance_by_certification_header" : "📊 Performance Moyenne par Niveau de Brevet",
         "freediver_certification_summary_header": "🔢 Apnéistes par Niveau de Brevet",
-        "freediver_certification_chart_tab_label": "📊 Apnéistes par Brevet [A]", # <--- AJOUTEZ CETTE LIGNE
-        "count_col": "Nombre"
+        "freediver_certification_chart_tab_label": "📊 Apnéistes par Brevet [A]", 
+        "count_col": "Nombre",
+        "feedbacks_by_apneist_chart_tab_label": "Feedbacks par Apnéistes [A]"
+
         
     }
 }
@@ -865,6 +867,85 @@ def display_login_form(config, lang):
                 st.rerun()
             else:
                 st.error(_("login_error", lang))
+
+
+# --- New function for Feedback by Apneist Chart ---
+def display_feedbacks_by_apneist_chart(instructor_feedback_data, user_profiles, lang):
+    """
+    Displays the number of feedbacks per apneist, colored by instructor.
+    This version displays all freediver names (non-anonymized) and uses explicitly
+    neutral/muted colors for each instructor, with integer tick marks and labels on the horizontal axis.
+    """
+    if not instructor_feedback_data:
+        st.info(_("no_feedback_in_log", lang))
+        return
+
+    feedback_df = pd.DataFrame(instructor_feedback_data)
+
+    # Directly use 'diver_name' as the display name, without anonymization logic.
+    feedback_df['diver_display_name'] = feedback_df['diver_name']
+
+    # Count feedbacks by diver and instructor
+    feedback_counts = feedback_df.groupby(['diver_display_name', 'instructor_name']).size().reset_index(name='count')
+
+    # Get unique instructors to define a color mapping
+    unique_instructors = sorted(feedback_counts['instructor_name'].unique())
+
+    # --- Define a custom list of neutral/muted colors for instructors ---
+    neutral_instructor_colors = [
+        "#A6CEE3",  # Light Blue (from Paired)
+        "#B2DF8A",  # Light Green (from Paired)
+        "#FB9A99",  # Light Red (from Paired)
+        "#FDBF6F",  # Light Orange (from Paired)
+        "#CAB2D6",  # Light Purple (from Paired)
+        "#8DA0CB",  # Muted Blue-Purple (from Dark2)
+        "#E78AC3",  # Muted Pink (from Dark2)
+        "#A1D99B",  # Sage Green (from YlGn)
+        "#D9D9D9",  # Light Gray
+        "#FCCDE5",  # Light Pink (from Set3)
+        "#CCEBC5",  # Muted Teal (from Set3)
+        "#BC80BD",  # Muted Violet (from Set3)
+        "#FFED6F",  # Soft Yellow (from Set3)
+        "#FFFFB3",  # Pale Yellow (from Pastel1)
+        "#BEBADA",  # Muted Lavender (from Pastel1)
+        "#FB8072",  # Salmon Red (from Set1)
+        "#80B1D3",  # Steel Blue (from Set1)
+        "#FDB462",  # Muted Gold (from Set1)
+        "#B3DE69",  # Olive Green (from Set1)
+    ]
+
+    # Create the domain and range for the color scale
+    color_domain = unique_instructors
+    color_range = neutral_instructor_colors[:len(unique_instructors)]
+
+    # --- Determine integer tick values for the x-axis ---
+    max_count = feedback_counts['count'].max()
+    # Create a list of integers from 0 up to max_count
+    integer_tick_values = list(range(0, max_count + 1))
+    # If max_count is very large, consider a step for values, e.g., range(0, max_count + 1, 5)
+
+    chart = alt.Chart(feedback_counts).mark_bar().encode(
+        y=alt.Y('diver_display_name:N', title=_("user_col", lang), sort='-x'), # Apneists on vertical, sorted by count
+        x=alt.X('count:Q',
+                title=_("count_col", lang),
+                axis=alt.Axis(
+                    format=".0f",  # Ensures labels are integers
+                    values=integer_tick_values # Ensures only integer tick marks
+                )
+               ),
+        color=alt.Color('instructor_name:N', title=_("instructor_name_label", lang),
+                        scale=alt.Scale(domain=color_domain, range=color_range)),
+        tooltip=[
+            alt.Tooltip('diver_display_name', title=_("user_col", lang)),
+            alt.Tooltip('instructor_name', title=_("instructor_name_label", lang)),
+            alt.Tooltip('count:Q', title=_("count_col", lang), format=".0f")
+        ]
+    ).properties(
+        title=_("feedbacks_by_apneist_chart_tab_label", lang)
+    ).interactive()
+
+    st.altair_chart(chart, use_container_width=True)
+
 
 def main_app():
     # --- Main Application (after successful login) ---
@@ -1719,6 +1800,7 @@ def main_app():
             if is_admin_view_authorized:
                 feedback_sub_tabs_labels.append(f"{_('feedbacks_overview_tab_label', lang)}")
                 feedback_sub_tabs_labels.append(f"{_('edit_feedbacks_sub_tab_label', lang)}")
+                feedback_sub_tabs_labels.append(f"{_('feedbacks_by_apneist_chart_tab_label', lang)}") # ADD THIS LINE
 
             with col_main_nav2:
                 selected_feedback_sub_tab_index = 0
@@ -1838,10 +1920,11 @@ def main_app():
                     st.info(_("no_feedbacks_match_filters", lang))
                 else:
                     for fb in sorted(filtered_feedbacks, key=lambda x: x.get('feedback_date', '1900-01-01'), reverse=True):
-                        with st.container(border=False):
-                            session_details = get_training_session_details(fb.get("training_session_id"), training_log_loaded)
-                            display_date = session_details['event_date'] or _('no_specific_session_option', lang)
-                            st.markdown(f"**{fb['diver_name']}** par **{fb['instructor_name']}** à **{session_details['event_name']}** le **{display_date}**")
+                    
+                        session_details = get_training_session_details(fb.get("training_session_id"), training_log_loaded)
+                        display_date = session_details['event_date'] or _('no_specific_session_option', lang)
+                        st.markdown(f"**{fb['diver_name']}** par {fb['instructor_name']} à {session_details['event_name']} le {display_date}")
+                        with st.container(border=True):
                             style_feedback_text(fb['feedback_text'])
 
 
@@ -1908,6 +1991,9 @@ def main_app():
                             st.success(_("feedback_log_updated_success", lang))
                             st.rerun()
 
+            elif is_admin_view_authorized and selected_feedback_sub_tab_label == f"{_('feedbacks_by_apneist_chart_tab_label', lang)}":
+                display_feedbacks_by_apneist_chart(instructor_feedback_loaded, user_profiles, lang)
+
     elif is_admin_view_authorized and selected_main_tab_label == tab_label_wishes:
         with st.container():
             wishes_sub_tabs_labels = [
@@ -1940,7 +2026,7 @@ def main_app():
                     # st.subheader(_("wishes_log_sub_tab_label", lang))
                     for wish in sorted(all_wishes_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True):
                         display_user = get_display_name(wish.get('user_name'), user_profiles, lang)
-                        with st.expander(_("wish_by", user=display_user, date=wish.get('date', 'N/A')), expanded=True):
+                        with st.expander(_(f"wish_by", user=display_user, date=wish.get('date', 'N/A')), expanded=True):
                             with st.container(border=False):
                                 st.markdown(wish.get('description', ''))
 
