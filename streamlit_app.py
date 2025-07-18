@@ -615,6 +615,20 @@ def save_wishes(wishes_data):
     sheet.update(data_to_write)
     load_wishes.clear()
 
+# --- Data Handling for Login Logs ---
+def log_login_event(username):
+    client = get_gsheets_client()
+    # Utilisez l'URL de la nouvelle feuille que vous avez ajoutée dans st.secrets
+    sheet = get_sheet_by_url(client, st.secrets["gsheets"]["login_log_sheet_url"], 'LoginLogs')
+    
+    timestamp = datetime.now().isoformat()
+    new_log_entry = [username, timestamp]
+
+    # Vérifier si la feuille est vide pour ajouter les en-têtes
+    if not sheet.get_all_values():
+        sheet.append_row(["Username", "Login_Time"])
+    
+    sheet.append_row(new_log_entry)
 
 # --- Authentication Config Handling ---
 @st.cache_data(ttl=300, show_spinner="Authentification...")
@@ -864,6 +878,8 @@ def display_login_form(config, lang):
             if user_data and verify_password(password, user_data['password']):
                 st.session_state['authentication_status'] = True
                 st.session_state['name'] = user_data['name']
+                # NOUVEAU: Log la connexion de l'utilisateur
+                log_login_event(user_data['name'])
                 st.rerun()
             else:
                 st.error(_("login_error", lang))
