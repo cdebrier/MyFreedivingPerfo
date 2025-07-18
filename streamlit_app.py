@@ -1,26 +1,12 @@
 import streamlit as st
 import pandas as pd
-import json
 from datetime import datetime, date, time
 import uuid
 import altair as alt
-import pathlib
-import yaml
-from yaml.loader import SafeLoader
 import bcrypt
 import gspread
 from google.oauth2 import service_account
 import toml
-
-# --- Google Sheets Configuration ---
-# These will be loaded from st.secrets
-# SPREADSHEET_URLS = {
-#     "records": "YOUR_RECORDS_GOOGLE_SHEET_URL",
-#     "user_profiles": "YOUR_USER_PROFILES_GOOGLE_SHEET_URL",
-#     "training_log": "YOUR_TRAINING_LOG_GOOGLE_SHEET_URL",
-#     "instructor_feedback": "YOUR_INSTRUCTOR_FEEDBACK_GOOGLE_SHEET_URL",
-#     "freediver_wishes": "YOUR_FREEDIVER_WISHES_GOOGLE_SHEET_URL"
-# }
 
 # --- Privileged User Configuration ---
 PRIVILEGED_USERS = ["Philippe K.", "Vincent C.", "Charles D.B.", "Rémy L.", "Gregory D."]
@@ -132,13 +118,29 @@ TRANSLATIONS = {
         "invalid_distance_format": "Format de distance invalide '{dist_str}'. Utilisez un nombre, optionnellement suivi de 'm'.",
         "consent_ai_feedback_label": "Je consens à la génération de mon feedback par une IA",
         "consent_ai_feedback_missing": "Veuillez donner votre consentement dans la section 'Profil Apnéiste' de la barre latérale pour activer la génération de feedback par l'IA.",
-        "disciplines": {
-            "Static Apnea (STA)": "Apnée Statique (STA)",
-            "Dynamic Bi-fins (DYN-BF)": "Dynamique Bi-palmes (DYN-BF)",
-            "Dynamic No-fins (DNF)": "Dynamique Sans Palmes (DNF)",
-            "Depth (CWT/FIM)": "Profondeur (CWT/FIM)",
-            "Depth (VWT/NLT)": "Profondeur (VWT/NLT)",
-            "16x25m Speed Endurance": "16x25m Vitesse Endurance"
+        # "disciplines": {
+        #     "Static Apnea (STA)": "Apnée Statique (STA)",
+        #     "Dynamic Bi-fins (DYN-BF)": "Dynamique Bi-palmes (DYN-BF)",
+        #     "Dynamic No-fins (DNF)": "Dynamique Sans Palmes (DNF)",
+        #     "Depth (CWT/FIM)": "Profondeur (CWT/FIM)",
+        #     "Depth (VWT/NLT)": "Profondeur (VWT/NLT)",
+        #     "16x25m Speed Endurance": "16x25m Vitesse Endurance"
+        # },
+        # "disciplines": {
+        #     "Static Apnea (STA)": "Statique",
+        #     "Dynamic Bi-fins (DYN-BF)": "Dyn. Bipalmes",
+        #     "Dynamic No-fins (DNF)": "Dyn. Sans Palmes",
+        #     "Depth (CWT/FIM)": "Prof. CWT/FIM",
+        #     "Depth (VWT/NLT)": "Prof. VWT/NLT",
+        #     "16x25m Speed Endurance": "Dyn. 16x25m"
+        # },
+         "disciplines": {
+            "Static Apnea (STA)": "Statique (STA)",
+            "Dynamic Bi-fins (DYN-BF)": "Dyn. Bi-palmes (DYN-BF)",
+            "Dynamic No-fins (DNF)": "Dyn. Sans Palmes (DNF)",
+            "Depth (CWT/FIM)": "Prof. (CWT/FIM)",
+            "Depth (VWT/NLT)": "Prof. (VWT/NLT)",
+            "16x25m Speed Endurance": "Dyn. 16x25m"
         },
         "months": {
             "January": "Janvier", "February": "Février", "March": "Mars", "April": "Avril", "May": "Mai", "June": "Juin",
@@ -1230,7 +1232,7 @@ def main_app():
                     else:
                         for entry in sorted(filtered_logs, key=lambda x: x.get('date', '1900-01-01'), reverse=True):
                             with st.expander(f"**{entry.get('date', 'N/A')} - {entry.get('place', 'N/A')}**", expanded=True):
-                                with st.container(border=True):
+                                with st.container(border=False):
                                     style_feedback_text(entry.get('description', _("no_description_available", lang)))
 
             # 2. Onglet "Suggestion d'entraînement" (admin)
@@ -1416,7 +1418,7 @@ def main_app():
                 if not user_records_for_tab:
                     st.info(_("no_performances_yet", lang))
                 else:
-                    with st.container(border=True):
+                    with st.container(border=False):
                         discipline_keys = ["Dynamic Bi-fins (DYN-BF)", "Static Apnea (STA)", "Dynamic No-fins (DNF)", "Depth (CWT/FIM)", "Depth (VWT/NLT)", "16x25m Speed Endurance"]
                         pbs_tab = {}
                         for disc_key_pb_tab in discipline_keys:
@@ -1553,7 +1555,7 @@ def main_app():
                 if not all_records_loaded:
                     st.info(_("no_ranking_data", lang))
                 else:
-                    with st.container(border=True):
+                    with st.container(border=False):
                         all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
                         club_pbs = {}
                         for disc_key_club_pb in discipline_keys:
@@ -1836,7 +1838,7 @@ def main_app():
                     st.info(_("no_feedbacks_match_filters", lang))
                 else:
                     for fb in sorted(filtered_feedbacks, key=lambda x: x.get('feedback_date', '1900-01-01'), reverse=True):
-                        with st.container(border=True):
+                        with st.container(border=False):
                             session_details = get_training_session_details(fb.get("training_session_id"), training_log_loaded)
                             display_date = session_details['event_date'] or _('no_specific_session_option', lang)
                             st.markdown(f"**{fb['diver_name']}** par **{fb['instructor_name']}** à **{session_details['event_name']}** le **{display_date}**")
@@ -1939,7 +1941,7 @@ def main_app():
                     for wish in sorted(all_wishes_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True):
                         display_user = get_display_name(wish.get('user_name'), user_profiles, lang)
                         with st.expander(_("wish_by", user=display_user, date=wish.get('date', 'N/A')), expanded=True):
-                            with st.container(border=True):
+                            with st.container(border=False):
                                 st.markdown(wish.get('description', ''))
 
             elif selected_wishes_sub_tab_label == _("wishes_summary_sub_tab_label", lang):
@@ -2310,13 +2312,6 @@ def main():
 
     st.set_page_config(page_title=_("page_title", st.session_state.language), layout="wide", initial_sidebar_state="expanded", page_icon="📒",)
 
-    # st.markdown("""
-    #     <style>
-    #         [data-testid="stSidebar"] [data-testid="stForm"] {
-    #             background: #DCE6F4;
-    #         }
-    #     </style>
-    #     """, unsafe_allow_html=True)
     st.markdown("""
         <style>
             [data-testid="stSidebar"] [data-testid="stForm"] {
