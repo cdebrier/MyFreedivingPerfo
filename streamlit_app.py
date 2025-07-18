@@ -873,8 +873,8 @@ def display_login_form(config, lang):
 def display_feedbacks_by_apneist_chart(instructor_feedback_data, user_profiles, lang):
     """
     Displays the number of feedbacks per apneist, colored by instructor.
-    This version displays all freediver names (non-anonymized) and uses explicitly
-    neutral/muted colors for each instructor, with integer tick marks and labels on the horizontal axis.
+    Below the chart, it shows a table summarizing for each instructor:
+    - Apneists they have not yet evaluated.
     """
     if not instructor_feedback_data:
         st.info(_("no_feedback_in_log", lang))
@@ -885,6 +885,7 @@ def display_feedbacks_by_apneist_chart(instructor_feedback_data, user_profiles, 
     # Directly use 'diver_name' as the display name, without anonymization logic.
     feedback_df['diver_display_name'] = feedback_df['diver_name']
 
+    # --- 1. Préparation des données pour le graphique ---
     # Count feedbacks by diver and instructor
     feedback_counts = feedback_df.groupby(['diver_display_name', 'instructor_name']).size().reset_index(name='count')
 
@@ -912,39 +913,54 @@ def display_feedbacks_by_apneist_chart(instructor_feedback_data, user_profiles, 
         "#80B1D3",  # Steel Blue (from Set1)
         "#FDB462",  # Muted Gold (from Set1)
         "#B3DE69",  # Olive Green (from Set1)
+        # Added a few more for robustness if needed
+        "#8FBC8F",  # Dark Sea Green
+        "#C0C0C0",  # Silver
+        "#DDA0DD",  # Plum
     ]
 
     # Create the domain and range for the color scale
     color_domain = unique_instructors
     color_range = neutral_instructor_colors[:len(unique_instructors)]
 
-    # --- Determine integer tick values for the x-axis ---
-    max_count = feedback_counts['count'].max()
-    # Create a list of integers from 0 up to max_count
-    integer_tick_values = list(range(0, max_count + 1))
-    # If max_count is very large, consider a step for values, e.g., range(0, max_count + 1, 5)
+    # --- Affichage du graphique à barres ---
+    st.subheader(_("feedbacks_by_apneist_chart_tab_label", lang=lang))
 
-    chart = alt.Chart(feedback_counts).mark_bar().encode(
-        y=alt.Y('diver_display_name:N', title=_("user_col", lang), sort='-x'), # Apneists on vertical, sorted by count
-        x=alt.X('count:Q',
-                title=_("count_col", lang),
-                axis=alt.Axis(
-                    format=".0f",  # Ensures labels are integers
-                    values=integer_tick_values # Ensures only integer tick marks
-                )
-               ),
-        color=alt.Color('instructor_name:N', title=_("instructor_name_label", lang),
-                        scale=alt.Scale(domain=color_domain, range=color_range)),
-        tooltip=[
-            alt.Tooltip('diver_display_name', title=_("user_col", lang)),
-            alt.Tooltip('instructor_name', title=_("instructor_name_label", lang)),
-            alt.Tooltip('count:Q', title=_("count_col", lang), format=".0f")
-        ]
-    ).properties(
-        title=_("feedbacks_by_apneist_chart_tab_label", lang)
-    ).interactive()
+    if not feedback_counts.empty:
+        max_count = feedback_counts['count'].max()
+        # Adjust tick values for readability, ensuring they are integers
+        if max_count <= 5:
+            integer_tick_values = list(range(0, max_count + 1))
+        elif max_count <= 10:
+            integer_tick_values = list(range(0, max_count + 1, 1)) # Step by 1
+        else:
+            # If max_count is large, show roughly 5-10 ticks
+            integer_tick_values = list(range(0, max_count + 1, max(1, max_count // 7)))
 
-    st.altair_chart(chart, use_container_width=True)
+        chart = alt.Chart(feedback_counts).mark_bar().encode(
+            y=alt.Y('diver_display_name:N', title=_("user_col", lang=lang), sort='-x'),
+            x=alt.X('count:Q',
+                    title=_("count_col", lang=lang),
+                    axis=alt.Axis(
+                        format=".0f",  # Ensures labels are integers
+                        values=integer_tick_values # Ensures only integer tick marks
+                    )
+                   ),
+            color=alt.Color('instructor_name:N', title=_("instructor_name_label", lang=lang),
+                            scale=alt.Scale(domain=color_domain, range=color_range)),
+            tooltip=[
+                alt.Tooltip('diver_display_name', title=_("user_col", lang=lang)),
+                alt.Tooltip('instructor_name', title=_("instructor_name_label", lang=lang)),
+                alt.Tooltip('count:Q', title=_("count_col", lang=lang), format=".0f")
+            ]
+        ).properties(
+            # The title is set by st.subheader above for better layout control
+        ).interactive()
+
+        st.altair_chart(chart, use_container_width=True)
+    else:
+        st.info("Aucune donnée de feedback à afficher dans le graphique.")
+
 
 
 def main_app():
