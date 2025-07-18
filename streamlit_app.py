@@ -354,21 +354,25 @@ def get_gsheets_client():
         )
         return gspread.authorize(creds)
     except Exception as e:
-        st.error(f"Error connecting to Google Sheets: {e}")
-        st.info("Please ensure your `.streamlit/secrets.toml` is correctly configured and Google Sheets/Drive APIs are enabled for your service account.")
+        # Instead of showing the detailed error, display a user-friendly message
+        st.error("App en syncope. Merci d'oxygéner la page en la rafraichissant.")
+        # Optionally log the actual error for debugging, but don't show to the user
+        st.exception(e) # This will log the full traceback in your Streamlit logs
         st.stop()
         return None
 
 def get_sheet_by_url(client, url, worksheet_name='Sheet1'):
     try:
+        # Prevent direct display of URLs by simply not including them in the error message
         spreadsheet = client.open_by_url(url)
         return spreadsheet.worksheet(worksheet_name)
     except gspread.exceptions.WorksheetNotFound:
-        st.error(f"Worksheet '{worksheet_name}' not found in the Google Sheet at {url}. Please check the worksheet name.")
+        st.error(f"App en syncope. Merci d'oxygéner la page en la rafraichissant.")
         st.stop()
         return None
     except Exception as e:
-        st.error(f"Error opening Google Sheet with URL {url}: {e}")
+        st.error(f"App en syncope. Merci d'oxygéner la page en la rafraichissant.")
+        st.exception(e) # Log the actual error
         st.stop()
         return None
 
@@ -879,10 +883,17 @@ def main_app():
         st.info(f"Suis tes **performances** et **activités** et complète ton **profil** pour générer un **feedback personnalisé** intégrant les retours de tes encadrants 👀.")
         
         st.success(f"Journal de **{current_user}**", icon="📒")
+        if st.button(_("logout_button", lang)):
+            st.session_state['authentication_status'] = False
+            st.session_state['name'] = None
+            st.rerun()
+
+
+
         # Profile Section
         current_user_profile_data_sidebar = load_user_profiles().get(current_user, {})
 
-
+        
         with st.expander(_("profile_header_sidebar", lang)):
             with st.form(key="profile_form_sidebar_main", border=False):
                 current_certification_sidebar = current_user_profile_data_sidebar.get("certification", _("no_certification_option", lang))
@@ -1127,12 +1138,6 @@ def main_app():
                     save_wishes(all_wishes_loaded)
                     st.success(_("wish_saved_success", lang))
                     st.rerun()
-
-
-        if st.button(_("logout_button", lang)):
-            st.session_state['authentication_status'] = False
-            st.session_state['name'] = None
-            st.rerun()
 
 
     st.title(_("app_title", lang))
@@ -1732,10 +1737,29 @@ def main_app():
                 user_profile_data = fresh_user_profiles.get(current_user, {})
                 has_ai_consent = user_profile_data.get("consent_ai_feedback", False)
 
+                num_feedbacks = len(user_feedback)
+                st.info(f"Vous avez reçu **{num_feedbacks}** feedback(s) de vos encadrants.")
+                
+
                 if not has_ai_consent:
                     st.warning(_("consent_ai_feedback_missing", lang))
 
                 if has_ai_consent:
+
+                    st.info('''
+                            Le résumé des feedbacks est généré par une intelligence artificielle et **peut dès lors contenir des erreurs ou des imprécisions**. 
+                            Il peut même halluciner comme on dit ;) même si on a fait de notre mieux pour qu'il suive le droit chemin ! 
+                            Nous lui avons indiqué de se comporter comme un **coach d'apnée certifié Adeps**, en se basant sur les principes de bienveillance, de factuel et de motivation.
+                            Il a également reçu des instructions spécifiques sur les niveaux de la Lifras, ainsi que des éléments de théorie issus de coachs d'apnée. 
+
+                            Le feedback IA est dépendant du **nombre de feedbacks laissés par tes encadrants** : plus ceux-ci sont nombreux, plus le feedback IA sera pertinent.
+                            Aussi, il est important que les données dans la section **Mon Profil** de la barre latérale soient à jour si tu souhaites augmenter la pertinence du feedback IA.
+                            N'oublie pas de sauver ton profil ! 
+
+                            Dans tous les cas, utilise-le comme un **guide général** et n\'hésite pas à **consulter tes encadrants** pour des conseils personnalisés, ou si tu as des questions. 
+
+                            ''')
+
                     if not user_feedback:
                         st.info(_("no_feedback_to_summarize", lang))
 
@@ -1755,7 +1779,7 @@ def main_app():
                                 Tu es un coach d'apnée certifié Adeps, tel que décrit dans le document suivant : {adeps_coaching_instructions}. 
                                 Ta mission est d’analyser une série de feedbacks reçus par un apnéiste, provenant d’instructeurs et d’autres pratiquants. 
                                 Sur base de ces observations, tu dois rédiger un **résumé constructif**, **bienveillant**, **factuel** et **motivant**, destiné à cet apnéiste. 
-                                Ce résumé doit contenir **maximum 10 phrases**, sans liste à puces, et couvrir l’ensemble de la pratique : **technique**, **sécurité**, **relaxation**, **état d’esprit**, **progression**, **motivation**.
+                                Ce résumé doit contenir **maximum 10 phrases**, peut contenir plusieurs paragraphes, sans liste à puces, et couvrir l’ensemble de la pratique : **technique**, **sécurité**, **relaxation**, **état d’esprit**, **progression**, **motivation**.
 
                                 Avant d’écrire, prends en compte :
                                 - Le niveau actuel de l’apnéiste : {user_profile_data.get('certification', 'Non spécifié')}.
