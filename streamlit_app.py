@@ -2156,9 +2156,7 @@ def main_app():
                             st.rerun()
 
             elif selected_freedivers_sub_tab_label == _("freediver_certification_chart_tab_label", lang):
-                # st.header(_("freediver_certification_summary_header", lang))
 
-                # On doit recréer les données nécessaires pour le graphique ici
                 all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
                 freedivers_data_for_chart = []
                 fresh_user_profiles_for_chart = load_user_profiles()
@@ -2169,9 +2167,7 @@ def main_app():
                         _("certification_col_editor", lang): profile.get("certification", _("no_certification_option", lang)),
                     })
                 
-                # --- COLLEZ LE CODE DU GRAPHIQUE ICI ---
                 cert_order = ['NB', 'A1', 'A2', 'A3', 'S4', 'I1', 'I2', 'I3']
-                # Notez le changement de 'freedivers_data_for_editor' à 'freedivers_data_for_chart'
                 counts_df = (pd.DataFrame(freedivers_data_for_chart)[_("certification_col_editor", lang)]
                             .value_counts()
                             .reindex(cert_order)
@@ -2194,6 +2190,51 @@ def main_app():
                 text = chart.mark_text(align='left', baseline='middle', dx=5, color='black', fontSize=12).encode(text='Nombre:Q')
                 final_chart = (chart + text).properties(title="Nombre d'apnéistes par niveau de brevet", height=300)
                 st.altair_chart(final_chart, use_container_width=True)
+
+                # --- Custom table to list freedivers by certification level ---
+                # st.subheader(_("freediver_certification_summary_header", lang))
+
+                # Prepare data for the custom table
+                profiles_df_all = pd.DataFrame(load_user_profiles().values())
+                
+                # Define the desired order for certification levels
+                certification_order = ["I3", "I2", "I1", "S4", "A3", "A2", "A1", "NB", _("no_certification_option", lang)]
+
+                # Create a dictionary to hold freedivers for each certification level
+                freedivers_by_cert = {cert: [] for cert in certification_order}
+
+                for index, row in profiles_df_all.iterrows():
+                    cert = row.get('certification', _("no_certification_option", lang))
+                    user_name = row.get('user_name')
+                    if user_name:
+                        freedivers_by_cert[cert].append(user_name)
+                
+                # Determine the maximum number of freedivers in any single certification level
+                max_freedivers = 0
+                for cert in certification_order:
+                    if len(freedivers_by_cert[cert]) > max_freedivers:
+                        max_freedivers = len(freedivers_by_cert[cert])
+
+                # Create a list of dictionaries for the DataFrame, ensuring each row represents a freediver
+                table_data = []
+                for i in range(max_freedivers):
+                    row_data = {}
+                    for cert in certification_order:
+                        if i < len(freedivers_by_cert[cert]):
+                            row_data[cert] = freedivers_by_cert[cert][i]
+                        else:
+                            row_data[cert] = "" # Fill with empty string for alignment
+                    table_data.append(row_data)
+
+                # Create the DataFrame
+                freediver_cert_table_df = pd.DataFrame(table_data)
+
+                # Display the table
+                if not freediver_cert_table_df.empty:
+                    st.dataframe(freediver_cert_table_df, hide_index=True, use_container_width=True)
+                else:
+                    st.info(_("no_users_yet", lang))
+
 
 # --- Main Execution ---
 def main():
