@@ -314,7 +314,7 @@ TRANSLATIONS = {
         "freediver_certification_summary_header": "🔢 Apnéistes par Niveau de Brevet",
         "freediver_certification_chart_tab_label": "📊 Apnéistes par Brevet [A]", 
         "count_col": "Nombre",
-        "feedbacks_by_apneist_chart_tab_label": "Feedbacks par Apnéistes [A]"
+        "feedbacks_by_apneist_chart_tab_label": "🔢 Feedbacks par Apnéistes [A]"
 
         
     }
@@ -1838,7 +1838,7 @@ def main_app():
                 has_ai_consent = user_profile_data.get("consent_ai_feedback", False)
 
                 num_feedbacks = len(user_feedback)
-                st.info(f"Vous avez reçu **{num_feedbacks}** feedback(s) de vos encadrants.")
+                st.info(f"Tu as reçu **{num_feedbacks}** feedback(s).")
                 
 
                 if not has_ai_consent:
@@ -1848,11 +1848,12 @@ def main_app():
 
                     st.info('''
                             Le résumé des feedbacks est généré par une intelligence artificielle et **peut dès lors contenir des erreurs ou des imprécisions**. 
-                            Il peut même halluciner comme on dit ;) même si on a fait de notre mieux pour qu'il suive le droit chemin ! 
-                            Nous lui avons indiqué de se comporter comme un **coach d'apnée certifié Adeps**, en se basant sur les principes de bienveillance, de factuel et de motivation.
-                            Il a également reçu des instructions spécifiques sur les niveaux de la Lifras, ainsi que des éléments de théorie issus de coachs d'apnée. 
+                            Il peut même halluciner comme on dit ;). Mais on a fait de notre mieux pour qu'il suive le droit chemin ! 
+                            Nous lui avons indiqué de se comporter comme un **coach d'apnée certifié Adeps**, bienveillant, clair et constructif.
+                            Il a également reçu des instructions spécifiques sur les niveaux de la Lifras, ainsi que des **éléments de théorie** issus de coachs d'apnée. 
 
                             Le feedback IA est dépendant du **nombre de feedbacks laissés par tes encadrants** : plus ceux-ci sont nombreux, plus le feedback IA sera pertinent.
+                            
                             Aussi, il est important que les données dans la section **Mon Profil** de la barre latérale soient à jour si tu souhaites augmenter la pertinence du feedback IA.
                             N'oublie pas de sauver ton profil ! 
 
