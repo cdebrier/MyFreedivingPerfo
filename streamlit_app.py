@@ -13,7 +13,7 @@ PRIVILEGED_USERS = ["Philippe K.", "Vincent C.", "Charles D.B.", "Rémy L.", "Gr
 SUPER_PRIVILEGED_USERS = ['Charles D.B.']
 
 # Instructor certification levels for different functionalities
-INSTRUCTOR_CERT_LEVELS_FOR_LOGGING_FEEDBACK_SIDEBAR = ["A3", "S4", "I1", "I2", "I3"]
+INSTRUCTOR_CERT_LEVELS_FOR_LOGGING_FEEDBACK_SIDEBAR = ["NB", "A1", "A2", "A3", "S4", "I1", "I2", "I3"]
 INSTRUCTOR_CERT_LEVELS_FOR_ADMIN_TABS_AND_DROPDOWNS = ["A3", "S4", "I1", "I2", "I3"]
 
 # --- Discipline Configuration ---
@@ -235,13 +235,13 @@ TRANSLATIONS = {
         "no_feedback_to_summarize": "Aucun feedback à résumer pour le moment.",
         "feedbacks_overview_tab_label": "📒 Journal des Feedbacks [A]",
         "edit_feedbacks_sub_tab_label": "📝 Éditer des Feedbacks [A]",
-        "log_feedback_header_sidebar": "💬 Feedback Encadrant",
+        "log_feedback_header_sidebar": "💬 Nouveau Feedback",
         "feedback_for_freediver_label": "Apnéiste",
         "feedback_log_tab_title" : "💬 Feedbacks",
         "training_session_label": "Activité Liée :",
         "instructor_name_label": "Encadrant",
         "feedback_text_label": "Feedback",
-        "feedback_text_area_ph": "Encode ton feedback sur un.e apnéiste ici afin de guider les autres encadrants lors des prochaines sorties. Ton feedback est aussi utilisé pour générer un feedback à l'apnéiste.",
+        "feedback_text_area_ph": "Encode ton feedback sur ton activité ici. Ton feedback est aussi utilisé pour générer un feedback personalisé, incluant d'éventuels feedbacks de tes encadrants.",
         "save_feedback_button": "💾 Enregistrer Feedback",
         "feedback_saved_success": "Feedback enregistré avec succès !",
         "feedback_text_empty_error": "Le texte du feedback ne peut pas être vide.",
@@ -314,7 +314,14 @@ TRANSLATIONS = {
         "freediver_certification_summary_header": "🔢 Apnéistes par Niveau de Brevet",
         "freediver_certification_chart_tab_label": "📊 Apnéistes par Brevet [A]", 
         "count_col": "Nombre",
-        "feedbacks_by_apneist_chart_tab_label": "🔢 Feedbacks par Apnéistes [A]"
+        "feedbacks_by_apneist_chart_tab_label": "🔢 Feedbacks par Apnéistes [A]",
+        # --- Dans le dictionnaire TRANSLATIONS["fr"] ---
+
+        "my_self_feedbacks_header": "Mes auto-feedbacks",
+        "no_self_feedbacks_yet": "Vous ne vous êtes encore donné aucun feedback.",
+        "self_feedback_event_col": "Événement",
+        "self_feedback_date_col": "Date de l'événement",
+        "self_feedback_text_col": "Feedback",
 
         
     }
@@ -1089,12 +1096,12 @@ def main_app():
 
         # --- Sidebar Logging Forms ---
         is_sidebar_instructor_section_visible = False
-        if is_admin_view_authorized and current_user in user_profiles:
+        if current_user in user_profiles: #is_admin_view_authorized and 
             user_cert_sidebar = user_profiles[current_user].get("certification")
             if user_cert_sidebar in INSTRUCTOR_CERT_LEVELS_FOR_LOGGING_FEEDBACK_SIDEBAR:
                 is_sidebar_instructor_section_visible = True
 
-        if is_sidebar_instructor_section_visible:
+        if is_sidebar_instructor_section_visible and is_admin_view_authorized:
             st.header(_("log_training_header_sidebar", lang))
             with st.form(key="log_training_form_sidebar"):
                 st.date_input(_("training_date_label", lang), date.today(), key="training_date_form_key")
@@ -1186,10 +1193,13 @@ def main_app():
 
                     # st.write(f"{_('instructor_name_label', lang)} {current_user}")
 
-                    st.selectbox(
-                        _("feedback_for_freediver_label", lang), options=freediver_options_for_feedback,
-                        index=default_fb_user_idx, key="feedback_for_user_selectbox_key_in_form"
-                    )
+                    if is_admin_view_authorized:
+                        st.selectbox(
+                            _("feedback_for_freediver_label", lang), options=freediver_options_for_feedback,
+                            index=default_fb_user_idx, key="feedback_for_user_selectbox_key_in_form"
+                        )
+                    else:
+                        feedback_for_user_selectbox_key_in_form = current_user
 
                     training_session_options_fb_form = {log['id']: f"{log.get('date', '')} - {log.get('place', '')}" for log in sorted(training_log_loaded, key=lambda x: x.get('date', '1900-01-01'), reverse=True)}
                     training_session_options_display_fb_form = [_("select_training_prompt", lang)] + list(training_session_options_fb_form.values())
@@ -1925,8 +1935,54 @@ def main_app():
                                 st.error(f"Erreur lors de la génération du résumé : {e}")
                                 st.session_state['feedback_summary'] = None
 
+                # --- Dans la fonction main_app(), à la fin du bloc if selected_feedback_sub_tab_label == my_feedback_sub_tab_label: ---
+
                 if 'feedback_summary' in st.session_state and st.session_state.feedback_summary:
                     st.markdown(st.session_state['feedback_summary'])
+
+                # --- NOUVELLE SECTION : Tableau des auto-feedbacks ---
+                # st.markdown("---") # Séparateur visuel
+                st.subheader(_("my_self_feedbacks_header", lang))
+
+                # Filtre les feedbacks où l'utilisateur est à la fois le plongeur et l'instructeur
+                self_feedbacks = [
+                    fb for fb in instructor_feedback_loaded
+                    if fb.get('diver_name') == current_user and fb.get('instructor_name') == current_user
+                ]
+
+                if not self_feedbacks:
+                    st.info(_("no_self_feedbacks_yet", lang))
+                else:
+                    table_data = []
+                    for fb in self_feedbacks:
+                        session_details = get_training_session_details(fb.get("training_session_id"), training_log_loaded)
+                        event_date_str = session_details.get('event_date')
+
+                        # Prépare un objet datetime pour le tri, gère les dates None ou invalides
+                        sort_date = datetime.min
+                        if event_date_str:
+                            try:
+                                sort_date = datetime.fromisoformat(event_date_str)
+                            except (ValueError, TypeError):
+                                # Conserve la date de tri par défaut si le parsing échoue
+                                pass
+                        
+                        table_data.append({
+                            _("self_feedback_event_col", lang): session_details.get('event_name', _("no_specific_session_option", lang)),
+                            _("self_feedback_date_col", lang): event_date_str if event_date_str else "N/A",
+                            _("self_feedback_text_col", lang): fb.get('feedback_text', ''),
+                            "sort_key": sort_date # Clé non affichée pour le tri
+                        })
+
+                    # Trie les données par date, du plus récent au plus ancien
+                    sorted_data = sorted(table_data, key=lambda x: x["sort_key"], reverse=True)
+
+                    # Supprime la clé de tri avant de créer le DataFrame pour l'affichage
+                    for row in sorted_data:
+                        del row["sort_key"]
+
+                    df_display = pd.DataFrame(sorted_data)
+                    st.dataframe(df_display, hide_index=True, use_container_width=True)
 
             elif is_admin_view_authorized and selected_feedback_sub_tab_label == f"{_('feedbacks_overview_tab_label', lang)}":
                 all_known_users_list = sorted(list(set(r['user'] for r in all_records_loaded).union(set(user_profiles.keys()))))
