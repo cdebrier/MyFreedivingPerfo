@@ -241,7 +241,7 @@ TRANSLATIONS = {
         "training_session_label": "Activité Liée :",
         "instructor_name_label": "Encadrant",
         "feedback_text_label": "Feedback",
-        "feedback_text_area_ph": "Encode ton feedback sur ton activité ici. Ton feedback est aussi utilisé pour générer un feedback personalisé, incluant d'éventuels feedbacks de tes encadrants.",
+        "feedback_text_area_ph": "Encode ton feedback sur ton activité ici. Ton feedback est aussi utilisé pour générer, si tu le souhaites, un feedback personalisé, incluant d'éventuels feedbacks constructifs de tes encadrants.",
         "save_feedback_button": "💾 Enregistrer Feedback",
         "feedback_saved_success": "Feedback enregistré avec succès !",
         "feedback_text_empty_error": "Le texte du feedback ne peut pas être vide.",
