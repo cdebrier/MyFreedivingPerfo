@@ -2490,7 +2490,7 @@ def main():
     if 'wishes_summary' not in st.session_state:
         st.session_state.wishes_summary = None
 
-    st.set_page_config(page_title=_("page_title", st.session_state.language), layout="wide", initial_sidebar_state="expanded", page_icon="📒",)
+    st.set_page_config(page_title=_("page_title", st.session_state.language), layout="centered", initial_sidebar_state="expanded", page_icon="📒",)
 
     st.markdown("""
         <style>
