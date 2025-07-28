@@ -37,7 +37,7 @@ FEEDBACK_TAG_BADGE_CONFIG = {
 TRANSLATIONS = {
     "fr": {
         "page_title": "MacaJournal",
-        "app_title": "📒 Mon Journal d'apnée",
+        "app_title": "📒 Mon Journal d'@pnée",
         "user_management_header": "👤 Gestion des Apnéistes",
         "no_users_yet": "Aucun apnéiste pour le moment. Ajoutez-en un via l'onglet Apnéistes.",
         "enter_freediver_name_sidebar": "Entrez le nom du Nouvel Apnéiste (Format: Prénom L.)",
