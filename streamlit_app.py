@@ -9,7 +9,7 @@ from google.oauth2 import service_account
 import toml
 
 # --- Privileged User Configuration ---
-PRIVILEGED_USERS = ["Philippe K.", "Vincent C.", "Charles D.B.", "Rémy L.", "Gregory D.", "Melinda M."]
+PRIVILEGED_USERS = ["Philippe K.", "Vincent C.", "Charles D.B.", "Rémy L.", "Gregory D.", "Melinda M.", "Nicolas R."] 
 SUPER_PRIVILEGED_USERS = ['Charles D.B.']
 
 # Instructor certification levels for different functionalities
@@ -668,7 +668,7 @@ def save_wishes(wishes_data):
     load_wishes.clear()
 
 # --- Data Handling for Club Profiles ---
-@st.cache_data(ttl=60, show_spinner="Chargement des profils de clubs...")
+@st.cache_data(ttl=3600*24, show_spinner="Chargement des profils de clubs...")
 def load_club_profiles():
     client = get_gsheets_client()
     sheet = get_sheet_by_url(client, st.secrets["gsheets"]["club_profiles_sheet_url"], 'ClubProfiles')
