@@ -1518,6 +1518,8 @@ def main_app():
                                 st.session_state.new_freediver_full_name_buffer = ""
                                 st.rerun()
 
+        st.caption('*Développé par Charles de Brier (2025)*')
+
 
     st.title(_("app_title", lang))
 
