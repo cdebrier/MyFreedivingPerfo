@@ -9,7 +9,7 @@ from google.oauth2 import service_account
 import toml
 
 # --- Privileged User Configuration ---
-PRIVILEGED_USERS = ["Philippe K.", "Vincent C.", "Charles D.B.", "Rémy L.", "Gregory D."]
+PRIVILEGED_USERS = ["Philippe K.", "Vincent C.", "Charles D.B.", "Rémy L.", "Gregory D.", "Melinda M."]
 SUPER_PRIVILEGED_USERS = ['Charles D.B.']
 
 # Instructor certification levels for different functionalities
@@ -37,7 +37,7 @@ FEEDBACK_TAG_BADGE_CONFIG = {
 TRANSLATIONS = {
     "fr": {
         "page_title": "MacaJournal",
-        "app_title": "📒 Mon Journal Mac@pnée",
+        "app_title": "📒 Mon Journal d'apnée",
         "user_management_header": "👤 Gestion des Apnéistes",
         "no_users_yet": "Aucun apnéiste pour le moment. Ajoutez-en un via l'onglet Apnéistes.",
         "enter_freediver_name_sidebar": "Entrez le nom du Nouvel Apnéiste (Format: Prénom L.)",
@@ -313,7 +313,18 @@ TRANSLATIONS = {
         "club_saved_success": "Club '{club_name}' créé avec succès !",
         "club_name_empty_error": "Le nom du club ne peut pas être vide.",
         "club_name_exists_error": "Le club '{club_name}' existe déjà.",
-        "new_club_name_placeholder":"Nom du nouveau club"
+        "new_club_name_placeholder":"Nom du nouveau club",
+        "new_freediver_header_sidebar": "✨ Nouvel Apnéiste",
+        "freediver_full_name_label": "Prénom et Nom",
+        "save_new_freediver_button": "💾 Ajouter l'apnéiste",
+        "new_freediver_success": "Nouvel apnéiste '{user_name}' ajouté avec succès au club '{club_name}' !",
+        "freediver_name_empty_error": "Le prénom et le nom de famille ne peuvent pas être vides.",
+        "freediver_exists_error": "L'apnéiste '{user_name}' existe déjà.",
+        "club_owner_missing_club": "En tant que propriétaire de club, vous devez avoir un club défini dans votre profil pour ajouter de nouveaux apnéistes.",
+        "freediver_full_name_placeholder": "Prénom Nom (ex: Jean Dupont)",
+        "motivations_placeholder": "Quelles sont mes motivations à pratiquer l'apnée ?",
+        "projection_3_ans_placeholder": "Où me vois-je dans 3 ans en apnée ?",
+        "portrait_photo_text_placeholder": "Il s'agit de la légende qui sera ajouté sous ton portrait d'apnéiste. Sens-toi libre ! Prose, humour, sérieux, ... C'est comme tu veux :)",
     }
 }
 
@@ -446,12 +457,25 @@ def load_user_profiles():
     profiles_list = sheet.get_all_records()
     profiles = {p['user_name']: p for p in profiles_list if 'user_name' in p}
 
+    updated = False
+
     for user_name, profile_data in profiles.items():
         if profile_data.get('id') is None:
             profile_data['id'] = uuid.uuid4().hex
+            updated = True
 
         if 'club' not in profile_data:
             profile_data['club'] = ''
+            updated = True
+
+        if 'club_owner' not in profile_data:
+            profile_data['club_owner'] = False
+            updated = True
+        
+        if isinstance(profile_data.get('club_owner'), str):
+            profile_data['club_owner'] = profile_data['club_owner'].lower() == 'true'
+            updated = True
+
 
         for bool_field in ['anonymize_results', 'consent_ai_feedback']:
             val = profile_data.get(bool_field, False)
@@ -463,10 +487,15 @@ def load_user_profiles():
         for text_field in ['motivations', 'projection_3_ans', 'portrait_photo_text']:
             if text_field not in profile_data:
                 profile_data[text_field] = ""
+                updated = True
 
         if 'hashed_password' not in profile_data:
             profile_data['hashed_password'] = ''
+            updated = True
 
+    if updated:
+        save_user_profiles(profiles)
+        
     return profiles
 
 def save_user_profiles(profiles):
@@ -486,16 +515,15 @@ def save_user_profiles(profiles):
         "lifras_id", "anonymize_results", "consent_ai_feedback",
         "motivations", "projection_3_ans", "portrait_photo_text",
         "hashed_password",
-        "club"
+        "club",
+        "club_owner"
     ]
 
     data_to_write = [expected_headers]
     for profile_data in profiles_list:
         row = []
         for header in expected_headers:
-            if header == "consent_ai_feedback":
-                row.append(bool(profile_data.get(header, False)))
-            elif header == "anonymize_results":
+            if header == "consent_ai_feedback" or header == "anonymize_results" or header == "club_owner":
                 row.append(bool(profile_data.get(header, False)))
             elif header == "certification_date":
                 date_val = profile_data.get(header)
@@ -1034,7 +1062,7 @@ def display_feedbacks_by_apneist_chart(instructor_feedback_data, user_profiles, 
 def main_app():
     lang = st.session_state.language
     
-    # Load all data first
+    # Load all raw data at the very beginning
     training_log_all = load_training_log()
     all_records_all = load_records(training_log_all)
     user_profiles_all = load_user_profiles()
@@ -1046,32 +1074,57 @@ def main_app():
     is_admin_view_authorized = current_user in PRIVILEGED_USERS
     is_super_admin_view_authorized = current_user in SUPER_PRIVILEGED_USERS
 
-    # Get the current user's club
     current_user_profile_data = user_profiles_all.get(current_user, {})
     current_user_club = current_user_profile_data.get("club", "")
+    is_current_user_club_owner = current_user_profile_data.get("club_owner", False)
 
-    # Initialize session state for admin club filter
+    # Initialize session state variables
     if 'selected_club_filter' not in st.session_state:
-        st.session_state.selected_club_filter = _("all_clubs_option", lang)
+        st.session_state.selected_club_filter = current_user_club
     if 'new_club_name_buffer' not in st.session_state:
         st.session_state.new_club_name_buffer = ""
+    if 'new_freediver_full_name_buffer' not in st.session_state:
+        st.session_state.new_freediver_full_name_buffer = ""
 
-    # Définir is_sidebar_instructor_section_visible AVANT le premier bloc st.sidebar
+    # Determine visibility of instructor section in sidebar
     is_sidebar_instructor_section_visible = False
     if current_user in user_profiles_all:
         user_cert_sidebar = user_profiles_all[current_user].get("certification")
         if user_cert_sidebar in INSTRUCTOR_CERT_LEVELS_FOR_LOGGING_FEEDBACK_SIDEBAR:
             is_sidebar_instructor_section_visible = True
 
+    # --- Determine filtered dataframes based on selected_club_filter ---
+    if is_super_admin_view_authorized and st.session_state.selected_club_filter == _("all_clubs_option", lang):
+        filtered_records = all_records_all
+        filtered_training_log = training_log_all
+        filtered_instructor_feedback = instructor_feedback_all
+        filtered_wishes = all_wishes_all
+        filtered_user_profiles = user_profiles_all
+    else:
+        target_club = st.session_state.selected_club_filter
+        
+        # If a non-super-privileged user has no club, they see nothing from filtered views
+        if not current_user_club and not is_super_admin_view_authorized:
+            filtered_records = []
+            filtered_training_log = []
+            filtered_instructor_feedback = []
+            filtered_wishes = []
+            filtered_user_profiles = {}
+        else:
+            # Filtering logic for a specific club or current user's club
+            filtered_records = [r for r in all_records_all if user_profiles_all.get(r['user'], {}).get('club', '') == target_club]
+            filtered_training_log = [t for t in training_log_all if t.get('club', '') == target_club]
+            filtered_instructor_feedback = [fb for fb in instructor_feedback_all if user_profiles_all.get(fb['diver_name'], {}).get('club', '') == target_club]
+            filtered_wishes = [w for w in all_wishes_all if user_profiles_all.get(w['user_name'], {}).get('club', '') == target_club]
+            filtered_user_profiles = {name: profile for name, profile in user_profiles_all.items() if profile.get('club', '') == target_club}
+
+
     with st.sidebar:
         st.info(f"Suis tes **performances** et **activités** et complète ton **profil** pour générer un **feedback personnalisé** intégrant les retours de tes encadrants 👀.")
-        st.success(f"Journal de **{current_user}**", icon="📒")
 
         # --- Club Filter for SUPER_PRIVILEGED_USERS only ---
         if is_super_admin_view_authorized:
-            # st.subheader(_("filter_by_club_label", lang))
             all_club_names = sorted(list(club_profiles_all.keys()))
-
             if any(profile.get('club') == '' or profile.get('club') is None for profile in user_profiles_all.values()):
                 all_club_names.insert(0, '')
                 all_club_names = sorted(set(all_club_names), key=lambda x: (x == '', x))
@@ -1086,33 +1139,12 @@ def main_app():
             )
             st.session_state.selected_club_filter = selected_club_for_admin_filter
         else:
-            st.session_state.selected_club_filter = current_user_club if current_user_club else _("all_clubs_option", lang)
+            club_display_name = current_user_club if current_user_club else "Non défini"
+            # st.success(f"Club : **{club_display_name}**")
 
 
-        # --- New Club Creation Widget for SUPER_PRIVILEGED_USERS only ---
-        if is_super_admin_view_authorized:
-            st.header(_("new_club_header_sidebar", lang))
-            with st.form(key="new_club_form_sidebar"):
-                new_club_name = st.text_input(_("new_club_name_label", lang), value=st.session_state.new_club_name_buffer, key="new_club_name_input", placeholder=_("new_club_name_placeholder", lang))
-                if st.form_submit_button(_("save_new_club_button", lang)):
-                    name_to_save = new_club_name.strip()
-                    if not name_to_save:
-                        st.error(_("club_name_empty_error", lang))
-                    elif name_to_save in club_profiles_all:
-                        st.error(_("club_name_exists_error", lang, club_name=name_to_save))
-                    else:
-                        new_club_entry = {"id": uuid.uuid4().hex, "club_name": name_to_save}
-                        club_profiles_all[name_to_save] = new_club_entry
-                        save_club_profiles(club_profiles_all)
-                        st.success(_("club_saved_success", lang, club_name=name_to_save))
-                        st.session_state.new_club_name_buffer = ""
-                        st.rerun()
+        st.success(f"Journal de **{current_user}**", icon="📒")
 
-
-        if st.button(_("logout_button", lang)):
-            st.session_state['authentication_status'] = False
-            st.session_state['name'] = None
-            st.rerun()
 
         # Profile Section
         with st.expander(_("profile_header_sidebar", lang)):
@@ -1177,18 +1209,21 @@ def main_app():
                     "Motivations à faire de l'apnée :",
                     value=current_user_profile_data.get("motivations", ""),
                     key="motivations_profile_form_sb",
+                    placeholder=_("motivations_placeholder", lang), 
                     height=300
                 )
                 st.text_area(
                     "Où vous imaginez vous dans votre pratique de l'apnée dans 3 ans ?",
                     value=current_user_profile_data.get("projection_3_ans", ""),
                     key="projection_3_ans_profile_form_sb",
+                    placeholder=_("projection_3_ans_placeholder", lang),
                     height=250
                 )
                 st.text_area(
                     "Texte pour le portrait photo",
                     value=current_user_profile_data.get("portrait_photo_text", ""),
                     key="portrait_photo_text_profile_form_sb",
+                    placeholder=_("portrait_photo_text_placeholder", lang),
                     height=250
                 )
 
@@ -1212,26 +1247,41 @@ def main_app():
                     save_user_profiles(profiles_to_save)
                     st.success(_("profile_saved_success", lang, user=current_user))
                     st.rerun()
-    
-    # --- Apply Club Filtering to all dataframes based on selected_club_filter ---
-    if st.session_state.selected_club_filter == _("all_clubs_option", lang):
-        filtered_records = all_records_all
-        filtered_training_log = training_log_all
-        filtered_instructor_feedback = instructor_feedback_all
-        filtered_wishes = all_wishes_all
-        filtered_user_profiles = user_profiles_all
-    else:
-        target_club = st.session_state.selected_club_filter
 
-        filtered_records = [r for r in all_records_all if user_profiles_all.get(r['user'], {}).get('club', '') == target_club]
-        filtered_training_log = [t for t in training_log_all if t.get('club', '') == target_club]
-        filtered_instructor_feedback = [fb for fb in instructor_feedback_all if user_profiles_all.get(fb['diver_name'], {}).get('club', '') == target_club]
-        filtered_wishes = [w for w in all_wishes_all if user_profiles_all.get(w['user_name'], {}).get('club', '') == target_club]
-        
-        filtered_user_profiles = {name: profile for name, profile in user_profiles_all.items() if profile.get('club', '') == target_club}
+        # Logout Button
+        if st.button(_("logout_button", lang)):
+            st.session_state['authentication_status'] = False
+            st.session_state['name'] = None
+            if 'selected_club_filter' in st.session_state:
+                del st.session_state['selected_club_filter']
+            if 'new_club_name_buffer' in st.session_state:
+                del st.session_state['new_club_name_buffer']
+            if 'new_freediver_full_name_buffer' in st.session_state:
+                del st.session_state['new_freediver_full_name_buffer']
+            if 'training_place_buffer' in st.session_state:
+                del st.session_state['training_place_buffer']
+            if 'training_desc_buffer' in st.session_state:
+                del st.session_state['training_desc_buffer']
+            if 'log_perf_input_buffer' in st.session_state:
+                del st.session_state['log_perf_input_buffer']
+            if 'log_perf_comment_buffer' in st.session_state:
+                del st.session_state['log_perf_comment_buffer']
+            if 'feedback_for_user_buffer' in st.session_state:
+                del st.session_state['feedback_for_user_buffer']
+            if 'feedback_training_session_buffer' in st.session_state:
+                del st.session_state['feedback_training_session_buffer']
+            if 'feedback_text_buffer' in st.session_state:
+                del st.session_state['feedback_text_buffer']
+            if 'feedback_summary' in st.session_state:
+                del st.session_state['feedback_summary']
+            if 'wishes_summary' in st.session_state:
+                del st.session_state['wishes_summary']
+            
+            st.rerun()
 
-
-    with st.sidebar: # Re-open sidebar scope for consistency if previous block closed it
+       
+        # --- Sidebar Logging Forms (bottom group) ---
+        # These forms are logically grouped here and use the filtered data implicitly or explicitly
         if is_sidebar_instructor_section_visible and is_admin_view_authorized:
             st.header(_("log_training_header_sidebar", lang))
             with st.form(key="log_training_form_sidebar"):
@@ -1256,7 +1306,7 @@ def main_app():
         st.header(_("log_performance_header", lang))
         with st.form(key="log_performance_form_sidebar_main"):
             st.write(_("logging_for", lang, user=current_user))
-            if not filtered_training_log:
+            if not filtered_training_log: 
                 st.warning("Veuillez d'abord créer une activité.")
                 st.form_submit_button(_("save_performance_button", lang), disabled=True)
             else:
@@ -1310,7 +1360,7 @@ def main_app():
             with st.form(key="log_feedback_form_sidebar"):
                 all_known_users_list = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values())))
                 if not all_known_users_list:
-                    st.warning("Please add freedivers before logging feedback.")
+                    st.warning("Veuillez ajouter un apnéiste avant d'enregistrer un feedback.")
                 else:
                     freediver_options_for_feedback = [_("select_freediver_prompt", lang)] + all_known_users_list
                     default_fb_user_idx = 0
@@ -1392,6 +1442,81 @@ def main_app():
                     save_wishes(all_wishes_all)
                     st.success(_("wish_saved_success", lang))
                     st.rerun()
+
+
+        # --- New Club Creation Widget for SUPER_PRIVILEGED_USERS only ---
+        if is_super_admin_view_authorized:
+            st.header(_("new_club_header_sidebar", lang))
+            with st.form(key="new_club_form_sidebar"):
+                new_club_name = st.text_input(_("new_club_name_label", lang), value=st.session_state.new_club_name_buffer, key="new_club_name_input", placeholder=_("new_club_name_placeholder", lang))
+                if st.form_submit_button(_("save_new_club_button", lang)):
+                    name_to_save = new_club_name.strip()
+                    if not name_to_save:
+                        st.error(_("club_name_empty_error", lang))
+                    elif name_to_save in club_profiles_all:
+                        st.error(_("club_name_exists_error", lang, club_name=name_to_save))
+                    else:
+                        new_club_entry = {"id": uuid.uuid4().hex, "club_name": name_to_save}
+                        club_profiles_all[name_to_save] = new_club_entry
+                        save_club_profiles(club_profiles_all)
+                        st.success(_("club_saved_success", lang, club_name=name_to_save))
+                        st.session_state.new_club_name_buffer = ""
+                        st.rerun()
+
+        # --- New Freediver Widget for CLUB_OWNERS only ---
+        if is_current_user_club_owner:
+            st.header(_("new_freediver_header_sidebar", lang))
+            if not current_user_club:
+                st.warning(_("club_owner_missing_club", lang))
+            else:
+                with st.form(key="new_freediver_form_sidebar"):
+                    full_name_input = st.text_input(
+                        _("freediver_full_name_label", lang),
+                        value=st.session_state.new_freediver_full_name_buffer,
+                        key="new_freediver_full_name_input",
+                        placeholder=_("freediver_full_name_placeholder", lang)
+                    )
+                    
+                    cert_level_keys = list(TRANSLATIONS[lang]["certification_levels"].keys())
+                    freediver_cert_options = [_("no_certification_option", lang)] + cert_level_keys
+                    selected_new_freediver_cert = st.selectbox(
+                        _("certification_label", lang), options=freediver_cert_options, key="new_freediver_cert_select"
+                    )
+
+                    if st.form_submit_button(_("save_new_freediver_button", lang)):
+                        parts = full_name_input.strip().split()
+                        if len(parts) < 2:
+                            st.error(_("freediver_name_empty_error", lang))
+                        else:
+                            first_name = " ".join(parts[:-1]).strip()
+                            last_name_initial = parts[-1][0].upper()
+                            
+                            new_freediver_user_name = f"{first_name} {last_name_initial}."
+                            
+                            if new_freediver_user_name in user_profiles_all:
+                                st.error(_("freediver_exists_error", lang, user_name=new_freediver_user_name))
+                            else:
+                                new_profile_data = {
+                                    "user_name": new_freediver_user_name,
+                                    "id": uuid.uuid4().hex,
+                                    "certification": selected_new_freediver_cert if selected_new_freediver_cert != _("no_certification_option", lang) else "",
+                                    "certification_date": None,
+                                    "lifras_id": "",
+                                    "anonymize_results": False,
+                                    "consent_ai_feedback": False,
+                                    "motivations": "",
+                                    "projection_3_ans": "",
+                                    "portrait_photo_text": "",
+                                    "hashed_password": bcrypt.hashpw("changeme".encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                                    "club": current_user_club,
+                                    "club_owner": False
+                                }
+                                user_profiles_all[new_freediver_user_name] = new_profile_data
+                                save_user_profiles(user_profiles_all)
+
+                                st.success(_("new_freediver_success", lang, user_name=new_freediver_user_name, club_name=current_user_club))
+                                st.session_state.new_freediver_full_name_buffer = ""
+                                st.rerun()
 
 
     st.title(_("app_title", lang))
@@ -1863,25 +1988,16 @@ def main_app():
                             records_outside_filter = [r for r in all_records_all if user_profiles_all.get(r['user'], {}).get('club', '') != st.session_state.selected_club_filter and st.session_state.selected_club_filter != _("all_clubs_option", lang)]
 
                             for row in edited_perf_log_df.to_dict('records'):
-                                if row[_("history_delete_col_editor", lang)]: continue
-                                perf_str = str(row[_("history_performance_col", lang)]).strip()
-                                discipline = discipline_label_to_key.get(row[_("history_discipline_col", lang)])
-                                parsed_val = parse_static_time_to_seconds(perf_str, lang) if is_time_based_discipline(discipline) else parse_distance_to_meters(perf_str, lang)
-                                if parsed_val is None:
-                                    st.error(f"Invalid performance '{perf_str}' for {row[_('user_col', lang)]}. Skipping.")
-                                    original_rec_if_exists = next((r for r in all_records_all if r['id'] == row['id']), None)
-                                    if original_rec_if_exists:
-                                        new_records.append(original_rec_if_exists)
-                                else:
-                                    original_rec = next((r for r in all_records_all if r['id'] == row['id']), {})
-                                    record_user_club = user_profiles_all.get(row[_("user_col", lang)], {}).get('club', '')
+                                if not row[_("history_delete_col_editor", lang)]:
+                                    date_val = row[_("feedback_date_col", lang)] # Corrected for performance log
+                                    diver_club = user_profiles_all.get(row[_("user_col", lang)], {}).get('club', '') # Corrected for performance log
                                     new_records.append({
                                         "id": row.get("id") or uuid.uuid4().hex, "user": row[_("user_col", lang)], "discipline": discipline,
                                         "linked_training_session_id": session_display_to_id.get(row[_("link_training_session_label", lang)]),
                                         "original_performance_str": perf_str, "parsed_value": parsed_val,
                                         "entry_date": original_rec.get('entry_date', date.today().isoformat()),
                                         "comment": row.get(_("history_comment_col", lang), "").strip(),
-                                        "club": record_user_club
+                                        "club": diver_club # Use diver_club for record as well
                                     })
                             save_records(records_outside_filter + [r for r in new_records if r is not None])
                             st.success(_("all_performances_updated_success", lang))
@@ -1934,9 +2050,9 @@ def main_app():
                             Le feedback IA est dépendant du **nombre de feedbacks laissés par tes encadrants** : plus ceux-ci sont nombreux, plus le feedback IA sera pertinent.
                             
                             Aussi, il est important que les données dans la section **Mon Profil** de la barre latérale soient à jour si tu souhaites augmenter la pertinence du feedback IA.
-                            N'oublie pas de sauver ton profil ! 
+                            N'oubliez pas de sauvegarder votre profil ! 
 
-                            Dans tous les cas, utilise-le comme un **guide général** et n\'hésite pas à **consulter tes encadrants** pour des conseils personnalisés, ou si tu as des questions. 
+                            Dans tous les cas, utilisez-le comme un **guide général** et n\'hésitez pas à **consulter vos encadrants** pour des conseils personnalisés, ou si vous avez des questions. 
 
                             ''')
 
@@ -2332,7 +2448,8 @@ def main_app():
                         _("certification_date_col_editor", lang): cert_date_obj,
                         _("lifras_id_col_editor", lang): profile.get("lifras_id", ""),
                         _("anonymize_results_col_editor", lang): profile.get("anonymize_results", False),
-                        _("club_label", lang): profile.get("club", "")
+                        _("club_label", lang): profile.get("club", ""),
+                        "club_owner": profile.get("club_owner", False)
                     })
                 
                 with st.form(key="freedivers_editor_form", border=False):
@@ -2345,7 +2462,8 @@ def main_app():
                             _("certification_date_col_editor", lang): st.column_config.DateColumn(format="YYYY-MM-DD"),
                             _("lifras_id_col_editor", lang): st.column_config.TextColumn(),
                             _("anonymize_results_col_editor", lang): st.column_config.CheckboxColumn(),
-                            _("club_label", lang): st.column_config.TextColumn()
+                            _("club_label", lang): st.column_config.TextColumn(),
+                            "club_owner": st.column_config.CheckboxColumn(label="Propriétaire de Club ?", help="Cochez si cet utilisateur est un propriétaire de club.")
                         },
                         key="freedivers_data_editor", num_rows="dynamic", hide_index=True
                     )
@@ -2378,6 +2496,7 @@ def main_app():
                                 profile_data["anonymize_results"] = bool(row[_("anonymize_results_col_editor", lang)])
                                 profile_data["consent_ai_feedback"] = bool(profile.get("consent_ai_feedback", False))
                                 profile_data["club"] = row[_("club_label", lang)].strip()
+                                profile_data["club_owner"] = bool(row["club_owner"])
 
                                 new_password_for_hash = row.get(_("set_reset_password_col_editor", lang))
                                 if new_password_for_hash:
@@ -2526,8 +2645,10 @@ def main():
         st.session_state.feedback_summary = None
     if 'wishes_summary' not in st.session_state:
         st.session_state.wishes_summary = None
-    if 'new_club_name_buffer' not in st.session_state: # NEW: Initialize new club name buffer
+    if 'new_club_name_buffer' not in st.session_state:
         st.session_state.new_club_name_buffer = ""
+    if 'new_freediver_full_name_buffer' not in st.session_state:
+        st.session_state.new_freediver_full_name_buffer = ""
 
     st.set_page_config(page_title=_("page_title", st.session_state.language), layout="centered", initial_sidebar_state="expanded", page_icon="📒",)
 
