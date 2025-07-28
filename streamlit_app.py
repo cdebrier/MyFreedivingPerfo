@@ -56,8 +56,8 @@ TRANSLATIONS = {
         "discipline": "Discipline",
         "performance_value": "Encode ta performance ici",
         "performance_value_label":"Performance",
-        "performance_comment_label": "Commentaire", # NOUVELLE TRADUCTION
-        "performance_comment_placeholder": "Notes sur la séance, sensations, matériel, etc.", # NOUVELLE TRADUCTION
+        "performance_comment_label": "Commentaire",
+        "performance_comment_placeholder": "Notes sur la séance, sensations, matériel, etc.",
         "sta_help": "Format : MM:SS (ex: 03:45). Les millisecondes seront ignorées à l'affichage.",
         "dyn_depth_help": "Distances : un nombre entier, optionnellement suivi de 'm' (ex: **75** ou **75m**). \n\nDurées : Minutes:Secondes MM:SS (ex. **03:20**).",
         "save_performance_button": "💾 Enregistrer la performance",
@@ -101,7 +101,7 @@ TRANSLATIONS = {
         "history_entry_date_col": "Date Entrée",
         "history_discipline_col": "Discipline",
         "history_performance_col": "Performance",
-        "history_comment_col": "Commentaire", # NOUVELLE TRADUCTION
+        "history_comment_col": "Commentaire",
         "history_actions_col": "Actions",
         "history_delete_col_editor": "Supprimer ?",
         "no_history_display": "Aucun historique à afficher pour cette discipline.",
@@ -118,7 +118,7 @@ TRANSLATIONS = {
         "invalid_distance_format": "Format de distance invalide '{dist_str}'. Utilisez un nombre, optionnellement suivi de 'm'.",
         "consent_ai_feedback_label": "Je consens à la génération de mon feedback par une IA",
         "consent_ai_feedback_missing": "Veuillez donner votre consentement dans la section 'Profil Apnéiste' de la barre latérale pour activer la génération de feedback par l'IA.",
-          "disciplines": {
+        "disciplines": {
             "Static Apnea (STA)": "Statique (STA)",
             "Dynamic Bi-fins (DYN-BF)": "Dyn. Bi-palmes (DYN-BF)",
             "Dynamic No-fins (DNF)": "Dyn. Sans Palmes (DNF)",
@@ -306,7 +306,14 @@ TRANSLATIONS = {
         "self_feedback_text_col": "Feedback",
         "club_label": "Club :",
         "all_clubs_option": "Tous les Clubs",
-        "filter_by_club_label": "Filtrer par Club :", # New translation needed
+        "filter_by_club_label": "Filtrer par Club :",
+        "new_club_header_sidebar": "➕ Nouveau Club",
+        "new_club_name_label": "Nom du nouveau club",
+        "save_new_club_button": "💾 Créer le club",
+        "club_saved_success": "Club '{club_name}' créé avec succès !",
+        "club_name_empty_error": "Le nom du club ne peut pas être vide.",
+        "club_name_exists_error": "Le club '{club_name}' existe déjà.",
+        "new_club_name_placeholder":"Nom du nouveau club"
     }
 }
 
@@ -331,7 +338,7 @@ def _(key, lang='fr', **kwargs):
         return key
 
 # --- Helper for anonymization ---
-def get_display_name(user_name, user_profiles_current_load, lang): # Renamed parameter for clarity
+def get_display_name(user_name, user_profiles_current_load, lang):
     """
     Gets a display name for a user, respecting anonymization settings.
     `user_profiles_current_load` should be the full `user_profiles_all` dictionary.
@@ -351,16 +358,13 @@ def get_gsheets_client():
         )
         return gspread.authorize(creds)
     except Exception as e:
-        # Instead of showing the detailed error, display a user-friendly message
         st.error("App en syncope. Merci d'oxygéner la page en la rafraichissant.")
-        # Optionally log the actual error for debugging, but don't show to the user
-        st.exception(e) # This will log the full traceback in your Streamlit logs
+        st.exception(e)
         st.stop()
         return None
 
 def get_sheet_by_url(client, url, worksheet_name='Sheet1'):
     try:
-        # Prevent direct display of URLs by simply not including them in the error message
         spreadsheet = client.open_by_url(url)
         return spreadsheet.worksheet(worksheet_name)
     except gspread.exceptions.WorksheetNotFound:
@@ -369,7 +373,7 @@ def get_sheet_by_url(client, url, worksheet_name='Sheet1'):
         return None
     except Exception as e:
         st.error(f"App en syncope. Merci d'oxygéner la page en la rafraichissant.")
-        st.exception(e) # Log the actual error
+        st.exception(e)
         st.stop()
         return None
 
@@ -391,11 +395,9 @@ def load_records(training_logs):
         if 'linked_training_session_id' not in record:
             record['linked_training_session_id'] = None
             updated = True
-        # MODIFICATION: Add comment field if it doesn't exist for backward compatibility
         if 'comment' not in record:
             record['comment'] = ''
             updated = True
-        # NEW: Add 'club' field to records if it doesn't exist
         if 'club' not in record:
             record['club'] = ''
             updated = True
@@ -410,18 +412,12 @@ def load_records(training_logs):
             if 'date' in record:
                 del record['date']
                 updated = True
-
-    # Avoid auto-saving on load to prevent potential write conflicts.
-    # The schema will be updated when new data is explicitly saved.
-    # if updated:
-    #     save_records(records)
     return records
 
 def save_records(records):
     client = get_gsheets_client()
     sheet = get_sheet_by_url(client, st.secrets["gsheets"]["records_sheet_url"], 'freediving_records')
 
-    # MODIFICATION: Add 'comment' and 'club' to the headers list
     headers = ["id", "user", "entry_date", "discipline", "original_performance_str", "parsed_value", "linked_training_session_id", "comment", "club"]
 
     if not records:
@@ -429,12 +425,10 @@ def save_records(records):
         sheet.update([headers])
         return
 
-    # Ensure all keys from all records are included to form a complete header set
     all_keys = set()
     for record in records:
         all_keys.update(record.keys())
     
-    # Combine base headers with any other keys found, maintaining order
     final_headers = headers + [key for key in all_keys if key not in headers]
     
     data_to_write = [final_headers] + [[record.get(h, "") for h in final_headers] for record in records]
@@ -456,9 +450,8 @@ def load_user_profiles():
         if profile_data.get('id') is None:
             profile_data['id'] = uuid.uuid4().hex
 
-        # NEW: Add 'club' field if it doesn't exist
         if 'club' not in profile_data:
-            profile_data['club'] = '' # Default empty string
+            profile_data['club'] = ''
 
         for bool_field in ['anonymize_results', 'consent_ai_feedback']:
             val = profile_data.get(bool_field, False)
@@ -493,7 +486,7 @@ def save_user_profiles(profiles):
         "lifras_id", "anonymize_results", "consent_ai_feedback",
         "motivations", "projection_3_ans", "portrait_photo_text",
         "hashed_password",
-        "club" # NEW: Add 'club' to expected headers
+        "club"
     ]
 
     data_to_write = [expected_headers]
@@ -509,7 +502,7 @@ def save_user_profiles(profiles):
                 row.append(date_val if pd.notna(date_val) else None)
             elif header == "hashed_password":
                 row.append(profile_data.get(header, ''))
-            elif header == "club": # NEW: Handle club field
+            elif header == "club":
                 row.append(profile_data.get(header, ''))
             else:
                 row.append(profile_data.get(header, ""))
@@ -532,7 +525,6 @@ def load_training_log():
         if entry.get('id') is None:
             entry['id'] = uuid.uuid4().hex
             updated = True
-        # NEW: Add 'club' field if it doesn't exist
         if 'club' not in entry:
             entry['club'] = ''
             updated = True
@@ -547,15 +539,13 @@ def save_training_log(logs):
 
     if not logs:
         sheet.clear()
-        sheet.update([["id", "date", "place", "description", "club"]]) # NEW: Add 'club' to headers
+        sheet.update([["id", "date", "place", "description", "club"]])
         return
 
-    # Ensure all keys are captured for headers, including 'club'
     all_keys = set()
     for log in logs:
         all_keys.update(log.keys())
     
-    # Define a preferred order for core headers, then add any other keys
     preferred_headers = ["id", "date", "place", "description", "club"]
     final_headers = preferred_headers + [key for key in all_keys if key not in preferred_headers]
 
@@ -577,7 +567,6 @@ def load_instructor_feedback():
         if entry.get('id') is None:
             entry['id'] = uuid.uuid4().hex
             updated = True
-        # NEW: Add 'club' field if it doesn't exist
         if 'club' not in entry:
             entry['club'] = ''
             updated = True
@@ -592,15 +581,13 @@ def save_instructor_feedback(feedback_data):
 
     if not feedback_data:
         sheet.clear()
-        sheet.update([["id", "feedback_date", "diver_name", "training_session_id", "instructor_name", "feedback_text", "club"]]) # NEW: Add 'club' to headers
+        sheet.update([["id", "feedback_date", "diver_name", "training_session_id", "instructor_name", "feedback_text", "club"]])
         return
 
-    # Ensure all keys are captured for headers, including 'club'
     all_keys = set()
     for fb in feedback_data:
         all_keys.update(fb.keys())
     
-    # Define a preferred order for core headers, then add any other keys
     preferred_headers = ["id", "feedback_date", "diver_name", "training_session_id", "instructor_name", "feedback_text", "club"]
     final_headers = preferred_headers + [key for key in all_keys if key not in preferred_headers]
 
@@ -622,7 +609,6 @@ def load_wishes():
         if entry.get('id') is None:
             entry['id'] = uuid.uuid4().hex
             updated = True
-        # NEW: Add 'club' field if it doesn't exist
         if 'club' not in entry:
             entry['club'] = ''
             updated = True
@@ -637,15 +623,13 @@ def save_wishes(wishes_data):
 
     if not wishes_data:
         sheet.clear()
-        sheet.update([["id", "user_name", "date", "description", "club"]]) # NEW: Add 'club' to headers
+        sheet.update([["id", "user_name", "date", "description", "club"]])
         return
 
-    # Ensure all keys are captured for headers, including 'club'
     all_keys = set()
     for wish in wishes_data:
         all_keys.update(wish.keys())
     
-    # Define a preferred order for core headers, then add any other keys
     preferred_headers = ["id", "user_name", "date", "description", "club"]
     final_headers = preferred_headers + [key for key in all_keys if key not in preferred_headers]
 
@@ -655,16 +639,62 @@ def save_wishes(wishes_data):
     sheet.update(data_to_write)
     load_wishes.clear()
 
+# --- Data Handling for Club Profiles ---
+@st.cache_data(ttl=60, show_spinner="Chargement des profils de clubs...")
+def load_club_profiles():
+    client = get_gsheets_client()
+    sheet = get_sheet_by_url(client, st.secrets["gsheets"]["club_profiles_sheet_url"], 'ClubProfiles')
+    club_data = sheet.get_all_records()
+    
+    clubs = {c['club_name']: c for c in club_data if 'club_name' in c}
+    
+    updated = False
+    for club_name, club_profile in clubs.items():
+        if club_profile.get('id') is None:
+            club_profile['id'] = uuid.uuid4().hex
+            updated = True
+            
+    if updated:
+        save_club_profiles(clubs)
+    return clubs
+
+def save_club_profiles(club_profiles):
+    client = get_gsheets_client()
+    sheet = get_sheet_by_url(client, st.secrets["gsheets"]["club_profiles_sheet_url"], 'ClubProfiles')
+
+    club_list = list(club_profiles.values())
+    if not club_list:
+        sheet.clear()
+        sheet.update([["id", "club_name"]])
+        return
+
+    expected_headers = ["id", "club_name"]
+    
+    all_keys = set(expected_headers)
+    for club_data in club_list:
+        all_keys.update(club_data.keys())
+    
+    final_headers = list(expected_headers) + sorted([k for k in all_keys if k not in expected_headers])
+    
+    data_to_write = [final_headers]
+    for club_data in club_list:
+        row = []
+        for header in final_headers:
+            row.append(club_data.get(header, ""))
+        data_to_write.append(row)
+
+    sheet.clear()
+    sheet.update(data_to_write)
+    load_club_profiles.clear()
+
 # --- Data Handling for Login Logs ---
 def log_login_event(username):
     client = get_gsheets_client()
-    # Utilisez l'URL de la nouvelle feuille que vous avez ajoutée dans st.secrets
     sheet = get_sheet_by_url(client, st.secrets["gsheets"]["login_log_sheet_url"], 'LoginLogs')
     
     timestamp = datetime.now().isoformat()
     new_log_entry = [username, timestamp]
 
-    # Vérifier si la feuille est vide pour ajouter les en-têtes
     if not sheet.get_all_values():
         sheet.append_row(["Username", "Login_Time"])
     
@@ -768,19 +798,15 @@ def style_feedback_text(text):
     Displays specific tags in feedback text using Streamlit's new markdown badge syntax.
     This function processes the text and uses st.markdown to render it.
     """
-    # Sort tags by length in descending order to avoid partial matches
     sorted_tags = sorted(FEEDBACK_TAG_BADGE_CONFIG.keys(), key=len, reverse=True)
 
-    processed_text = text # Start with the original text
+    processed_text = text
 
     for tag in sorted_tags:
         config = FEEDBACK_TAG_BADGE_CONFIG[tag]
-        badge_color = config.get("color", "secondary") # Default to secondary if no color specified
+        badge_color = config.get("color", "secondary")
         badge_icon = config.get("icon", "")
 
-        # Ensure the color name is compatible with Streamlit's markdown badge syntax.
-        # Fallback to 'secondary' if the color is a hex code (which markdown badges don't directly support).
-        # Or, we can use a more explicit mapping if needed for custom theme colors.
         markdown_badge_color_name = badge_color if badge_color in [
             'blue', 'green', 'orange', 'red', 'violet', 'gray', 'grey',
             'primary', 'secondary', 'success', 'warning', 'danger', 'info'
@@ -792,14 +818,29 @@ def style_feedback_text(text):
         else:
             badge_content = badge_label
 
-        # Construct the markdown badge string: :color-badge[icon text]
         markdown_badge_string = f":{markdown_badge_color_name}-badge[{badge_content}]"
 
-        # Replace all occurrences of the tag in the processed_text
         processed_text = processed_text.replace(tag, markdown_badge_string)
 
-    # Render the final processed text as markdown
     st.markdown(processed_text)
+
+
+# --- Login Form Display ---
+def display_login_form(config, lang):
+    """Displays the login form and handles authentication."""
+    with st.sidebar:
+        st.title("Connexion")
+        username = st.text_input("Nom d'utilisateur")
+        password = st.text_input("Mot de passe", type="password")
+        if st.button("Se connecter"):
+            user_data = config['credentials']['usernames'].get(username.lower())
+            if user_data and verify_password(password, user_data['password']):
+                st.session_state['authentication_status'] = True
+                st.session_state['name'] = user_data['name']
+                log_login_event(user_data['name'])
+                st.rerun()
+            else:
+                st.error(_("login_error", lang))
 
 
 def display_level_performance_tab(all_records, user_profiles, discipline_keys, lang):
@@ -814,7 +855,7 @@ def display_level_performance_tab(all_records, user_profiles, discipline_keys, l
     records_df = pd.DataFrame(all_records)
 
     profiles_list = []
-    for user, profile_data in user_profiles.items(): # Use the passed user_profiles (which are already filtered)
+    for user, profile_data in user_profiles.items():
         profiles_list.append({
             'user': user,
             'certification': profile_data.get('certification', _("no_certification_option", lang))
@@ -842,15 +883,15 @@ def display_level_performance_tab(all_records, user_profiles, discipline_keys, l
 
     cert_order = ["NB", "A1", "A2", "A3", "S4", "I1", "I2", "I3", _("no_certification_option", lang)]
     cert_colors = [
-        "#D074B9",  # NB - Non-Breveté (Pink/Purple)
-        "#67C27F",  # A1 - Apnéiste Débutant (Green)
-        "#F2B760",  # A2 - Apnéiste Avancé (Light Orange)
-        "#F28F3B",  # A3 - Apnéiste Expert (Dark Orange)
-        "#2F788C",  # S4 - Assistant-Instructeur (Blue/Teal)
-        "#265F70",  # I1 - A darker shade for instructors
-        "#1D4654",  # I2 - Even darker
-        "#132D38",  # I3 - Darkest
-        "#CCCCCC"   # No Certification (Grey)
+        "#D074B9",
+        "#67C27F",
+        "#F2B760",
+        "#F28F3B",
+        "#2F788C",
+        "#265F70",
+        "#1D4654",
+        "#132D38",
+        "#CCCCCC"
     ]
 
     sub_tab_titles = [_("disciplines." + key, lang) for key in discipline_keys]
@@ -887,8 +928,8 @@ def display_level_performance_tab(all_records, user_profiles, discipline_keys, l
                     alt.Tooltip('formatted_perf', title=_("avg_performance_col", lang))
                 ]
             ).properties(
-                width=alt.Step(40),  # controls width of bar.
-                height=450, # fixed height for better readability
+                width=alt.Step(40),
+                height=450,
                 title=f"{_('avg_performance_by_certification_header', lang)} - {_('disciplines.' + disc_key, lang)}"
 
             )
@@ -920,48 +961,40 @@ def display_feedbacks_by_apneist_chart(instructor_feedback_data, user_profiles, 
 
     feedback_df = pd.DataFrame(instructor_feedback_data)
 
-    # Directly use 'diver_name' as the display name, without anonymization logic.
     feedback_df['diver_display_name'] = feedback_df['diver_name']
 
-    # --- 1. Préparation des données pour le graphique ---
-    # Count feedbacks by diver and instructor
     feedback_counts = feedback_df.groupby(['diver_display_name', 'instructor_name']).size().reset_index(name='count')
 
-    # Get unique instructors to define a color mapping
     unique_instructors = sorted(feedback_counts['instructor_name'].unique())
 
-    # --- Define a custom list of neutral/muted colors for instructors ---
     neutral_instructor_colors = [
-        "#A6CEE3",  # Light Blue (from Paired)
-        "#B2DF8A",  # Light Green (from Paired)
-        "#FB9A99",  # Light Red (from Paired)
-        "#FDBF6F",  # Light Orange (from Paired)
-        "#CAB2D6",  # Light Purple (from Paired)
-        "#8DA0CB",  # Muted Blue-Purple (from Dark2)
-        "#E78AC3",  # Muted Pink (from Dark2)
-        "#A1D99B",  # Sage Green (from YlGn)
-        "#D9D9D9",  # Light Gray
-        "#FCCDE5",  # Light Pink (from Set3)
-        "#CCEBC5",  # Muted Teal (from Set3)
-        "#BC80BD",  # Muted Violet (from Set3)
-        "#FFED6F",  # Soft Yellow (from Set3)
-        "#FFFFB3",  # Pale Yellow (from Pastel1)
-        "#BEBADA",  # Muted Lavender (from Pastel1)
-        "#FB8072",  # Salmon Red (from Set1)
-        "#80B1D3",  # Steel Blue (from Set1)
-        "#FDB462",  # Muted Gold (from Set1)
-        "#B3DE69",  # Olive Green (from Set1)
-        # Added a few more for robustness if needed
-        "#8FBC8F",  # Dark Sea Green
-        "#C0C0C0",  # Silver
-        "#DDA0DD",  # Plum
+        "#A6CEE3",
+        "#B2DF8A",
+        "#FB9A99",
+        "#FDBF6F",
+        "#CAB2D6",
+        "#8DA0CB",
+        "#E78AC3",
+        "#A1D99B",
+        "#D9D9D9",
+        "#FCCDE5",
+        "#CCEBC5",
+        "#BC80BD",
+        "#FFED6F",
+        "#FFFFB3",
+        "#BEBADA",
+        "#FB8072",
+        "#80B1D3",
+        "#FDB462",
+        "#B3DE69",
+        "#8FBC8F",
+        "#C0C0C0",
+        "#DDA0DD",
     ]
 
-    # Create the domain and range for the color scale
     color_domain = unique_instructors
     color_range = neutral_instructor_colors[:len(unique_instructors)]
 
-    # --- Affichage du graphique à barres ---
     st.subheader(_("feedbacks_by_apneist_chart_tab_label", lang=lang))
 
     if not feedback_counts.empty:
@@ -969,7 +1002,7 @@ def display_feedbacks_by_apneist_chart(instructor_feedback_data, user_profiles, 
         if max_count <= 5:
             integer_tick_values = list(range(0, max_count + 1))
         elif max_count <= 10:
-            integer_tick_values = list(range(0, max_count + 1, 1)) # Step by 1
+            integer_tick_values = list(range(0, max_count + 1, 1))
         else:
             integer_tick_values = list(range(0, max_count + 1, max(1, max_count // 7)))
 
@@ -978,8 +1011,8 @@ def display_feedbacks_by_apneist_chart(instructor_feedback_data, user_profiles, 
             x=alt.X('count:Q',
                     title=_("count_col", lang=lang),
                     axis=alt.Axis(
-                        format=".0f",  # Ensures labels are integers
-                        values=integer_tick_values # Ensures only integer tick marks
+                        format=".0f",
+                        values=integer_tick_values
                     )
                    ),
             color=alt.Color('instructor_name:N', title=_("instructor_name_label", lang=lang),
@@ -990,7 +1023,6 @@ def display_feedbacks_by_apneist_chart(instructor_feedback_data, user_profiles, 
                 alt.Tooltip('count:Q', title=_("count_col", lang=lang), format=".0f")
             ]
         ).properties(
-            # The title is set by st.subheader above for better layout control
         ).interactive()
 
         st.altair_chart(chart, use_container_width=True)
@@ -1000,7 +1032,6 @@ def display_feedbacks_by_apneist_chart(instructor_feedback_data, user_profiles, 
 
 # --- Main Application Logic ---
 def main_app():
-    # --- Main Application (after successful login) ---
     lang = st.session_state.language
     
     # Load all data first
@@ -1009,6 +1040,7 @@ def main_app():
     user_profiles_all = load_user_profiles()
     instructor_feedback_all = load_instructor_feedback()
     all_wishes_all = load_wishes()
+    club_profiles_all = load_club_profiles()
 
     current_user = st.session_state.get("name")
     is_admin_view_authorized = current_user in PRIVILEGED_USERS
@@ -1021,32 +1053,60 @@ def main_app():
     # Initialize session state for admin club filter
     if 'selected_club_filter' not in st.session_state:
         st.session_state.selected_club_filter = _("all_clubs_option", lang)
+    if 'new_club_name_buffer' not in st.session_state:
+        st.session_state.new_club_name_buffer = ""
 
-    # Admin Club Filter in Sidebar (if admin)
+    # Définir is_sidebar_instructor_section_visible AVANT le premier bloc st.sidebar
+    is_sidebar_instructor_section_visible = False
+    if current_user in user_profiles_all:
+        user_cert_sidebar = user_profiles_all[current_user].get("certification")
+        if user_cert_sidebar in INSTRUCTOR_CERT_LEVELS_FOR_LOGGING_FEEDBACK_SIDEBAR:
+            is_sidebar_instructor_section_visible = True
+
     with st.sidebar:
         st.info(f"Suis tes **performances** et **activités** et complète ton **profil** pour générer un **feedback personnalisé** intégrant les retours de tes encadrants 👀.")
         st.success(f"Journal de **{current_user}**", icon="📒")
 
-        if is_admin_view_authorized:
-            all_clubs = sorted(list(set(profile.get('club', '') for profile in user_profiles_all.values() if profile.get('club') is not None))) # Handle None club values
-            # Include an option for "No Club" for profiles without a club assigned
-            if any(profile.get('club') == '' or profile.get('club') is None for profile in user_profiles_all.values()):
-                # Insert '' at the beginning if there are users with no club, then sort to ensure it stays first
-                all_clubs.insert(0, '')
-                all_clubs = sorted(set(all_clubs), key=lambda x: (x == '', x)) # Ensures empty string is first
+        # --- Club Filter for SUPER_PRIVILEGED_USERS only ---
+        if is_super_admin_view_authorized:
+            # st.subheader(_("filter_by_club_label", lang))
+            all_club_names = sorted(list(club_profiles_all.keys()))
 
+            if any(profile.get('club') == '' or profile.get('club') is None for profile in user_profiles_all.values()):
+                all_club_names.insert(0, '')
+                all_club_names = sorted(set(all_club_names), key=lambda x: (x == '', x))
+            
             selected_club_for_admin_filter = st.selectbox(
                 _("filter_by_club_label", lang),
-                options=[_("all_clubs_option", lang)] + all_clubs,
-                format_func=lambda x: x if x != '' else 'Pas de Club', # Display 'Pas de Club' for empty string
+                options=[_("all_clubs_option", lang)] + all_club_names,
+                format_func=lambda x: x if x != '' else 'Pas de Club',
+                index=([_("all_clubs_option", lang)] + all_club_names).index(st.session_state.selected_club_filter) if st.session_state.selected_club_filter in ([_("all_clubs_option", lang)] + all_club_names) else 0,
                 key="admin_club_filter_sidebar",
                 on_change=lambda: st.session_state.update(selected_club_filter=st.session_state.admin_club_filter_sidebar)
             )
-            # Update the session state variable for filtering
             st.session_state.selected_club_filter = selected_club_for_admin_filter
         else:
-            # Non-admins always see their own club's data
             st.session_state.selected_club_filter = current_user_club if current_user_club else _("all_clubs_option", lang)
+
+
+        # --- New Club Creation Widget for SUPER_PRIVILEGED_USERS only ---
+        if is_super_admin_view_authorized:
+            st.header(_("new_club_header_sidebar", lang))
+            with st.form(key="new_club_form_sidebar"):
+                new_club_name = st.text_input(_("new_club_name_label", lang), value=st.session_state.new_club_name_buffer, key="new_club_name_input", placeholder=_("new_club_name_placeholder", lang))
+                if st.form_submit_button(_("save_new_club_button", lang)):
+                    name_to_save = new_club_name.strip()
+                    if not name_to_save:
+                        st.error(_("club_name_empty_error", lang))
+                    elif name_to_save in club_profiles_all:
+                        st.error(_("club_name_exists_error", lang, club_name=name_to_save))
+                    else:
+                        new_club_entry = {"id": uuid.uuid4().hex, "club_name": name_to_save}
+                        club_profiles_all[name_to_save] = new_club_entry
+                        save_club_profiles(club_profiles_all)
+                        st.success(_("club_saved_success", lang, club_name=name_to_save))
+                        st.session_state.new_club_name_buffer = ""
+                        st.rerun()
 
 
         if st.button(_("logout_button", lang)):
@@ -1057,7 +1117,6 @@ def main_app():
         # Profile Section
         with st.expander(_("profile_header_sidebar", lang)):
             with st.form(key="profile_form_sidebar_main", border=False):
-                # Corrected: Use current_user_profile_data
                 current_certification_sidebar = current_user_profile_data.get("certification", _("no_certification_option", lang))
                 cert_level_keys_from_dict_sidebar = list(TRANSLATIONS[lang]["certification_levels"].keys())
                 actual_selectbox_options_sidebar = [_("no_certification_option", lang)] + cert_level_keys_from_dict_sidebar
@@ -1066,9 +1125,22 @@ def main_app():
                 except ValueError:
                     current_cert_index_sidebar = 0
 
-                st.text_input(
+                existing_club_options = sorted(list(club_profiles_all.keys()))
+                if '' not in existing_club_options:
+                    existing_club_options.insert(0, '') 
+                
+                current_user_club_value = current_user_profile_data.get("club", "")
+
+                try:
+                    current_club_index = existing_club_options.index(current_user_club_value)
+                except ValueError:
+                    current_club_index = existing_club_options.index('') if '' in existing_club_options else 0
+
+                st.selectbox(
                     _("club_label", lang),
-                    value=current_user_profile_data.get("club", ""),
+                    options=existing_club_options,
+                    format_func=lambda x: x if x != '' else 'Pas de Club',
+                    index=current_club_index,
                     key="club_profile_form_sb"
                 )
 
@@ -1077,7 +1149,6 @@ def main_app():
                     index=current_cert_index_sidebar, key="certification_select_profile_form_sb"
                 )
 
-                # Corrected: Use current_user_profile_data
                 current_cert_date_str_sidebar = current_user_profile_data.get("certification_date")
                 current_cert_date_obj_sidebar = None
                 if current_cert_date_str_sidebar:
@@ -1143,43 +1214,24 @@ def main_app():
                     st.rerun()
     
     # --- Apply Club Filtering to all dataframes based on selected_club_filter ---
-    # This logic will apply to all subsequent data displays and forms.
     if st.session_state.selected_club_filter == _("all_clubs_option", lang):
-        # Admin viewing all clubs
         filtered_records = all_records_all
         filtered_training_log = training_log_all
         filtered_instructor_feedback = instructor_feedback_all
         filtered_wishes = all_wishes_all
-        # When admin is viewing all clubs, they should see all users
         filtered_user_profiles = user_profiles_all
     else:
-        # User viewing their club, or admin viewing a specific club
         target_club = st.session_state.selected_club_filter
 
-        # Filter records by user's club from user_profiles_all
         filtered_records = [r for r in all_records_all if user_profiles_all.get(r['user'], {}).get('club', '') == target_club]
-        
-        # Filter training logs by their 'club' field directly
         filtered_training_log = [t for t in training_log_all if t.get('club', '') == target_club]
-        
-        # Filter instructor feedback by diver's club from user_profiles_all
         filtered_instructor_feedback = [fb for fb in instructor_feedback_all if user_profiles_all.get(fb['diver_name'], {}).get('club', '') == target_club]
-        
-        # Filter wishes by user's club from user_profiles_all
         filtered_wishes = [w for w in all_wishes_all if user_profiles_all.get(w['user_name'], {}).get('club', '') == target_club]
         
-        # Filter user profiles by the selected club as well
         filtered_user_profiles = {name: profile for name, profile in user_profiles_all.items() if profile.get('club', '') == target_club}
 
 
-    # --- Sidebar Logging Forms ---
-    is_sidebar_instructor_section_visible = False
-    if current_user in user_profiles_all: # Use user_profiles_all here
-        user_cert_sidebar = user_profiles_all[current_user].get("certification")
-        if user_cert_sidebar in INSTRUCTOR_CERT_LEVELS_FOR_LOGGING_FEEDBACK_SIDEBAR:
-            is_sidebar_instructor_section_visible = True
-
-    with st.sidebar: # Added this for clarity, as the previous section closed the sidebar scope
+    with st.sidebar: # Re-open sidebar scope for consistency if previous block closed it
         if is_sidebar_instructor_section_visible and is_admin_view_authorized:
             st.header(_("log_training_header_sidebar", lang))
             with st.form(key="log_training_form_sidebar"):
@@ -1193,10 +1245,9 @@ def main_app():
                     if not desc_to_save:
                         st.error(_("training_description_empty_error", lang))
                     else:
-                        # NEW: Add club to new training entry
                         new_training_entry = {"id": uuid.uuid4().hex, "date": date_to_save.isoformat(), "place": place_to_save, "description": desc_to_save, "club": current_user_club}
-                        training_log_all.append(new_training_entry) # Append to ALL logs
-                        save_training_log(training_log_all) # Save ALL logs
+                        training_log_all.append(new_training_entry)
+                        save_training_log(training_log_all)
                         st.success(_("training_session_saved_success", lang))
                         st.session_state.training_place_buffer = ""
                         st.session_state.training_desc_buffer = ""
@@ -1205,13 +1256,13 @@ def main_app():
         st.header(_("log_performance_header", lang))
         with st.form(key="log_performance_form_sidebar_main"):
             st.write(_("logging_for", lang, user=current_user))
-            if not filtered_training_log: # Use filtered_training_log here
+            if not filtered_training_log:
                 st.warning("Veuillez d'abord créer une activité.")
                 st.form_submit_button(_("save_performance_button", lang), disabled=True)
             else:
                 discipline_keys = ["Dynamic Bi-fins (DYN-BF)", "Static Apnea (STA)", "Dynamic No-fins (DNF)", "Depth (CWT/FIM)", "Depth (VWT/NLT)", "16x25m Speed Endurance"]
                 translated_disciplines_for_display = [_("disciplines." + key, lang) for key in discipline_keys]
-                training_session_options = {ts.get('id'): f"{ts.get('date')} - {ts.get('place', 'N/A')}" for ts in sorted(filtered_training_log, key=lambda x: x.get('date', '1900-01-01'), reverse=True)} # Use filtered_training_log
+                training_session_options = {ts.get('id'): f"{ts.get('date')} - {ts.get('place', 'N/A')}" for ts in sorted(filtered_training_log, key=lambda x: x.get('date', '1900-01-01'), reverse=True)}
                 selected_training_session_id = st.selectbox(
                     _("link_training_session_label", lang), options=list(training_session_options.keys()),
                     format_func=lambda x: training_session_options[x], key="log_perf_session_select_widget_key"
@@ -1245,10 +1296,10 @@ def main_app():
                                 "discipline": log_discipline_original_key_perf_form, "original_performance_str": current_log_perf_str,
                                 "parsed_value": parsed_value_for_storage, "linked_training_session_id": selected_training_session_id,
                                 "comment": current_log_perf_comment,
-                                "club": current_user_club # NEW: Add club to new record
+                                "club": current_user_club
                             }
-                            all_records_all.append(new_record) # Append to ALL records
-                            save_records(all_records_all) # Save ALL records
+                            all_records_all.append(new_record)
+                            save_records(all_records_all)
                             st.success(_("performance_saved_success", lang, user=current_user))
                             st.session_state.log_perf_input_buffer = ""
                             st.session_state.log_perf_comment_buffer = ""
@@ -1257,7 +1308,7 @@ def main_app():
         if is_sidebar_instructor_section_visible:
             st.header(_("log_feedback_header_sidebar", lang))
             with st.form(key="log_feedback_form_sidebar"):
-                all_known_users_list = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values()))) # Use filtered_user_profiles keys for options
+                all_known_users_list = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values())))
                 if not all_known_users_list:
                     st.warning("Please add freedivers before logging feedback.")
                 else:
@@ -1278,7 +1329,7 @@ def main_app():
                     else:
                         feedback_for_user_selectbox_key_in_form = current_user
 
-                    training_session_options_fb_form = {log['id']: f"{log.get('date', '')} - {log.get('place', '')}" for log in sorted(filtered_training_log, key=lambda x: x.get('date', '1900-01-01'), reverse=True)} # Use filtered_training_log
+                    training_session_options_fb_form = {log['id']: f"{log.get('date', '')} - {log.get('place', '')}" for log in sorted(filtered_training_log, key=lambda x: x.get('date', '1900-01-01'), reverse=True)}
                     training_session_options_display_fb_form = [_("select_training_prompt", lang)] + list(training_session_options_fb_form.values())
                     default_fb_ts_idx = 0
                     try:
@@ -1309,21 +1360,19 @@ def main_app():
                         elif not sel_fb_text:
                             st.error(_("feedback_text_empty_error", lang))
                         else:
-                            # NEW: Add club to new feedback entry
                             new_feedback = {
                                 "id": uuid.uuid4().hex, "feedback_date": date.today().isoformat(), "diver_name": sel_fb_for_user,
                                 "training_session_id": sel_fb_training_id, "instructor_name": current_user, "feedback_text": sel_fb_text,
-                                "club": current_user_club # NEW: Add club to new feedback
+                                "club": current_user_club
                             }
-                            instructor_feedback_all.append(new_feedback) # Append to ALL feedback
-                            save_instructor_feedback(instructor_feedback_all) # Save ALL feedback
+                            instructor_feedback_all.append(new_feedback)
+                            save_instructor_feedback(instructor_feedback_all)
                             st.success(_("feedback_saved_success", lang))
                             st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
                             st.session_state.feedback_training_session_buffer = _("select_training_prompt", lang)
                             st.session_state.feedback_text_buffer = ""
                             st.rerun()
                             
-        # --- Sidebar Wish Form ---
         st.header(_("wish_header_sidebar", lang))
         with st.form(key="log_wish_form_sidebar"):
             wish_description = st.text_area(_("wish_description_label", lang), key="wish_description_form_key", placeholder=_("wish_description_label_ph", lang), height=300)
@@ -1332,23 +1381,21 @@ def main_app():
                 if not desc_to_save:
                     st.error(_("wish_description_empty_error", lang))
                 else:
-                    # NEW: Add club to new wish entry
                     new_wish = {
                         "id": uuid.uuid4().hex,
                         "user_name": current_user,
                         "date": date.today().isoformat(),
                         "description": desc_to_save,
-                        "club": current_user_club # NEW: Add club to new wish
+                        "club": current_user_club
                     }
-                    all_wishes_all.append(new_wish) # Append to ALL wishes
-                    save_wishes(all_wishes_all) # Save ALL wishes
+                    all_wishes_all.append(new_wish)
+                    save_wishes(all_wishes_all)
                     st.success(_("wish_saved_success", lang))
                     st.rerun()
 
 
     st.title(_("app_title", lang))
 
-    # Define all possible tab labels
     tab_label_freedivers = _("freedivers_tab_title", lang) + " [A]"
     tab_label_main_training_log = _("training_log_tab_title", lang)
     tab_label_performances = _("performances_main_tab_title", lang)
@@ -1356,13 +1403,11 @@ def main_app():
     tab_label_wishes = _("wishes_main_tab_title", lang) + " [A]"
 
 
-    # Define the base tabs order
     tabs_to_display_names = [
         tab_label_main_training_log,
         tab_label_performances,
         tab_label_main_feedback_log,
     ]
-    # Add admin-specific tab at the end
     if is_admin_view_authorized:
         tabs_to_display_names.append(tab_label_wishes)
         tabs_to_display_names.append(f"{tab_label_freedivers}")
@@ -1402,13 +1447,12 @@ def main_app():
                     on_change=lambda: st.session_state.update(selected_training_sub_tab_label=st.session_state.training_sub_tabs_selectbox)
                 )
 
-            # 1. Onglet "Journal d'Activités" (public)
             if selected_training_sub_tab_label == _("training_sessions_sub_tab_label", lang):
-                if not filtered_training_log: # Use filtered_training_log
+                if not filtered_training_log:
                     st.info(_("no_training_sessions_logged", lang))
                 else:
-                    years = sorted(list(set(datetime.fromisoformat(entry['date']).year for entry in filtered_training_log if entry.get('date'))), reverse=True) # Use filtered_training_log
-                    places = sorted(list(set(entry['place'] for entry in filtered_training_log if entry.get('place')))) # Use filtered_training_log
+                    years = sorted(list(set(datetime.fromisoformat(entry['date']).year for entry in filtered_training_log if entry.get('date'))), reverse=True)
+                    places = sorted(list(set(entry['place'] for entry in filtered_training_log if entry.get('place'))))
                     months_en = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
                     months_translated = [_("months." + m, lang) for m in months_en]
                     all_tags = sorted(list(FEEDBACK_TAG_BADGE_CONFIG.keys()))
@@ -1419,7 +1463,7 @@ def main_app():
                     with col3_f: selected_place = st.selectbox(_("filter_by_place_label", lang), [_("all_places_option", lang)] + places, key="training_place_filter")
                     with col4_f: selected_tag = st.selectbox(_("filter_by_tag_label", lang), [_("all_tags_option", lang)] + all_tags, key="training_tag_filter")
 
-                    display_logs = filtered_training_log # Start with filtered data
+                    display_logs = filtered_training_log
                     if selected_year != _("all_years_option", lang): display_logs = [log for log in display_logs if log.get('date') and datetime.fromisoformat(log['date']).year == selected_year]
                     if selected_month_name != _("all_months_option", lang):
                         month_number = months_translated.index(selected_month_name) + 1
@@ -1436,20 +1480,19 @@ def main_app():
                                 with st.container(border=False):
                                     style_feedback_text(entry.get('description', _("no_description_available", lang)))
 
-            # 2. Onglet "Suggestion d'entraînement" (admin)
             elif is_admin_view_authorized and selected_training_sub_tab_label == _("training_suggestion_tab_label", lang):
                 st.info(_("training_suggestion_intro", lang))
-                if not filtered_training_log: # Use filtered_training_log
+                if not filtered_training_log:
                     st.warning(_("no_data_for_suggestion", lang))
                 else:
                     if st.button(_("generate_training_suggestion_button", lang)):
                         with st.spinner(_("generating_training_suggestion_spinner", lang)):
-                            recent_sessions_desc = "\n".join([f"- {log['date']}: {log['description']}" for log in sorted(filtered_training_log, key=lambda x: x.get('date', '1900-01-01'), reverse=True)[:20]]) # Use filtered_training_log
-                            all_profiles = list(filtered_user_profiles.values()) # Use filtered_user_profiles
+                            recent_sessions_desc = "\n".join([f"- {log['date']}: {log['description']}" for log in sorted(filtered_training_log, key=lambda x: x.get('date', '1900-01-01'), reverse=True)[:20]])
+                            all_profiles = list(filtered_user_profiles.values())
                             cert_counts = pd.Series([p.get('certification', 'Non spécifié') for p in all_profiles]).value_counts().to_dict()
                             certs_summary_str = ", ".join([f"{count}x {cert}" for cert, count in cert_counts.items()])
                             prompts_instructions = toml.load("./prompts.toml")
-                            training_instructions = prompts_instructions['training']['training_session_instructions'] # Corrected based on your TOML
+                            training_instructions = prompts_instructions['training']['training_session_instructions']
                             prompt = f"""
                             Tu es un coach d'apnée créatif et expérimenté, responsable de la planification des entraînements pour un club.
                             Ta mission est de proposer une séance d'entraînement originale et stimulante pour la prochaine session en piscine, destinée à un groupe d'apnéistes de niveaux variés.
@@ -1477,9 +1520,8 @@ def main_app():
                             except Exception as e:
                                 st.error(_("api_call_error", lang, e=e))
 
-            # 3. Onglet "Éditer des Activités" (admin)
             elif is_admin_view_authorized and selected_training_sub_tab_label == f"{_('edit_training_sessions_sub_tab_label', lang)}":
-                if not filtered_training_log: # Use filtered_training_log
+                if not filtered_training_log:
                     st.info(_("no_training_sessions_logged", lang))
                 else:
                     training_log_display = [
@@ -1490,7 +1532,7 @@ def main_app():
                             _("training_description_label", lang): entry.get("description"),
                             _("history_delete_col_editor", lang): False
                         }
-                        for entry in sorted(filtered_training_log, key=lambda x: x.get('date', '1900-01-01'), reverse=True) # Use filtered_training_log
+                        for entry in sorted(filtered_training_log, key=lambda x: x.get('date', '1900-01-01'), reverse=True)
                     ]
                     with st.form(key="training_log_edit_form", border=False):
                         edited_training_df = st.data_editor(
@@ -1506,7 +1548,6 @@ def main_app():
                         )
                         if st.form_submit_button(_("save_training_log_changes_button", lang)):
                             new_log_list = []
-                            # Keep logs not in the current filter
                             logs_outside_filter = [log for log in training_log_all if log.get('club', '') != st.session_state.selected_club_filter and st.session_state.selected_club_filter != _("all_clubs_option", lang)]
                             
                             for row in edited_training_df.to_dict('records'):
@@ -1517,9 +1558,9 @@ def main_app():
                                         "date": row[_("training_date_label", lang)].isoformat() if isinstance(row[_("training_date_label", lang)], date) else str(row[_("training_date_label", lang)]),
                                         "place": row[_("training_place_label", lang)],
                                         "description": row[_("training_description_label", lang)],
-                                        "club": st.session_state.selected_club_filter if st.session_state.selected_club_filter != _("all_clubs_option", lang) else current_user_club # Tag with current filter or user's club
+                                        "club": st.session_state.selected_club_filter if st.session_state.selected_club_filter != _("all_clubs_option", lang) else current_user_club
                                     })
-                            save_training_log(logs_outside_filter + new_log_list) # Save all logs
+                            save_training_log(logs_outside_filter + new_log_list)
                             st.success(_("training_log_updated_success", lang))
                             st.rerun()
 
@@ -1553,7 +1594,7 @@ def main_app():
                 )
 
             if selected_perf_sub_tab_label == _("personal_records_tab_label", lang):
-                user_records_for_tab = [r for r in filtered_records if r['user'] == current_user] # Use filtered_records
+                user_records_for_tab = [r for r in filtered_records if r['user'] == current_user]
                 if not user_records_for_tab:
                     st.info(_("no_performances_yet", lang))
                 else:
@@ -1567,7 +1608,7 @@ def main_app():
                                 continue
                             best_record_pb_tab = min(disc_records_pb_tab, key=lambda x: x['parsed_value']) if is_lower_better(disc_key_pb_tab) else max(disc_records_pb_tab, key=lambda x: x['parsed_value'])
                             pb_value_formatted_tab = format_seconds_to_static_time(best_record_pb_tab['parsed_value']) if is_time_based_discipline(disc_key_pb_tab) else f"{int(best_record_pb_tab['parsed_value'])}m"
-                            session_details = get_training_session_details(best_record_pb_tab.get('linked_training_session_id'), training_log_all) # Use training_log_all as get_training_session_details might need to look up outside current club's filtered logs
+                            session_details = get_training_session_details(best_record_pb_tab.get('linked_training_session_id'), training_log_all)
                             pbs_tab[disc_key_pb_tab] = (pb_value_formatted_tab, session_details['event_name'], session_details['event_date'])
 
                         cols_pb_tab = st.columns(len(discipline_keys))
@@ -1589,13 +1630,13 @@ def main_app():
                             with personal_sub_tabs_objects[i_sub_tab_user]:
                                 chart_data_list = [
                                     {
-                                        "Date": pd.to_datetime(get_training_session_details(r_chart.get('linked_training_session_id'), training_log_all).get('event_date')), # Use training_log_all
+                                        "Date": pd.to_datetime(get_training_session_details(r_chart.get('linked_training_session_id'), training_log_all).get('event_date')),
                                         "PerformanceValue": r_chart['parsed_value'],
-                                        "Lieu": get_training_session_details(r_chart.get('linked_training_session_id'), training_log_all).get('event_name'), # Use training_log_all
+                                        "Lieu": get_training_session_details(r_chart.get('linked_training_session_id'), training_log_all).get('event_name'),
                                         "Comment": r_chart.get("comment", "")
                                     }
-                                    for r_chart in sorted(user_records_for_tab, key=lambda x: get_training_session_details(x.get('linked_training_session_id'), training_log_all).get('event_date') or '1900-01-01') # Use training_log_all
-                                    if r_chart['discipline'] == disc_key_sub_tab_user and r_chart.get('parsed_value') is not None and get_training_session_details(r_chart.get('linked_training_session_id'), training_log_all).get('event_date') # Use training_log_all
+                                    for r_chart in sorted(user_records_for_tab, key=lambda x: get_training_session_details(x.get('linked_training_session_id'), training_log_all).get('event_date') or '1900-01-01')
+                                    if r_chart['discipline'] == disc_key_sub_tab_user and r_chart.get('parsed_value') is not None and get_training_session_details(r_chart.get('linked_training_session_id'), training_log_all).get('event_date')
                                 ]
                                 st.markdown(f"#### {_('performance_evolution_subheader', lang)}")
                                 if chart_data_list:
@@ -1624,7 +1665,7 @@ def main_app():
                                 if not history_for_editor_raw:
                                     st.caption(_("no_history_display", lang))
                                 else:
-                                    training_session_options = {ts.get('id'): f"{ts.get('date')} - {ts.get('place', 'N/A')}" for ts in sorted(training_log_all, key=lambda x: x.get('date', '1900-01-01'), reverse=True)} # Use training_log_all
+                                    training_session_options = {ts.get('id'): f"{ts.get('date')} - {ts.get('place', 'N/A')}" for ts in sorted(training_log_all, key=lambda x: x.get('date', '1900-01-01'), reverse=True)}
                                     training_session_options[None] = _("no_specific_session_option", lang)
 
                                     session_display_to_id = {v: k for k, v in training_session_options.items()}
@@ -1636,7 +1677,7 @@ def main_app():
                                             _("history_comment_col", lang): rec.get("comment", ""),
                                             _("history_delete_col_editor", lang): False
                                         }
-                                        for rec in sorted(history_for_editor_raw, key=lambda x: get_training_session_details(x.get('linked_training_session_id'), training_log_all).get('event_date') or '1900-01-01', reverse=True) # Use training_log_all
+                                        for rec in sorted(history_for_editor_raw, key=lambda x: get_training_session_details(x.get('linked_training_session_id'), training_log_all).get('event_date') or '1900-01-01', reverse=True)
                                     ]
                                     with st.form(key=f"personal_history_form_{disc_key_sub_tab_user}", border=False):
                                         performance_column_config = {}
@@ -1660,14 +1701,13 @@ def main_app():
                                             hide_index=True, key=f"data_editor_{current_user}_{disc_key_sub_tab_user}"
                                         )
                                         if st.form_submit_button(_("save_history_changes_button", lang)):
-                                            # Filter out records for the current user and discipline
                                             records_to_process = [r for r in all_records_all if not(r['user'] == current_user and r['discipline'] == disc_key_sub_tab_user)]
                                             
                                             for row in edited_df.to_dict('records'):
                                                 if row[_("history_delete_col_editor", lang)]:
                                                     continue
 
-                                                original_rec = next((r for r in all_records_all if r['id'] == row['id']), None) # Check in ALL records
+                                                original_rec = next((r for r in all_records_all if r['id'] == row['id']), None)
                                                 if original_rec:
                                                     new_perf_str = str(row[_("history_performance_col", lang)]).strip()
                                                     new_session_id = session_display_to_id.get(row[_("link_training_session_label", lang)])
@@ -1680,35 +1720,35 @@ def main_app():
                                                     else:
                                                         st.error(f"Invalid performance format for '{new_perf_str}'")
                                                     records_to_process.append(original_rec)
-                                            save_records(records_to_process) # Save ALL records
+                                            save_records(records_to_process)
                                             st.success(_("history_updated_success", lang))
                                             st.rerun()
 
             elif selected_perf_sub_tab_label == _("club_level_performance_tab_title", lang):
-                display_level_performance_tab(filtered_records, filtered_user_profiles, discipline_keys, lang) # Use filtered data
+                display_level_performance_tab(filtered_records, filtered_user_profiles, discipline_keys, lang)
 
             elif is_super_admin_view_authorized and selected_perf_sub_tab_label == f"{_('club_performances_overview_tab_label', lang)}":
-                if not filtered_records: # Use filtered_records
+                if not filtered_records:
                     st.info(_("no_ranking_data", lang))
                 else:
                     with st.container(border=False):
-                        all_known_users_list = sorted(list(set(r['user'] for r in filtered_records).union(set(filtered_user_profiles.keys())))) # Use filtered data
+                        all_known_users_list = sorted(list(set(r['user'] for r in filtered_records).union(set(filtered_user_profiles.keys()))))
                         club_pbs = {}
                         for disc_key_club_pb in discipline_keys:
-                            club_disc_records = [r for r in filtered_records if r['discipline'] == disc_key_club_pb and r.get('parsed_value') is not None] # Use filtered_records
+                            club_disc_records = [r for r in filtered_records if r['discipline'] == disc_key_club_pb and r.get('parsed_value') is not None]
                             if not club_disc_records:
                                 club_pbs[disc_key_club_pb] = ("N/A", None, None, None)
                                 continue
                             best_club_record = min(club_disc_records, key=lambda x: x['parsed_value']) if is_lower_better(disc_key_club_pb) else max(club_disc_records, key=lambda x: x['parsed_value'])
                             club_pb_value_formatted = format_seconds_to_static_time(best_club_record['parsed_value']) if is_time_based_discipline(disc_key_club_pb) else f"{int(best_club_record['parsed_value'])}m"
-                            session_details = get_training_session_details(best_club_record.get('linked_training_session_id'), training_log_all) # Use training_log_all
+                            session_details = get_training_session_details(best_club_record.get('linked_training_session_id'), training_log_all)
                             club_pbs[disc_key_club_pb] = (club_pb_value_formatted, best_club_record['user'], session_details['event_name'], session_details['event_date'])
                         cols_club_pb = st.columns(len(discipline_keys))
                         for i, disc_key_club_pb_col in enumerate(discipline_keys):
                             val_club, user_club, event_name_club, event_date_club = club_pbs.get(disc_key_club_pb_col)
                             with cols_club_pb[i]:
                                 metric_label_club = _("club_best_labels." + disc_key_club_pb_col, lang)
-                                display_user_club = get_display_name(user_club, user_profiles_all, lang) if user_club else _("anonymous_freediver_name", lang) # Use user_profiles_all here
+                                display_user_club = get_display_name(user_club, user_profiles_all, lang) if user_club else _("anonymous_freediver_name", lang)
                                 st.metric(label=metric_label_club, value=val_club)
                                 if user_club and event_date_club:
                                     st.caption(_("achieved_at_event_on_date_caption", lang, user=display_user_club, event_name=event_name_club, event_date=event_date_club))
@@ -1723,10 +1763,10 @@ def main_app():
                         with ranking_sub_tabs_objects[i_rank_sub_tab]:
                             user_pbs_for_discipline_ranking = []
                             for u_rank_tab in all_known_users_list:
-                                user_specific_discipline_records_ranking = [r for r in filtered_records if r['user'] == u_rank_tab and r['discipline'] == selected_discipline_ranking_key and r.get('parsed_value') is not None] # Use filtered_records
+                                user_specific_discipline_records_ranking = [r for r in filtered_records if r['user'] == u_rank_tab and r['discipline'] == selected_discipline_ranking_key and r.get('parsed_value') is not None]
                                 if user_specific_discipline_records_ranking:
                                     best_record_for_user_ranking = min(user_specific_discipline_records_ranking, key=lambda x: x['parsed_value']) if is_lower_better(selected_discipline_ranking_key) else max(user_specific_discipline_records_ranking, key=lambda x: x['parsed_value'])
-                                    session_details = get_training_session_details(best_record_for_user_ranking.get('linked_training_session_id'), training_log_all) # Use training_log_all
+                                    session_details = get_training_session_details(best_record_for_user_ranking.get('linked_training_session_id'), training_log_all)
                                     user_pbs_for_discipline_ranking.append({
                                         "user": u_rank_tab, "parsed_value": best_record_for_user_ranking['parsed_value'],
                                         "event_date": session_details['event_date'], "event_name": session_details['event_name']
@@ -1738,7 +1778,7 @@ def main_app():
                                 ranking_table_data = [
                                     {
                                         _("rank_col", lang): rank_idx + 1,
-                                        _("user_col", lang): get_display_name(rank_item['user'], user_profiles_all, lang), # Use user_profiles_all
+                                        _("user_col", lang): get_display_name(rank_item['user'], user_profiles_all, lang),
                                         _("best_performance_col", lang): format_seconds_to_static_time(rank_item['parsed_value']) if is_time_based_discipline(selected_discipline_ranking_key) else f"{int(rank_item['parsed_value'])}m",
                                         _("event_col", lang): rank_item.get('event_name', "N/A"),
                                         _("date_achieved_col", lang): rank_item.get('event_date', "N/A")
@@ -1748,11 +1788,11 @@ def main_app():
                                 st.dataframe(pd.DataFrame(ranking_table_data), use_container_width=True, hide_index=True)
 
             elif is_admin_view_authorized and selected_perf_sub_tab_label == f"{_('performances_overview_tab_label', lang)}":
-                all_known_users_list_filtered = sorted(list(set(r['user'] for r in filtered_records).union(set(filtered_user_profiles.keys())))) # Use filtered data
+                all_known_users_list_filtered = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values())))
                 col1_f, col2_f, col3_f = st.columns(3)
                 with col1_f: filter_user_perf = st.selectbox(_("filter_by_freediver_label", lang), [_("all_freedivers_option", lang)] + all_known_users_list_filtered, key="perf_log_user_filter_overview")
                 with col2_f:
-                    session_options = {s['id']: f"{s['date']} - {s['place']}" for s in filtered_training_log} # Use filtered_training_log
+                    session_options = {s['id']: f"{s['date']} - {s['place']}" for s in filtered_training_log}
                     session_options[None] = _("no_specific_session_option", lang)
                     filter_session_id_perf = st.selectbox(_("filter_by_training_session_label", lang), [_("all_sessions_option", lang)] + list(session_options.keys()), format_func=lambda x: session_options.get(x, x), key="perf_log_session_filter_overview")
                 with col3_f:
@@ -1763,7 +1803,7 @@ def main_app():
                         key="perf_log_discipline_filter_overview"
                     )
 
-                display_records = filtered_records # Start with filtered data
+                display_records = filtered_records
                 if filter_user_perf != _("all_freedivers_option", lang): display_records = [r for r in display_records if r['user'] == filter_user_perf]
                 if filter_session_id_perf != _("all_sessions_option", lang): display_records = [r for r in display_records if r.get('linked_training_session_id') == filter_session_id_perf]
                 if filter_discipline_perf != _("all_disciplines_option", lang): display_records = [r for r in display_records if r['discipline'] == filter_discipline_perf]
@@ -1772,7 +1812,7 @@ def main_app():
                     {
                         _("user_col", lang): rec["user"],
                         _("history_discipline_col", lang): _(f"disciplines.{rec['discipline']}", lang),
-                        _("link_training_session_label", lang): f"{get_training_session_details(rec.get('linked_training_session_id'), training_log_all)['event_date']} - {get_training_session_details(rec.get('linked_training_session_id'), training_log_all)['event_name']}", # Use training_log_all
+                        _("link_training_session_label", lang): f"{get_training_session_details(rec.get('linked_training_session_id'), training_log_all)['event_date']} - {get_training_session_details(rec.get('linked_training_session_id'), training_log_all)['event_name']}",
                         _("history_performance_col", lang): rec["original_performance_str"],
                         _("history_comment_col", lang): rec.get("comment", ""),
                         _("history_entry_date_col", lang): rec["entry_date"]
@@ -1782,11 +1822,11 @@ def main_app():
                 st.dataframe(pd.DataFrame(display_data), hide_index=True, use_container_width=True)
 
             elif is_admin_view_authorized and selected_perf_sub_tab_label == f"{_('edit_performances_sub_tab_label', lang)}":
-                if not filtered_records: # Use filtered_records
+                if not filtered_records:
                     st.info("No performances logged in the system for this club.")
                 else:
-                    all_known_users_list_filtered = sorted(list(set(r['user'] for r in filtered_records).union(set(filtered_user_profiles.keys())))) # Use filtered data
-                    training_session_options = {log['id']: f"{log.get('date')} - {log.get('place', 'N/A')}" for log in filtered_training_log} # Use filtered_training_log
+                    all_known_users_list_filtered = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values())))
+                    training_session_options = {log['id']: f"{log.get('date')} - {log.get('place', 'N/A')}" for log in filtered_training_log}
                     training_session_options[None] = _("no_specific_session_option", lang)
                     perf_log_data = [
                         {
@@ -1798,7 +1838,7 @@ def main_app():
                             _("history_comment_col", lang): rec.get("comment", ""),
                             _("history_delete_col_editor", lang): False
                         }
-                        for rec in sorted(filtered_records, key=lambda x: x.get('entry_date', '1900-01-01'), reverse=True) # Use filtered_records
+                        for rec in sorted(filtered_records, key=lambda x: x.get('entry_date', '1900-01-01'), reverse=True)
                     ]
                     session_display_to_id = {v: k for k, v in training_session_options.items()}
                     discipline_labels = [_("disciplines."+k, lang) for k in discipline_keys]
@@ -1820,7 +1860,6 @@ def main_app():
                         )
                         if st.form_submit_button(_("save_all_performances_button", lang)):
                             new_records = []
-                            # Keep records not in the current filter
                             records_outside_filter = [r for r in all_records_all if user_profiles_all.get(r['user'], {}).get('club', '') != st.session_state.selected_club_filter and st.session_state.selected_club_filter != _("all_clubs_option", lang)]
 
                             for row in edited_perf_log_df.to_dict('records'):
@@ -1830,12 +1869,11 @@ def main_app():
                                 parsed_val = parse_static_time_to_seconds(perf_str, lang) if is_time_based_discipline(discipline) else parse_distance_to_meters(perf_str, lang)
                                 if parsed_val is None:
                                     st.error(f"Invalid performance '{perf_str}' for {row[_('user_col', lang)]}. Skipping.")
-                                    original_rec_if_exists = next((r for r in all_records_all if r['id'] == row['id']), None) # Check in ALL records
+                                    original_rec_if_exists = next((r for r in all_records_all if r['id'] == row['id']), None)
                                     if original_rec_if_exists:
                                         new_records.append(original_rec_if_exists)
                                 else:
                                     original_rec = next((r for r in all_records_all if r['id'] == row['id']), {})
-                                    # Need to get the club of the user for this record
                                     record_user_club = user_profiles_all.get(row[_("user_col", lang)], {}).get('club', '')
                                     new_records.append({
                                         "id": row.get("id") or uuid.uuid4().hex, "user": row[_("user_col", lang)], "discipline": discipline,
@@ -1843,9 +1881,9 @@ def main_app():
                                         "original_performance_str": perf_str, "parsed_value": parsed_val,
                                         "entry_date": original_rec.get('entry_date', date.today().isoformat()),
                                         "comment": row.get(_("history_comment_col", lang), "").strip(),
-                                        "club": record_user_club # Tag with the user's club
+                                        "club": record_user_club
                                     })
-                            save_records(records_outside_filter + [r for r in new_records if r is not None]) # Save all records
+                            save_records(records_outside_filter + [r for r in new_records if r is not None])
                             st.success(_("all_performances_updated_success", lang))
                             st.rerun()
 
@@ -1857,7 +1895,7 @@ def main_app():
             if is_admin_view_authorized:
                 feedback_sub_tabs_labels.append(f"{_('feedbacks_overview_tab_label', lang)}")
                 feedback_sub_tabs_labels.append(f"{_('edit_feedbacks_sub_tab_label', lang)}")
-                feedback_sub_tabs_labels.append(f"{_('feedbacks_by_apneist_chart_tab_label', lang)}") # ADD THIS LINE
+                feedback_sub_tabs_labels.append(f"{_('feedbacks_by_apneist_chart_tab_label', lang)}")
 
             with col_main_nav2:
                 selected_feedback_sub_tab_index = 0
@@ -1873,8 +1911,8 @@ def main_app():
                 )
 
             if selected_feedback_sub_tab_label == my_feedback_sub_tab_label:
-                user_feedback = [fb for fb in filtered_instructor_feedback if fb.get('diver_name') == current_user] # Use filtered_instructor_feedback
-                fresh_user_profiles = filtered_user_profiles # Use filtered_user_profiles
+                user_feedback = [fb for fb in filtered_instructor_feedback if fb.get('diver_name') == current_user]
+                fresh_user_profiles = filtered_user_profiles
                 user_profile_data = fresh_user_profiles.get(current_user, {})
                 has_ai_consent = user_profile_data.get("consent_ai_feedback", False)
 
@@ -1956,7 +1994,7 @@ def main_app():
                 st.subheader(_("my_self_feedbacks_header", lang))
 
                 self_feedbacks = [
-                    fb for fb in filtered_instructor_feedback # Use filtered_instructor_feedback
+                    fb for fb in filtered_instructor_feedback
                     if fb.get('diver_name') == current_user and fb.get('instructor_name') == current_user
                 ]
 
@@ -1965,7 +2003,7 @@ def main_app():
                 else:
                     table_data = []
                     for fb in self_feedbacks:
-                        session_details = get_training_session_details(fb.get("training_session_id"), training_log_all) # Use training_log_all
+                        session_details = get_training_session_details(fb.get("training_session_id"), training_log_all)
                         event_date_str = session_details.get('event_date')
                         
                         sort_date = datetime.min
@@ -1991,19 +2029,19 @@ def main_app():
                     st.dataframe(df_display, hide_index=True, use_container_width=True)
 
             elif is_admin_view_authorized and selected_feedback_sub_tab_label == f"{_('feedbacks_overview_tab_label', lang)}":
-                all_known_users_list_filtered = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values()))) # Use filtered_user_profiles keys for options
+                all_known_users_list_filtered = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values())))
                 col1_f, col2_f, col3_f = st.columns(3)
                 with col1_f:
                     filter_user = st.selectbox(_("filter_by_freediver_label", lang), [_("all_freedivers_option", lang)] + all_known_users_list_filtered, key="fb_overview_user")
                 with col2_f:
-                    session_options = {s['id']: f"{s.get('date', 'N/A')} - {s.get('place', 'N/A')}" for s in filtered_training_log} # Use filtered_training_log
+                    session_options = {s['id']: f"{s.get('date', 'N/A')} - {s.get('place', 'N/A')}" for s in filtered_training_log}
                     session_options[None] = _("no_specific_session_option", lang)
                     filter_session_id = st.selectbox(_("filter_by_training_session_label", lang), [_("all_sessions_option", lang)] + list(session_options.keys()), format_func=lambda x: session_options.get(x, x), key="fb_overview_session")
                 with col3_f:
-                    instructors = sorted(list(set(fb['instructor_name'] for fb in filtered_instructor_feedback))) # Use filtered_instructor_feedback
+                    instructors = sorted(list(set(fb['instructor_name'] for fb in filtered_instructor_feedback)))
                     filter_instructor = st.selectbox(_("filter_by_instructor_label", lang), [_("all_instructors_option", lang)] + instructors, key="fb_overview_instructor")
 
-                display_feedbacks = filtered_instructor_feedback # Start with filtered data
+                display_feedbacks = filtered_instructor_feedback
                 if filter_user != _("all_freedivers_option", lang):
                     display_feedbacks = [f for f in display_feedbacks if f['diver_name'] == filter_user]
                 if filter_session_id != _("all_sessions_option", lang):
@@ -2015,7 +2053,7 @@ def main_app():
                     st.info(_("no_feedbacks_match_filters", lang))
                 else:
                     for fb in sorted(display_feedbacks, key=lambda x: x.get('feedback_date', '1900-01-01'), reverse=True):
-                        session_details = get_training_session_details(fb.get("training_session_id"), training_log_all) # Use training_log_all
+                        session_details = get_training_session_details(fb.get("training_session_id"), training_log_all)
                         display_date = session_details['event_date'] or _('no_specific_session_option', lang)
                         st.markdown(f"**{fb['diver_name']} par {fb['instructor_name']} à {session_details['event_name']} le {display_date}**")
                         with st.container(border=False):
@@ -2023,16 +2061,16 @@ def main_app():
                         st.markdown("")
 
             elif is_admin_view_authorized and selected_feedback_sub_tab_label == f"{_('edit_feedbacks_sub_tab_label', lang)}":
-                if not filtered_instructor_feedback: # Use filtered_instructor_feedback
+                if not filtered_instructor_feedback:
                     st.info(_("no_feedback_in_log", lang))
                 else:
                     with st.form(key="feedback_log_edit_form", border=False):
-                        all_known_users_list_filtered = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values()))) # Use filtered_user_profiles keys for options
-                        session_options = {s['id']: f"{s.get('date', 'N/A')} - {s.get('place', 'N/A')}" for s in filtered_training_log} # Use filtered_training_log
+                        all_known_users_list_filtered = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values())))
+                        session_options = {s['id']: f"{s.get('date', 'N/A')} - {s.get('place', 'N/A')}" for s in filtered_training_log}
                         session_options[None] = _("no_specific_session_option", lang)
 
                         feedback_df_data = []
-                        for fb in filtered_instructor_feedback: # Use filtered_instructor_feedback
+                        for fb in filtered_instructor_feedback:
                             dt_obj = None
                             try:
                                 dt_obj = date.fromisoformat(fb.get("feedback_date"))
@@ -2070,13 +2108,11 @@ def main_app():
 
                         if st.form_submit_button(_("save_feedback_log_changes_button", lang)):
                             new_feedback_list = []
-                            # Keep feedback not in the current filter
                             feedback_outside_filter = [fb for fb in instructor_feedback_all if user_profiles_all.get(fb['diver_name'], {}).get('club', '') != st.session_state.selected_club_filter and st.session_state.selected_club_filter != _("all_clubs_option", lang)]
 
                             for row in edited_feedback_df.to_dict('records'):
                                 if not row[_("history_delete_col_editor", lang)]:
                                     date_val = row[_("feedback_date_col", lang)]
-                                    # Need to get the club of the diver for this feedback
                                     diver_club = user_profiles_all.get(row[_("feedback_for_freediver_label", lang)], {}).get('club', '')
                                     new_feedback_list.append({
                                         "id": row.get("id") or uuid.uuid4().hex,
@@ -2085,14 +2121,14 @@ def main_app():
                                         "instructor_name": row[_("instructor_name_label", lang)],
                                         "feedback_text": row[_("feedback_text_label", lang)].strip(),
                                         "training_session_id": session_display_to_id.get(row[_("link_training_session_label", lang)]),
-                                        "club": diver_club # Tag with the diver's club
+                                        "club": diver_club
                                     })
-                            save_instructor_feedback(feedback_outside_filter + new_feedback_list) # Save ALL feedback
+                            save_instructor_feedback(feedback_outside_filter + new_feedback_list)
                             st.success(_("feedback_log_updated_success", lang))
                             st.rerun()
 
             elif is_admin_view_authorized and selected_feedback_sub_tab_label == f"{_('feedbacks_by_apneist_chart_tab_label', lang)}":
-                display_feedbacks_by_apneist_chart(filtered_instructor_feedback, filtered_user_profiles, lang) # Use filtered data
+                display_feedbacks_by_apneist_chart(filtered_instructor_feedback, filtered_user_profiles, lang)
 
     elif is_admin_view_authorized and selected_main_tab_label == tab_label_wishes:
         with st.container():
@@ -2120,11 +2156,11 @@ def main_app():
 
 
             if selected_wishes_sub_tab_label == _("wishes_log_sub_tab_label", lang):
-                if not filtered_wishes: # Use filtered_wishes
+                if not filtered_wishes:
                     st.info(_("no_wishes_logged", lang))
                 else:
-                    for wish in sorted(filtered_wishes, key=lambda x: x.get('date', '1900-01-01'), reverse=True): # Use filtered_wishes
-                        display_user = get_display_name(wish.get('user_name'), user_profiles_all, lang) # Use user_profiles_all
+                    for wish in sorted(filtered_wishes, key=lambda x: x.get('date', '1900-01-01'), reverse=True):
+                        display_user = get_display_name(wish.get('user_name'), user_profiles_all, lang)
                         
                         expander_label = _("wish_by", user=display_user, date=wish.get('date', 'N/A'))
                         
@@ -2133,12 +2169,12 @@ def main_app():
                                 st.markdown(wish.get('description', ''))
 
             elif selected_wishes_sub_tab_label == _("wishes_summary_sub_tab_label", lang):
-                if not filtered_wishes: # Use filtered_wishes
+                if not filtered_wishes:
                     st.info(_("no_wishes_to_summarize", lang))
                 else:
                     if st.button(_("generate_wishes_summary_button", lang)):
                         with st.spinner("Génération de la synthèse des souhaits..."):
-                            all_wishes_text = "\n".join([f"- Souhait de {get_display_name(w.get('user_name'), user_profiles_all, lang)}: {w.get('description')}" for w in filtered_wishes]) # Use filtered_wishes and user_profiles_all
+                            all_wishes_text = "\n".join([f"- Souhait de {get_display_name(w.get('user_name'), user_profiles_all, lang)}: {w.get('description')}" for w in filtered_wishes])
                             
                             prompt = f"""
                             Tu es un assistant pour un club d'apnée.
@@ -2183,14 +2219,14 @@ def main_app():
                     st.markdown(st.session_state['wishes_summary'])
 
             elif selected_wishes_sub_tab_label == _("edit_wishes_sub_tab_label", lang):
-                if not filtered_wishes: # Use filtered_wishes
+                if not filtered_wishes:
                     st.info(_("no_wishes_logged", lang))
                 else:
                     with st.form(key="wishes_edit_form", border=False):
-                        all_known_users_list_filtered = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values()))) # Use filtered_user_profiles keys for options
+                        all_known_users_list_filtered = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values())))
                         
                         wishes_df_data = []
-                        for wish in filtered_wishes: # Use filtered_wishes
+                        for wish in filtered_wishes:
                             dt_obj = None
                             try:
                                 dt_obj = date.fromisoformat(wish.get("date"))
@@ -2223,22 +2259,20 @@ def main_app():
 
                         if st.form_submit_button(_("save_wishes_changes_button", lang)):
                             new_wishes_list = []
-                            # Keep wishes not in the current filter
                             wishes_outside_filter = [w for w in all_wishes_all if user_profiles_all.get(w['user_name'], {}).get('club', '') != st.session_state.selected_club_filter and st.session_state.selected_club_filter != _("all_clubs_option", lang)]
 
                             for row in edited_wishes_df.to_dict('records'):
                                 if not row[_("history_delete_col_editor", lang)]:
                                     date_val = row[_("wish_date_col", lang)]
-                                    # Need to get the club of the user for this wish
                                     user_club_for_wish = user_profiles_all.get(row[_("user_col", lang)], {}).get('club', '')
                                     new_wishes_list.append({
                                         "id": row.get("id") or uuid.uuid4().hex,
                                         "date": date_val.isoformat() if isinstance(date_val, date) else str(date_val),
                                         "user_name": row[_("user_col", lang)],
                                         "description": row[_("wish_description_label", lang)].strip(),
-                                        "club": user_club_for_wish # Tag with the user's club
+                                        "club": user_club_for_wish
                                     })
-                            save_wishes(wishes_outside_filter + new_wishes_list) # Save ALL wishes
+                            save_wishes(wishes_outside_filter + new_wishes_list)
                             st.success(_("wishes_updated_success", lang))
                             st.rerun()
 
@@ -2264,7 +2298,7 @@ def main_app():
                 )
 
             if selected_freedivers_sub_tab_label == freedivers_sub_tab_labels[0]:
-                all_known_users_sorted = sorted(list(filtered_user_profiles.keys())) # Use filtered_user_profiles
+                all_known_users_sorted = sorted(list(filtered_user_profiles.keys()))
                 if not all_known_users_sorted:
                     st.info(_("no_users_yet", lang))
                 else:
@@ -2273,7 +2307,7 @@ def main_app():
 
                     for user_name_display in all_known_users_sorted:
                         with cols[current_col]:
-                            profile_data_display = filtered_user_profiles.get(user_name_display, {}) # Use filtered_user_profiles
+                            profile_data_display = filtered_user_profiles.get(user_name_display, {})
                             with st.container(border=True):
                                 with st.expander(f"**{user_name_display}** : {profile_data_display.get('certification', _('no_certification_option', lang))} depuis le {profile_data_display.get('certification_date', 'N/A')}", expanded=True):
                                     st.markdown(f"**Motivations :**<br>{profile_data_display.get('motivations', 'N/A')}", unsafe_allow_html=True)
@@ -2283,9 +2317,8 @@ def main_app():
                         current_col = 1 - current_col
 
             elif selected_freedivers_sub_tab_label == freedivers_sub_tab_labels[1]:
-                all_known_users_list_filtered = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values()))) # Use filtered_user_profiles keys for options
+                all_known_users_list_filtered = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values())))
                 freedivers_data_for_editor = []
-                # Use filtered_user_profiles for the editor's initial data
                 for user_name in all_known_users_list_filtered:
                     profile = filtered_user_profiles.get(user_name, {})
                     cert_date_obj = None
@@ -2299,7 +2332,7 @@ def main_app():
                         _("certification_date_col_editor", lang): cert_date_obj,
                         _("lifras_id_col_editor", lang): profile.get("lifras_id", ""),
                         _("anonymize_results_col_editor", lang): profile.get("anonymize_results", False),
-                        _("club_label", lang): profile.get("club", "") # NEW: Add club to editor
+                        _("club_label", lang): profile.get("club", "")
                     })
                 
                 with st.form(key="freedivers_editor_form", border=False):
@@ -2312,17 +2345,16 @@ def main_app():
                             _("certification_date_col_editor", lang): st.column_config.DateColumn(format="YYYY-MM-DD"),
                             _("lifras_id_col_editor", lang): st.column_config.TextColumn(),
                             _("anonymize_results_col_editor", lang): st.column_config.CheckboxColumn(),
-                            _("club_label", lang): st.column_config.TextColumn() # NEW: Add club column config
+                            _("club_label", lang): st.column_config.TextColumn()
                         },
                         key="freedivers_data_editor", num_rows="dynamic", hide_index=True
                     )
                     if st.form_submit_button(_("save_freedivers_changes_button", lang)):
                         edited_rows = edited_freedivers_df.to_dict('records')
 
-                        final_profiles = load_user_profiles() # Reload all profiles to ensure consistency
+                        final_profiles = load_user_profiles()
                         new_names_from_editor = {row[_("freediver_name_col_editor", lang)].strip() for row in edited_rows}
 
-                        # Determine users to delete based on the *original* full list of profiles
                         users_to_delete = [user for user in list(final_profiles.keys()) if user not in new_names_from_editor]
                         for user_to_del in users_to_delete:
                             del final_profiles[user_to_del]
@@ -2345,7 +2377,7 @@ def main_app():
                                 profile_data["lifras_id"] = str(row[_("lifras_id_col_editor", lang)]).strip() if pd.notna(row[_("lifras_id_col_editor", lang)]) else ""
                                 profile_data["anonymize_results"] = bool(row[_("anonymize_results_col_editor", lang)])
                                 profile_data["consent_ai_feedback"] = bool(profile.get("consent_ai_feedback", False))
-                                profile_data["club"] = row[_("club_label", lang)].strip() # NEW: Save club from editor
+                                profile_data["club"] = row[_("club_label", lang)].strip()
 
                                 new_password_for_hash = row.get(_("set_reset_password_col_editor", lang))
                                 if new_password_for_hash:
@@ -2359,16 +2391,14 @@ def main_app():
                                 final_profiles[new_name] = profile_data
 
                             if name_map:
-                                # Update all data sources with new user names
                                 for rec in all_records_all:
                                     rec["user"] = name_map.get(rec.get("user"), rec.get("user"))
                                 for fb in instructor_feedback_all:
                                     fb["diver_name"] = name_map.get(fb.get("diver_name"), fb.get("diver_name"))
                                     fb["instructor_name"] = name_map.get(fb.get("instructor_name"), fb.get("instructor_name"))
-                                for w in all_wishes_all: # NEW: Update wishes with new user names
+                                for w in all_wishes_all:
                                     w["user_name"] = name_map.get(w.get("user_name"), w.get("user_name"))
-                                for t_log in training_log_all: # NEW: Update training logs if they contain user names (though currently not)
-                                    # If training logs had a 'creator_user' field, you'd update it here
+                                for t_log in training_log_all:
                                     pass
 
                                 if st.session_state.get("name") in name_map:
@@ -2377,15 +2407,14 @@ def main_app():
                             save_user_profiles(final_profiles)
                             save_records(all_records_all)
                             save_instructor_feedback(instructor_feedback_all)
-                            save_wishes(all_wishes_all) # NEW: Save wishes
+                            save_wishes(all_wishes_all)
                             st.success(_("freedivers_updated_success", lang))
                             st.rerun()
 
             elif selected_freedivers_sub_tab_label == _("freediver_certification_chart_tab_label", lang):
 
-                all_known_users_list_filtered = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values()))) # Use filtered_user_profiles keys for options
+                all_known_users_list_filtered = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values())))
                 freedivers_data_for_chart = []
-                # Use filtered_user_profiles for chart data
                 for user_name in all_known_users_list_filtered:
                     profile = filtered_user_profiles.get(user_name, {})
                     freedivers_data_for_chart.append({
@@ -2416,7 +2445,7 @@ def main_app():
                 final_chart = (chart + text).properties(title="Nombre d'apnéistes par niveau de brevet", height=300)
                 st.altair_chart(final_chart, use_container_width=True)
 
-                profiles_df_all = pd.DataFrame(filtered_user_profiles.values()) # Use filtered_user_profiles
+                profiles_df_all = pd.DataFrame(filtered_user_profiles.values())
                 
                 certification_order = ["I3", "I2", "I1", "S4", "A3", "A2", "A1", "NB", _("no_certification_option", lang)]
 
@@ -2451,7 +2480,7 @@ def main_app():
                     st.info(_("no_users_yet", lang))
 
 
-## Main Execution
+# --- Main Execution ---
 def main():
     """Main function to run the Streamlit app."""
     if 'language' not in st.session_state:
@@ -2485,7 +2514,6 @@ def main():
         st.session_state.training_desc_buffer = ""
     if 'log_perf_input_buffer' not in st.session_state:
         st.session_state.log_perf_input_buffer = ""
-    # MODIFICATION: Add buffer for the comment input
     if 'log_perf_comment_buffer' not in st.session_state:
         st.session_state.log_perf_comment_buffer = ""
     if 'feedback_for_user_buffer' not in st.session_state:
@@ -2498,6 +2526,8 @@ def main():
         st.session_state.feedback_summary = None
     if 'wishes_summary' not in st.session_state:
         st.session_state.wishes_summary = None
+    if 'new_club_name_buffer' not in st.session_state: # NEW: Initialize new club name buffer
+        st.session_state.new_club_name_buffer = ""
 
     st.set_page_config(page_title=_("page_title", st.session_state.language), layout="centered", initial_sidebar_state="expanded", page_icon="📒",)
 
@@ -2506,8 +2536,8 @@ def main():
             [data-testid="stSidebar"] [data-testid="stForm"] {
                 background: white;
                 border: 3px solid #DCE6F4;
-                border-radius: 10px; /* Coins arrondis pour le formulaire */
-                padding: 20px; /* Espace intérieur pour ne pas coller au bord */
+                border-radius: 10px;
+                padding: 20px;
             }
 
             [data-testid="stTextInput"] input,
@@ -2521,7 +2551,7 @@ def main():
 
             [data-testid="stExpander"] details {
                 border: none !important;
-                box-shadow: none !important; /* Enlève aussi l'ombre qui peut ressembler à une bordure */
+                box-shadow: none !important;
             }
             
         </style>
