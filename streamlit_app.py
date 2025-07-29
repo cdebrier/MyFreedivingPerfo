@@ -493,6 +493,13 @@ def load_user_profiles():
             profile_data['hashed_password'] = ''
             updated = True
 
+        for bool_field in ['anonymize_results', 'consent_ai_feedback', 'club_owner']: # Added 'club_owner' here too for consistency
+            val = profile_data.get(bool_field, False)
+            if isinstance(val, str):
+                profile_data[bool_field] = val.lower() == 'true'
+            elif not isinstance(val, bool):
+                profile_data[bool_field] = bool(val) # Ensure it's a proper boolean
+
     if updated:
         save_user_profiles(profiles)
         
@@ -1203,7 +1210,7 @@ def main_app():
                 )
                 st.checkbox(
                     _("consent_ai_feedback_label", lang),
-                    value=current_user_profile_data.get("consent_ai_feedback", False),
+                    value=current_user_profile_data.get("consent_ai_feedback", False), # Ensure this value is consistently boolean
                     key="consent_ai_feedback_profile_form_sb"
                 )
                 st.text_area(
@@ -1229,7 +1236,7 @@ def main_app():
                 )
 
                 if st.form_submit_button(_("save_profile_button", lang)):
-                    profiles_to_save = load_user_profiles()
+                    profiles_to_save = load_user_profiles() # Reload to ensure we have the latest data before modification
                     user_profile = profiles_to_save.get(current_user, {}).copy()
 
                     user_profile["certification"] = st.session_state.certification_select_profile_form_sb
@@ -1238,7 +1245,7 @@ def main_app():
                     user_profile["certification_date"] = cert_date_val.isoformat() if cert_date_val else None
                     user_profile["lifras_id"] = st.session_state.lifras_id_profile_form_sb.strip()
                     user_profile["anonymize_results"] = st.session_state.anonymize_profile_form_sb
-                    user_profile["consent_ai_feedback"] = st.session_state.consent_ai_feedback_profile_form_sb
+                    user_profile["consent_ai_feedback"] = st.session_state.consent_ai_feedback_profile_form_sb # Directly use session state value
                     user_profile["motivations"] = st.session_state.motivations_profile_form_sb.strip()
                     user_profile["projection_3_ans"] = st.session_state.projection_3_ans_profile_form_sb.strip()
                     user_profile["portrait_photo_text"] = st.session_state.portrait_photo_text_profile_form_sb.strip()
