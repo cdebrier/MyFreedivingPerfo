@@ -507,6 +507,7 @@ def save_user_profiles(profiles):
         sheet.clear()
         return
 
+    # Ensure each profile has a 'user_name' key for consistency before writing
     for name, profile in profiles.items():
         profile['user_name'] = name
 
@@ -1991,15 +1992,30 @@ def main_app():
 
                             for row in edited_perf_log_df.to_dict('records'):
                                 if not row[_("history_delete_col_editor", lang)]:
-                                    date_val = row[_("feedback_date_col", lang)] # Corrected for performance log
-                                    diver_club = user_profiles_all.get(row[_("user_col", lang)], {}).get('club', '') # Corrected for performance log
+                                    # Correction: Extract discipline, performance string and parsed value from the edited row
+                                    discipline = discipline_label_to_key.get(row[_("history_discipline_col", lang)])
+                                    perf_str = str(row[_("history_performance_col", lang)]).strip()
+                                    parsed_val = (
+                                        parse_static_time_to_seconds(perf_str, lang) if is_time_based_discipline(discipline)
+                                        else parse_distance_to_meters(perf_str, lang)
+                                    )
+                                    if parsed_val is None:
+                                        st.error(f"Erreur de format pour la performance '{perf_str}' dans la discipline '{row[_('history_discipline_col', lang)]}'.")
+                                        continue # Skip this row if parsing fails
+
+                                    diver_club = user_profiles_all.get(row[_("user_col", lang)], {}).get('club', '')
+                                    original_rec = next((r for r in filtered_records if r.get('id') == row.get('id')), None) # Find original to retain entry_date if exists
+
                                     new_records.append({
-                                        "id": row.get("id") or uuid.uuid4().hex, "user": row[_("user_col", lang)], "discipline": discipline,
+                                        "id": row.get("id") or uuid.uuid4().hex,
+                                        "user": row[_("user_col", lang)],
+                                        "discipline": discipline,
                                         "linked_training_session_id": session_display_to_id.get(row[_("link_training_session_label", lang)]),
-                                        "original_performance_str": perf_str, "parsed_value": parsed_val,
-                                        "entry_date": original_rec.get('entry_date', date.today().isoformat()),
+                                        "original_performance_str": perf_str,
+                                        "parsed_value": parsed_val,
+                                        "entry_date": original_rec.get('entry_date', date.today().isoformat()) if original_rec else date.today().isoformat(),
                                         "comment": row.get(_("history_comment_col", lang), "").strip(),
-                                        "club": diver_club # Use diver_club for record as well
+                                        "club": diver_club
                                     })
                             save_records(records_outside_filter + [r for r in new_records if r is not None])
                             st.success(_("all_performances_updated_success", lang))
