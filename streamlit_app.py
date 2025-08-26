@@ -1582,7 +1582,60 @@ def main_app():
                     on_change=lambda: st.session_state.update(selected_training_sub_tab_label=st.session_state.training_sub_tabs_selectbox)
                 )
 
-            if selected_training_sub_tab_label == _("training_sessions_sub_tab_label", lang):
+            if is_admin_view_authorized and selected_training_sub_tab_label == f"{_('edit_training_sessions_sub_tab_label', lang)}":
+                if not filtered_training_log:
+                    st.info(_("no_training_sessions_logged", lang))
+                else:
+                    training_log_display_df = pd.DataFrame([
+                        {
+                            "id": entry.get("id"),
+                            _("training_date_label", lang): date.fromisoformat(entry["date"]) if entry.get("date") else None,
+                            _("training_place_label", lang): entry.get("place"),
+                            _("training_description_label", lang): entry.get("description"),
+                            _("history_delete_col_editor", lang): False
+                        }
+                        for entry in sorted(filtered_training_log, key=lambda x: x.get('date', '1900-01-01'), reverse=True)
+                    ])
+                    with st.form(key="training_log_edit_form", border=False):
+                        edited_training_df = st.data_editor(
+                            training_log_display_df,
+                            column_config={
+                                "id": None,
+                                _("training_date_label", lang): st.column_config.DateColumn(required=True, format="YYYY-MM-DD"),
+                                _("training_place_label", lang): st.column_config.TextColumn(required=True),
+                                _("training_description_label", lang): st.column_config.TextColumn(required=True),
+                                _("history_delete_col_editor", lang): st.column_config.CheckboxColumn(default=False)
+                            },
+                            hide_index=True, key="training_log_editor", num_rows="dynamic"
+                        )
+                        if st.form_submit_button(_("save_training_log_changes_button", lang)):
+                            all_logs_from_source = load_training_log()
+                            logs_map = {log['id']: log for log in all_logs_from_source}
+
+                            edited_rows = edited_training_df.to_dict('records')
+
+                            for row in edited_rows:
+                                log_id = row.get("id")
+
+                                if row[_("history_delete_col_editor", lang)]:
+                                    if log_id and log_id in logs_map:
+                                        del logs_map[log_id]
+                                    continue
+
+                                log_to_update = logs_map.get(log_id, {}).copy()
+                                log_to_update.update({
+                                    "id": log_id or uuid.uuid4().hex,
+                                    "date": row[_("training_date_label", lang)].isoformat() if isinstance(row[_("training_date_label", lang)], date) else str(row[_("training_date_label", lang)]),
+                                    "place": row[_("training_place_label", lang)],
+                                    "description": row[_("training_description_label", lang)],
+                                    "club": log_to_update.get('club') or current_user_club # Preserve original club or assign current user's club for new entries
+                                })
+                                logs_map[log_to_update['id']] = log_to_update
+
+                            save_training_log(list(logs_map.values()))
+                            st.success(_("training_log_updated_success", lang))
+                            st.rerun()
+            elif selected_training_sub_tab_label == _("training_sessions_sub_tab_label", lang):
                 if not filtered_training_log:
                     st.info(_("no_training_sessions_logged", lang))
                 else:
@@ -1994,37 +2047,50 @@ def main_app():
                             num_rows="dynamic", hide_index=True, key="all_perf_editor", use_container_width=True
                         )
                         if st.form_submit_button(_("save_all_performances_button", lang)):
-                            new_records = []
-                            records_outside_filter = [r for r in all_records_all if user_profiles_all.get(r['user'], {}).get('club', '') != st.session_state.selected_club_filter and st.session_state.selected_club_filter != _("all_clubs_option", lang)]
+                            all_records_from_source = load_records(training_log_all)
+                            records_map = {r['id']: r for r in all_records_from_source}
 
-                            for row in edited_perf_log_df.to_dict('records'):
-                                if not row[_("history_delete_col_editor", lang)]:
-                                    # Correction: Extract discipline, performance string and parsed value from the edited row
+                            edited_rows = edited_perf_log_df.to_dict('records')
+
+                            for row in edited_rows:
+                                record_id = row.get("id")
+
+                                if row[_("history_delete_col_editor", lang)]:
+                                    if record_id and record_id in records_map:
+                                        del records_map[record_id]
+                                    continue
+
+                                try:
                                     discipline = discipline_label_to_key.get(row[_("history_discipline_col", lang)])
                                     perf_str = str(row[_("history_performance_col", lang)]).strip()
                                     parsed_val = (
                                         parse_static_time_to_seconds(perf_str, lang) if is_time_based_discipline(discipline)
                                         else parse_distance_to_meters(perf_str, lang)
                                     )
-                                    if parsed_val is None:
-                                        st.error(f"Erreur de format pour la performance '{perf_str}' dans la discipline '{row[_('history_discipline_col', lang)]}'.")
-                                        continue # Skip this row if parsing fails
+                                    if parsed_val is None: continue
 
                                     diver_club = user_profiles_all.get(row[_("user_col", lang)], {}).get('club', '')
-                                    original_rec = next((r for r in filtered_records if r.get('id') == row.get('id')), None) # Find original to retain entry_date if exists
 
-                                    new_records.append({
-                                        "id": row.get("id") or uuid.uuid4().hex,
+                                    record_to_update = records_map.get(record_id, {}).copy()
+                                    record_to_update.update({
+                                        "id": record_id or uuid.uuid4().hex,
                                         "user": row[_("user_col", lang)],
                                         "discipline": discipline,
                                         "linked_training_session_id": session_display_to_id.get(row[_("link_training_session_label", lang)]),
                                         "original_performance_str": perf_str,
                                         "parsed_value": parsed_val,
-                                        "entry_date": original_rec.get('entry_date', date.today().isoformat()) if original_rec else date.today().isoformat(),
                                         "comment": row.get(_("history_comment_col", lang), "").strip(),
                                         "club": diver_club
                                     })
-                            save_records(records_outside_filter + [r for r in new_records if r is not None])
+                                    if not record_to_update.get('entry_date'):
+                                        record_to_update['entry_date'] = date.today().isoformat()
+                                    
+                                    records_map[record_to_update['id']] = record_to_update
+                                except Exception as e:
+                                    st.error(f"Erreur lors du traitement d'une ligne : {row}. Erreur : {e}")
+                                    continue
+
+                            save_records(list(records_map.values()))
                             st.success(_("all_performances_updated_success", lang))
                             st.rerun()
 
@@ -2248,23 +2314,34 @@ def main_app():
                         )
 
                         if st.form_submit_button(_("save_feedback_log_changes_button", lang)):
-                            new_feedback_list = []
-                            feedback_outside_filter = [fb for fb in instructor_feedback_all if user_profiles_all.get(fb['diver_name'], {}).get('club', '') != st.session_state.selected_club_filter and st.session_state.selected_club_filter != _("all_clubs_option", lang)]
+                            all_feedbacks_from_source = load_instructor_feedback()
+                            feedback_map = {fb['id']: fb for fb in all_feedbacks_from_source}
 
-                            for row in edited_feedback_df.to_dict('records'):
-                                if not row[_("history_delete_col_editor", lang)]:
-                                    date_val = row[_("feedback_date_col", lang)]
-                                    diver_club = user_profiles_all.get(row[_("feedback_for_freediver_label", lang)], {}).get('club', '')
-                                    new_feedback_list.append({
-                                        "id": row.get("id") or uuid.uuid4().hex,
-                                        "feedback_date": date_val.isoformat() if isinstance(date_val, date) else str(date_val),
-                                        "diver_name": row[_("feedback_for_freediver_label", lang)],
-                                        "instructor_name": row[_("instructor_name_label", lang)],
-                                        "feedback_text": row[_("feedback_text_label", lang)].strip(),
-                                        "training_session_id": session_display_to_id.get(row[_("link_training_session_label", lang)]),
-                                        "club": diver_club
-                                    })
-                            save_instructor_feedback(feedback_outside_filter + new_feedback_list)
+                            edited_rows = edited_feedback_df.to_dict('records')
+
+                            for row in edited_rows:
+                                feedback_id = row.get("id")
+                                if row[_("history_delete_col_editor", lang)]:
+                                    if feedback_id and feedback_id in feedback_map:
+                                        del feedback_map[feedback_id]
+                                    continue
+
+                                date_val = row[_("feedback_date_col", lang)]
+                                diver_club = user_profiles_all.get(row[_("feedback_for_freediver_label", lang)], {}).get('club', '')
+                                
+                                feedback_to_update = feedback_map.get(feedback_id, {}).copy()
+                                feedback_to_update.update({
+                                    "id": feedback_id or uuid.uuid4().hex,
+                                    "feedback_date": date_val.isoformat() if isinstance(date_val, date) else str(date_val),
+                                    "diver_name": row[_("feedback_for_freediver_label", lang)],
+                                    "instructor_name": row[_("instructor_name_label", lang)],
+                                    "feedback_text": row[_("feedback_text_label", lang)].strip(),
+                                    "training_session_id": session_display_to_id.get(row[_("link_training_session_label", lang)]),
+                                    "club": diver_club
+                                })
+                                feedback_map[feedback_to_update['id']] = feedback_to_update
+
+                            save_instructor_feedback(list(feedback_map.values()))
                             st.success(_("feedback_log_updated_success", lang))
                             st.rerun()
 
@@ -2399,21 +2476,32 @@ def main_app():
                         )
 
                         if st.form_submit_button(_("save_wishes_changes_button", lang)):
-                            new_wishes_list = []
-                            wishes_outside_filter = [w for w in all_wishes_all if user_profiles_all.get(w['user_name'], {}).get('club', '') != st.session_state.selected_club_filter and st.session_state.selected_club_filter != _("all_clubs_option", lang)]
+                            all_wishes_from_source = load_wishes()
+                            wishes_map = {w['id']: w for w in all_wishes_from_source}
 
-                            for row in edited_wishes_df.to_dict('records'):
-                                if not row[_("history_delete_col_editor", lang)]:
-                                    date_val = row[_("wish_date_col", lang)]
-                                    user_club_for_wish = user_profiles_all.get(row[_("user_col", lang)], {}).get('club', '')
-                                    new_wishes_list.append({
-                                        "id": row.get("id") or uuid.uuid4().hex,
-                                        "date": date_val.isoformat() if isinstance(date_val, date) else str(date_val),
-                                        "user_name": row[_("user_col", lang)],
-                                        "description": row[_("wish_description_label", lang)].strip(),
-                                        "club": user_club_for_wish
-                                    })
-                            save_wishes(wishes_outside_filter + new_wishes_list)
+                            edited_rows = edited_wishes_df.to_dict('records')
+
+                            for row in edited_rows:
+                                wish_id = row.get("id")
+                                if row[_("history_delete_col_editor", lang)]:
+                                    if wish_id and wish_id in wishes_map:
+                                        del wishes_map[wish_id]
+                                    continue
+                                
+                                date_val = row[_("wish_date_col", lang)]
+                                user_club_for_wish = user_profiles_all.get(row[_("user_col", lang)], {}).get('club', '')
+                                
+                                wish_to_update = wishes_map.get(wish_id, {}).copy()
+                                wish_to_update.update({
+                                    "id": wish_id or uuid.uuid4().hex,
+                                    "date": date_val.isoformat() if isinstance(date_val, date) else str(date_val),
+                                    "user_name": row[_("user_col", lang)],
+                                    "description": row[_("wish_description_label", lang)].strip(),
+                                    "club": user_club_for_wish
+                                })
+                                wishes_map[wish_to_update['id']] = wish_to_update
+                            
+                            save_wishes(list(wishes_map.values()))
                             st.success(_("wishes_updated_success", lang))
                             st.rerun()
 
@@ -2473,6 +2561,7 @@ def main_app():
                         _("certification_date_col_editor", lang): cert_date_obj,
                         _("lifras_id_col_editor", lang): profile.get("lifras_id", ""),
                         _("anonymize_results_col_editor", lang): profile.get("anonymize_results", False),
+                        _("set_reset_password_col_editor", lang): "",
                         _("club_label", lang): profile.get("club", ""),
                         "club_owner": profile.get("club_owner", False)
                     })
@@ -2487,6 +2576,7 @@ def main_app():
                             _("certification_date_col_editor", lang): st.column_config.DateColumn(format="YYYY-MM-DD"),
                             _("lifras_id_col_editor", lang): st.column_config.TextColumn(),
                             _("anonymize_results_col_editor", lang): st.column_config.CheckboxColumn(),
+                            _("set_reset_password_col_editor", lang): st.column_config.TextColumn(help=_("set_reset_password_help", lang)),
                             _("club_label", lang): st.column_config.TextColumn(),
                             "club_owner": st.column_config.CheckboxColumn(label="Propriétaire de Club ?", help="Cochez si cet utilisateur est un propriétaire de club.")
                         },
@@ -2495,65 +2585,73 @@ def main_app():
                     if st.form_submit_button(_("save_freedivers_changes_button", lang)):
                         edited_rows = edited_freedivers_df.to_dict('records')
 
-                        final_profiles = load_user_profiles()
-                        new_names_from_editor = {row[_("freediver_name_col_editor", lang)].strip() for row in edited_rows}
+                        final_profiles = load_user_profiles() # Reload to have a complete and fresh dataset
 
-                        users_to_delete = [user for user in list(final_profiles.keys()) if user not in new_names_from_editor]
+                        # --- 1. Handle Deletions ---
+                        original_names_in_editor = {d['original_name'] for d in freedivers_data_for_editor}
+                        current_original_names_in_editor = {row['original_name'] for row in edited_rows if row.get('original_name')}
+                        users_to_delete = original_names_in_editor - current_original_names_in_editor
+
                         for user_to_del in users_to_delete:
-                            del final_profiles[user_to_del]
+                            if user_to_del in final_profiles:
+                                del final_profiles[user_to_del]
 
-                        name_map = {}
+                        # --- 2. Handle Updates and Additions ---
                         all_new_names_list = [row[_("freediver_name_col_editor", lang)].strip() for row in edited_rows if row[_("freediver_name_col_editor", lang)]]
                         if len(all_new_names_list) != len(set(all_new_names_list)):
                             st.error("Duplicate names found. Please ensure all names are unique.")
-                        else:
-                            for row in edited_rows:
-                                original_name = row.get("original_name")
-                                new_name = row[_("freediver_name_col_editor", lang)].strip()
-                                if not new_name: continue
+                            st.stop()
 
-                                profile_data = final_profiles.get(original_name, {}).copy()
+                        name_map = {}
+                        profiles_to_process = final_profiles.copy()
 
-                                cert_date_val = row[_("certification_date_col_editor", lang)]
-                                profile_data["certification"] = row[_("certification_col_editor", lang)]
-                                profile_data["certification_date"] = cert_date_val.isoformat() if pd.notna(cert_date_val) and isinstance(cert_date_val, (date, datetime)) else None
-                                profile_data["lifras_id"] = str(row[_("lifras_id_col_editor", lang)]).strip() if pd.notna(row[_("lifras_id_col_editor", lang)]) else ""
-                                profile_data["anonymize_results"] = bool(row[_("anonymize_results_col_editor", lang)])
-                                profile_data["consent_ai_feedback"] = bool(profile.get("consent_ai_feedback", False))
-                                profile_data["club"] = row[_("club_label", lang)].strip()
-                                profile_data["club_owner"] = bool(row["club_owner"])
+                        for row in edited_rows:
+                            original_name = row.get("original_name")
+                            new_name = row[_("freediver_name_col_editor", lang)].strip()
+                            if not new_name: continue
 
-                                new_password_for_hash = row.get(_("set_reset_password_col_editor", lang))
-                                if new_password_for_hash:
-                                    profile_data["hashed_password"] = bcrypt.hashpw(new_password_for_hash.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                            if new_name != original_name and new_name in profiles_to_process:
+                                st.error(_("freediver_name_conflict_error", lang, new_name=new_name))
+                                st.stop()
 
-                                if original_name and original_name != new_name:
-                                    name_map[original_name] = new_name
-                                    if original_name in final_profiles:
-                                        del final_profiles[original_name]
+                            profile_data = profiles_to_process.pop(original_name, {}).copy()
 
-                                final_profiles[new_name] = profile_data
+                            cert_date_val = row[_("certification_date_col_editor", lang)]
+                            profile_data["certification"] = row[_("certification_col_editor", lang)]
+                            profile_data["certification_date"] = cert_date_val.isoformat() if pd.notna(cert_date_val) and isinstance(cert_date_val, (date, datetime)) else None
+                            profile_data["lifras_id"] = str(row[_("lifras_id_col_editor", lang)]).strip() if pd.notna(row[_("lifras_id_col_editor", lang)]) else ""
+                            profile_data["anonymize_results"] = bool(row[_("anonymize_results_col_editor", lang)])
+                            profile_data["club"] = row[_("club_label", lang)].strip()
+                            profile_data["club_owner"] = bool(row["club_owner"])
 
-                            if name_map:
-                                for rec in all_records_all:
-                                    rec["user"] = name_map.get(rec.get("user"), rec.get("user"))
-                                for fb in instructor_feedback_all:
-                                    fb["diver_name"] = name_map.get(fb.get("diver_name"), fb.get("diver_name"))
-                                    fb["instructor_name"] = name_map.get(fb.get("instructor_name"), fb.get("instructor_name"))
-                                for w in all_wishes_all:
-                                    w["user_name"] = name_map.get(w.get("user_name"), w.get("user_name"))
-                                for t_log in training_log_all:
-                                    pass
+                            new_password_for_hash = row.get(_("set_reset_password_col_editor", lang))
+                            if new_password_for_hash:
+                                profile_data["hashed_password"] = bcrypt.hashpw(new_password_for_hash.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
-                                if st.session_state.get("name") in name_map:
-                                    st.session_state["name"] = name_map[st.session_state.get("name")]
+                            profiles_to_process[new_name] = profile_data
 
-                            save_user_profiles(final_profiles)
+                            if original_name and original_name != new_name:
+                                name_map[original_name] = new_name
+
+                        if name_map:
+                            for rec in all_records_all:
+                                rec["user"] = name_map.get(rec.get("user"), rec.get("user"))
+                            for fb in instructor_feedback_all:
+                                fb["diver_name"] = name_map.get(fb.get("diver_name"), fb.get("diver_name"))
+                                fb["instructor_name"] = name_map.get(fb.get("instructor_name"), fb.get("instructor_name"))
+                            for w in all_wishes_all:
+                                w["user_name"] = name_map.get(w.get("user_name"), w.get("user_name"))
+
+                            if st.session_state.get("name") in name_map:
+                                st.session_state["name"] = name_map[st.session_state.get("name")]
+                            
                             save_records(all_records_all)
                             save_instructor_feedback(instructor_feedback_all)
                             save_wishes(all_wishes_all)
-                            st.success(_("freedivers_updated_success", lang))
-                            st.rerun()
+
+                        save_user_profiles(profiles_to_process)
+                        st.success(_("freedivers_updated_success", lang))
+                        st.rerun()
 
             elif selected_freedivers_sub_tab_label == _("freediver_certification_chart_tab_label", lang):
 
