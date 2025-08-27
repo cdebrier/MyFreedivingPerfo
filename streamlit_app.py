@@ -1781,13 +1781,13 @@ def main_app():
                     on_change=lambda: st.session_state.update(selected_perf_sub_tab_label=st.session_state.perf_sub_tabs_selectbox)
                 )
 
+            discipline_keys = ["Dynamic Bi-fins (DYN-BF)", "Static Apnea (STA)", "Dynamic No-fins (DNF)", "Depth (CWT/FIM)", "Depth (VWT/NLT)", "16x25m Speed Endurance"]
             if selected_perf_sub_tab_label == _("personal_records_tab_label", lang):
                 user_records_for_tab = [r for r in filtered_records if r['user'] == current_user]
                 if not user_records_for_tab:
                     st.info(_("no_performances_yet", lang))
                 else:
                     with st.container(border=False):
-                        discipline_keys = ["Dynamic Bi-fins (DYN-BF)", "Static Apnea (STA)", "Dynamic No-fins (DNF)", "Depth (CWT/FIM)", "Depth (VWT/NLT)", "16x25m Speed Endurance"]
                         pbs_tab = {}
                         for disc_key_pb_tab in discipline_keys:
                             disc_records_pb_tab = [r for r in user_records_for_tab if r['discipline'] == disc_key_pb_tab and r.get('parsed_value') is not None]
