@@ -1819,8 +1819,8 @@ def main_app():
                                 # Use st.markdown to create a custom, colored metric-like display
                                 st.markdown(f'''
                                 <div style="background-color: {color}; padding: 10px; border-radius: 10px; text-align: center; height: 100px; display: flex; flex-direction: column; justify-content: center;">
-                                    <div style="font-size: 0.9rem; color: #31333F; margin-bottom: 8px; font-weight: bold;">{metric_label}</div>
-                                    <div style="font-size: 1.75rem; color: #31333F; font-weight: bold;">{val_tab}</div>
+                                    <div style="font-size: 0.95rem; color: #31333F; margin-bottom: 8px; font-weight: bold;">{metric_label}</div>
+                                    <div style="font-size: 1.75rem; color: #31333F;">{val_tab}</div>
                                 </div>
                                 ''', unsafe_allow_html=True)
 
@@ -1971,8 +1971,8 @@ def main_app():
                                 # Use st.markdown to create a custom, colored metric-like display
                                 st.markdown(f'''
                                 <div style="background-color: {color}; padding: 10px; border-radius: 10px; text-align: center; height: 100px; display: flex; flex-direction: column; justify-content: center;">
-                                    <div style="font-size: 0.9rem; color: #31333F; margin-bottom: 8px; font-weight: bold;">{metric_label_club}</div>
-                                    <div style="font-size: 1.75rem; color: #31333F; font-weight: bold;">{val_club}</div>
+                                    <div style="font-size: 0.95rem; color: #31333F; margin-bottom: 8px; font-weight: bold;">{metric_label_club}</div>
+                                    <div style="font-size: 1.75rem; color: #31333F;">{val_club}</div>
                                 </div>
                                 ''', unsafe_allow_html=True)
 
