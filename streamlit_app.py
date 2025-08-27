@@ -72,20 +72,20 @@ TRANSLATIONS = {
         "personal_bests_subheader": "🌟 Records Personnels",
         "club_bests_subheader": "🏆 Meilleures Performances du Club",
         "pb_labels": {
-            "Dynamic Bi-fins (DYN-BF)": "Record DYNB",
-            "Static Apnea (STA)": "Record STA",
-            "Dynamic No-fins (DNF)": "Record DNF",
-            "Depth (CWT/FIM)": "Record CWT/FIM",
-            "Depth (VWT/NLT)": "Record VWT/NLT",
-            "16x25m Speed Endurance": "Record 16x25m"
+            "Dynamic Bi-fins (DYN-BF)": "🏆 DYNB",
+            "Static Apnea (STA)": "🏆 STA",
+            "Dynamic No-fins (DNF)": "🏆 DNF",
+            "Depth (CWT/FIM)": "🏆 CWT/FIM",
+            "Depth (VWT/NLT)": "🏆 VWT/NLT",
+            "16x25m Speed Endurance": "🏆 16x25m"
         },
         "club_best_labels": {
-            "Dynamic Bi-fins (DYN-BF)": "Record DYNB",
-            "Static Apnea (STA)": "Record STA",
-            "Dynamic No-fins (DNF)": "Record DNF",
-            "Depth (CWT/FIM)": "Record CWT/FIM",
-            "Depth (VWT/NLT)": "Record VWT/NLT",
-            "16x25m Speed Endurance": "Record 16x25m"
+            "Dynamic Bi-fins (DYN-BF)": "🏆 DYNB",
+            "Static Apnea (STA)": "🏆 STA",
+            "Dynamic No-fins (DNF)": "🏆 DNF",
+            "Depth (CWT/FIM)": "🏆 CWT/FIM",
+            "Depth (VWT/NLT)": "🏆 VWT/NLT",
+            "16x25m Speed Endurance": "🏆 16x25m"
         },
         "achieved_at_event_on_date_caption": "Par {user} à {event_name} le {event_date}",
         "achieved_on_event_caption": "{event_name}, {event_date}",
@@ -1799,12 +1799,31 @@ def main_app():
                             session_details = get_training_session_details(best_record_pb_tab.get('linked_training_session_id'), training_log_all)
                             pbs_tab[disc_key_pb_tab] = (pb_value_formatted_tab, session_details['event_name'], session_details['event_date'])
 
+                        # Define pastel colors for each discipline for a softer, more appealing look
+                        discipline_colors = {
+                            "Dynamic Bi-fins (DYN-BF)": "#A7C7E7",  # Pastel Blue
+                            "Static Apnea (STA)": "#F6EAC2",        # Pastel Yellow
+                            "Dynamic No-fins (DNF)": "#FFB347",      # Pastel Orange
+                            "Depth (CWT/FIM)": "#C1E1C1",        # Pastel Green
+                            "Depth (VWT/NLT)": "#DDA0DD",        # Pastel Plum
+                            "16x25m Speed Endurance": "#FF6961"     # Pastel Red
+                        }
+
                         cols_pb_tab = st.columns(len(discipline_keys))
                         for i_pb_col_tab, disc_key_pb_col_tab in enumerate(discipline_keys):
                             val_tab, event_name_tab, event_date_tab = pbs_tab.get(disc_key_pb_col_tab)
                             with cols_pb_tab[i_pb_col_tab]:
                                 metric_label = _("pb_labels." + disc_key_pb_col_tab, lang)
-                                st.metric(label=metric_label, value=val_tab)
+                                color = discipline_colors.get(disc_key_pb_col_tab, "#F0F2F6") # Default to a light gray
+
+                                # Use st.markdown to create a custom, colored metric-like display
+                                st.markdown(f'''
+                                <div style="background-color: {color}; padding: 10px; border-radius: 10px; text-align: center; height: 100px; display: flex; flex-direction: column; justify-content: center;">
+                                    <div style="font-size: 0.9rem; color: #31333F; margin-bottom: 8px; font-weight: bold;">{metric_label}</div>
+                                    <div style="font-size: 1.75rem; color: #31333F; font-weight: bold;">{val_tab}</div>
+                                </div>
+                                ''', unsafe_allow_html=True)
+
                                 if event_date_tab:
                                     st.caption(_("achieved_on_event_caption", lang, event_name=event_name_tab, event_date=event_date_tab))
                                 elif val_tab == "N/A":
@@ -1937,7 +1956,26 @@ def main_app():
                             with cols_club_pb[i]:
                                 metric_label_club = _("club_best_labels." + disc_key_club_pb_col, lang)
                                 display_user_club = get_display_name(user_club, user_profiles_all, lang) if user_club else _("anonymous_freediver_name", lang)
-                                st.metric(label=metric_label_club, value=val_club)
+                                
+                                # Use the same pastel colors defined earlier
+                                discipline_colors = {
+                                    "Dynamic Bi-fins (DYN-BF)": "#A7C7E7",  # Pastel Blue
+                                    "Static Apnea (STA)": "#F6EAC2",        # Pastel Yellow
+                                    "Dynamic No-fins (DNF)": "#FFB347",      # Pastel Orange
+                                    "Depth (CWT/FIM)": "#C1E1C1",        # Pastel Green
+                                    "Depth (VWT/NLT)": "#DDA0DD",        # Pastel Plum
+                                    "16x25m Speed Endurance": "#FF6961"     # Pastel Red
+                                }
+                                color = discipline_colors.get(disc_key_club_pb_col, "#F0F2F6") # Default to a light gray
+
+                                # Use st.markdown to create a custom, colored metric-like display
+                                st.markdown(f'''
+                                <div style="background-color: {color}; padding: 10px; border-radius: 10px; text-align: center; height: 100px; display: flex; flex-direction: column; justify-content: center;">
+                                    <div style="font-size: 0.9rem; color: #31333F; margin-bottom: 8px; font-weight: bold;">{metric_label_club}</div>
+                                    <div style="font-size: 1.75rem; color: #31333F; font-weight: bold;">{val_club}</div>
+                                </div>
+                                ''', unsafe_allow_html=True)
+
                                 if user_club and event_date_club:
                                     st.caption(_("achieved_at_event_on_date_caption", lang, user=display_user_club, event_name=event_name_club, event_date=event_date_club))
                                 elif val_club == "N/A":
