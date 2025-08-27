@@ -51,7 +51,7 @@ TRANSLATIONS = {
         "select_user_first_warning": "Connectez-vous pour enregistrer des performances.",
         "logging_for": "Enregistrement pour : **{user}**",
         "link_training_session_label": "Activité",
-        "no_specific_session_option": "Événement personnalisé / Aucune session spécifique",
+        "no_specific_session_option": "Non-spécifié",
         "entry_date_label": "Date d'Entrée",
         "discipline": "Discipline",
         "performance_value": "Encode ta performance ici",
@@ -298,7 +298,7 @@ TRANSLATIONS = {
         "freediver_certification_summary_header": "🔢 Apnéistes par Niveau de Brevet",
         "freediver_certification_chart_tab_label": "📊 Apnéistes par Brevet [A]",
         "count_col": "Nombre",
-        "feedbacks_by_apneist_chart_tab_label": "🔢 Feedbacks par Apnéistes [A]",
+        "feedbacks_by_apneist_chart_tab_label": "🔢 Répartition des Feedbacks [A]",
         "my_self_feedbacks_header": "Mes auto-feedbacks",
         "no_self_feedbacks_yet": "Vous ne vous êtes encore donné aucun feedback.",
         "self_feedback_event_col": "Événement",
@@ -2141,9 +2141,9 @@ def main_app():
                             Le feedback IA est dépendant du **nombre de feedbacks laissés par tes encadrants** : plus ceux-ci sont nombreux, plus le feedback IA sera pertinent.
                             
                             Aussi, il est important que les données dans la section **Mon Profil** de la barre latérale soient à jour si tu souhaites augmenter la pertinence du feedback IA.
-                            N'oubliez pas de sauvegarder votre profil ! 
+                            N'oublie pas de sauvegarder ton profil ! 
 
-                            Dans tous les cas, utilisez-le comme un **guide général** et n\'hésitez pas à **consulter vos encadrants** pour des conseils personnalisés, ou si vous avez des questions. 
+                            Dans tous les cas, utilise-le comme un **guide général** et n'hésite pas à **consulter tes encadrants** pour des conseils personnalisés, ou si tu as des questions. 
 
                             ''')
 
