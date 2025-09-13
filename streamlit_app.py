@@ -1241,7 +1241,8 @@ def main_app():
                     profiles_to_save = load_user_profiles() # Reload to ensure we have the latest data before modification
                     user_profile = profiles_to_save.get(current_user, {}).copy()
 
-                    user_profile["certification"] = st.session_state.certification_select_profile_form_sb
+                    cert_selection = st.session_state.certification_select_profile_form_sb
+                    user_profile["certification"] = "NB" if cert_selection == _("no_certification_option", lang) else cert_selection
                     user_profile["club"] = st.session_state.club_profile_form_sb.strip()
                     cert_date_val = st.session_state.cert_date_profile_form_sb
                     user_profile["certification_date"] = cert_date_val.isoformat() if cert_date_val else None
@@ -1507,7 +1508,7 @@ def main_app():
                                 new_profile_data = {
                                     "user_name": new_freediver_user_name,
                                     "id": uuid.uuid4().hex,
-                                    "certification": selected_new_freediver_cert if selected_new_freediver_cert != _("no_certification_option", lang) else "",
+                                    "certification": "NB" if selected_new_freediver_cert == _("no_certification_option", lang) else selected_new_freediver_cert,
                                     "certification_date": None,
                                     "lifras_id": "",
                                     "anonymize_results": False,
