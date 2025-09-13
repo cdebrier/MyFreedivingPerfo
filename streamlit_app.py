@@ -1296,9 +1296,9 @@ def main_app():
         if is_sidebar_instructor_section_visible and is_admin_view_authorized:
             st.header(_("log_training_header_sidebar", lang))
             with st.form(key="log_training_form_sidebar"):
-                st.date_input(_("training_date_label", lang), date.today(), key="training_date_form_key")
-                st.text_input(_("training_place_label", lang), value=st.session_state.training_place_buffer, key="training_place_form_key", placeholder=_("training_place_label", lang))
-                st.text_area(_("training_description_label", lang), value=st.session_state.training_desc_buffer, key="training_desc_form_key", placeholder=_("training_description_placeholder", lang), height=250)
+                st.date_input(_("training_date_label", lang), key="training_date_form_key")
+                st.text_input(_("training_place_label", lang), key="training_place_form_key", placeholder=_("training_place_label", lang))
+                st.text_area(_("training_description_label", lang), key="training_desc_form_key", placeholder=_("training_description_placeholder", lang), height=250)
                 if st.form_submit_button(_("save_training_button", lang)):
                     desc_to_save = st.session_state.training_desc_form_key.strip()
                     place_to_save = st.session_state.training_place_form_key.strip()
@@ -1310,8 +1310,7 @@ def main_app():
                         training_log_all.append(new_training_entry)
                         save_training_log(training_log_all)
                         st.success(_("training_session_saved_success", lang))
-                        st.session_state.training_place_buffer = ""
-                        st.session_state.training_desc_buffer = ""
+                        st.session_state.clear_training_form = True
                         st.rerun()
 
         st.header(_("log_performance_header", lang))
@@ -1361,82 +1360,70 @@ def main_app():
                             all_records_all.append(new_record)
                             save_records(all_records_all)
                             st.success(_("performance_saved_success", lang, user=current_user))
-                            st.session_state.clear_perf_inputs = True
+                            st.session_state.clear_perf_form = True
                             st.rerun()
 
         if is_sidebar_instructor_section_visible:
             st.header(_("log_feedback_header_sidebar", lang))
             with st.form(key="log_feedback_form_sidebar"):
                 all_known_users_list = sorted(list(set(profile['user_name'] for profile in filtered_user_profiles.values())))
-                if not all_known_users_list:
-                    st.warning("Veuillez ajouter un apnéiste avant d'enregistrer un feedback.")
-                else:
-                    freediver_options_for_feedback = [_("select_freediver_prompt", lang)] + all_known_users_list
-                    default_fb_user_idx = 0
-                    try:
-                        if st.session_state.feedback_for_user_buffer not in freediver_options_for_feedback:
-                            st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
-                        default_fb_user_idx = freediver_options_for_feedback.index(st.session_state.feedback_for_user_buffer)
-                    except (ValueError, KeyError):
-                        st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
-
-                    if is_admin_view_authorized:
-                        st.selectbox(
-                            _("feedback_for_freediver_label", lang), options=freediver_options_for_feedback,
-                            index=default_fb_user_idx, key="feedback_for_user_selectbox_key_in_form"
-                        )
+                
+                sel_fb_for_user = current_user
+                if is_admin_view_authorized:
+                    if not all_known_users_list:
+                        st.warning("Veuillez ajouter un apnéiste avant d'enregistrer un feedback.")
+                        st.form_submit_button(_("save_feedback_button", lang), disabled=True)
                     else:
-                        feedback_for_user_selectbox_key_in_form = current_user
+                        freediver_options_for_feedback = [_("select_freediver_prompt", lang)] + all_known_users_list
+                        sel_fb_for_user = st.selectbox(
+                            _("feedback_for_freediver_label", lang), options=freediver_options_for_feedback,
+                            key="feedback_for_user_selectbox_key_in_form"
+                        )
+                else:
+                    st.text_input(_("feedback_for_freediver_label", lang), value=current_user, disabled=True)
 
-                    training_session_options_fb_form = {log['id']: f"{log.get('date', '')} - {log.get('place', '')}" for log in sorted(filtered_training_log, key=lambda x: x.get('date', '1900-01-01'), reverse=True)}
-                    training_session_options_display_fb_form = [_("select_training_prompt", lang)] + list(training_session_options_fb_form.values())
-                    default_fb_ts_idx = 0
-                    try:
-                        if st.session_state.feedback_training_session_buffer not in training_session_options_display_fb_form:
-                            st.session_state.feedback_training_session_buffer = _("select_training_prompt", lang)
-                        default_fb_ts_idx = training_session_options_display_fb_form.index(st.session_state.feedback_training_session_buffer)
-                    except (ValueError, KeyError):
-                        st.session_state.feedback_training_session_buffer = _("select_training_prompt", lang)
+                training_session_options_fb_form = {log['id']: f"{log.get('date', '')} - {log.get('place', '')}" for log in sorted(filtered_training_log, key=lambda x: x.get('date', '1900-01-01'), reverse=True)}
+                training_session_options_display_fb_form = [_("select_training_prompt", lang)] + list(training_session_options_fb_form.values())
+                
+                sel_fb_training_disp = st.selectbox(
+                    _("training_session_label", lang), options=training_session_options_display_fb_form,
+                    key="feedback_training_session_selectbox_key_in_form"
+                )
+                
+                st.text_area(
+                    _("feedback_text_label", lang),
+                    key="feedback_text_area_key_in_form", height=200, placeholder=_("feedback_text_area_ph", lang)
+                )
 
-                    st.selectbox(
-                        _("training_session_label", lang), options=training_session_options_display_fb_form,
-                        index=default_fb_ts_idx, key="feedback_training_session_selectbox_key_in_form"
-                    )
+                if st.form_submit_button(_("save_feedback_button", lang)):
+                    sel_fb_text = st.session_state["feedback_text_area_key_in_form"].strip()
+                    sel_fb_training_id = next((log_id for log_id, display_str in training_session_options_fb_form.items() if display_str == sel_fb_training_disp), None) if sel_fb_training_disp != _("select_training_prompt", lang) else None
                     
-                    st.text_area(
-                        _("feedback_text_label", lang), value=st.session_state.feedback_text_buffer,
-                        key="feedback_text_area_key_in_form", height=200, placeholder=_("feedback_text_area_ph", lang)
-                    )
-                    if st.form_submit_button(_("save_feedback_button", lang)):
-                        sel_fb_for_user = st.session_state["feedback_for_user_selectbox_key_in_form"]
-                        sel_fb_training_disp = st.session_state["feedback_training_session_selectbox_key_in_form"]
-                        sel_fb_text = st.session_state["feedback_text_area_key_in_form"].strip()
-                        sel_fb_training_id = next((log_id for log_id, display_str in training_session_options_fb_form.items() if display_str == sel_fb_training_disp), None) if sel_fb_training_disp != _("select_training_prompt", lang) else None
-                        if sel_fb_for_user == _("select_freediver_prompt", lang):
-                            st.error("Please select a freediver for the feedback.")
-                        elif not current_user:
-                            st.error("Instructor not identified.")
-                        elif not sel_fb_text:
-                            st.error(_("feedback_text_empty_error", lang))
-                        else:
-                            new_feedback = {
-                                "id": uuid.uuid4().hex, "feedback_date": date.today().isoformat(), "diver_name": sel_fb_for_user,
-                                "training_session_id": sel_fb_training_id, "instructor_name": current_user, "feedback_text": sel_fb_text,
-                                "club": current_user_club
-                            }
-                            instructor_feedback_all.append(new_feedback)
-                            save_instructor_feedback(instructor_feedback_all)
-                            st.success(_("feedback_saved_success", lang))
-                            st.session_state.feedback_for_user_buffer = _("select_freediver_prompt", lang)
-                            st.session_state.feedback_training_session_buffer = _("select_training_prompt", lang)
-                            st.session_state.feedback_text_buffer = ""
-                            st.rerun()
+                    user_to_give_feedback_to = sel_fb_for_user if is_admin_view_authorized else current_user
+
+                    if user_to_give_feedback_to == _("select_freediver_prompt", lang):
+                        st.error("Please select a freediver for the feedback.")
+                    elif not current_user:
+                        st.error("Instructor not identified.")
+                    elif not sel_fb_text:
+                        st.error(_("feedback_text_empty_error", lang))
+                    else:
+                        new_feedback = {
+                            "id": uuid.uuid4().hex, "feedback_date": date.today().isoformat(), "diver_name": user_to_give_feedback_to,
+                            "training_session_id": sel_fb_training_id, "instructor_name": current_user, "feedback_text": sel_fb_text,
+                            "club": current_user_club
+                        }
+                        instructor_feedback_all.append(new_feedback)
+                        save_instructor_feedback(instructor_feedback_all)
+                        st.success(_("feedback_saved_success", lang))
+                        st.session_state.clear_feedback_form = True
+                        st.rerun()
                             
         st.header(_("wish_header_sidebar", lang))
         with st.form(key="log_wish_form_sidebar"):
-            wish_description = st.text_area(_("wish_description_label", lang), key="wish_description_form_key", placeholder=_("wish_description_label_ph", lang), height=300)
+            st.text_area(_("wish_description_label", lang), key="wish_description_form_key", placeholder=_("wish_description_label_ph", lang), height=300)
             if st.form_submit_button(_("save_wish_button", lang)):
-                desc_to_save = wish_description.strip()
+                desc_to_save = st.session_state.wish_description_form_key.strip()
                 if not desc_to_save:
                     st.error(_("wish_description_empty_error", lang))
                 else:
@@ -1450,6 +1437,7 @@ def main_app():
                     all_wishes_all.append(new_wish)
                     save_wishes(all_wishes_all)
                     st.success(_("wish_saved_success", lang))
+                    st.session_state.clear_wish_form = True
                     st.rerun()
 
 
@@ -1457,9 +1445,9 @@ def main_app():
         if is_super_admin_view_authorized:
             st.header(_("new_club_header_sidebar", lang))
             with st.form(key="new_club_form_sidebar"):
-                new_club_name = st.text_input(_("new_club_name_label", lang), value=st.session_state.new_club_name_buffer, key="new_club_name_input", placeholder=_("new_club_name_placeholder", lang))
+                st.text_input(_("new_club_name_label", lang), key="new_club_name_input", placeholder=_("new_club_name_placeholder", lang))
                 if st.form_submit_button(_("save_new_club_button", lang)):
-                    name_to_save = new_club_name.strip()
+                    name_to_save = st.session_state.new_club_name_input.strip()
                     if not name_to_save:
                         st.error(_("club_name_empty_error", lang))
                     elif name_to_save in club_profiles_all:
@@ -1469,7 +1457,7 @@ def main_app():
                         club_profiles_all[name_to_save] = new_club_entry
                         save_club_profiles(club_profiles_all)
                         st.success(_("club_saved_success", lang, club_name=name_to_save))
-                        st.session_state.new_club_name_buffer = ""
+                        st.session_state.clear_new_club_form = True
                         st.rerun()
 
         # --- New Freediver Widget for CLUB_OWNERS only ---
@@ -1479,20 +1467,21 @@ def main_app():
                 st.warning(_("club_owner_missing_club", lang))
             else:
                 with st.form(key="new_freediver_form_sidebar"):
-                    full_name_input = st.text_input(
+                    st.text_input(
                         _("freediver_full_name_label", lang),
-                        value=st.session_state.new_freediver_full_name_buffer,
                         key="new_freediver_full_name_input",
                         placeholder=_("freediver_full_name_placeholder", lang)
                     )
                     
                     cert_level_keys = list(TRANSLATIONS[lang]["certification_levels"].keys())
                     freediver_cert_options = [_("no_certification_option", lang)] + cert_level_keys
-                    selected_new_freediver_cert = st.selectbox(
+                    st.selectbox(
                         _("certification_label", lang), options=freediver_cert_options, key="new_freediver_cert_select"
                     )
 
                     if st.form_submit_button(_("save_new_freediver_button", lang)):
+                        full_name_input = st.session_state.new_freediver_full_name_input
+                        selected_new_freediver_cert = st.session_state.new_freediver_cert_select
                         parts = full_name_input.strip().split()
                         if len(parts) < 2:
                             st.error(_("freediver_name_empty_error", lang))
@@ -1524,7 +1513,7 @@ def main_app():
                                 save_user_profiles(user_profiles_all)
 
                                 st.success(_("new_freediver_success", lang, user_name=new_freediver_user_name, club_name=current_user_club))
-                                st.session_state.new_freediver_full_name_buffer = ""
+                                st.session_state.clear_new_freediver_form = True
                                 st.rerun()
 
         st.caption('*Développé par Charles de Brier (2025)*')
@@ -2768,12 +2757,59 @@ def main_app():
 def main():
     """Main function to run the Streamlit app."""
 
-    if st.session_state.get("clear_perf_inputs", False):
-        if 'log_perf_input_form_widget_key' in st.session_state:
-            st.session_state.log_perf_input_form_widget_key = ""
-        if 'log_perf_comment_widget_key' in st.session_state:
-            st.session_state.log_perf_comment_widget_key = ""
-        st.session_state.clear_perf_inputs = False
+    # --- Form Reset Logic ---
+    # This runs at the start of every script run. If a flag is set, it resets
+    # the corresponding form fields in session_state and removes the flag.
+    if st.session_state.get('clear_training_form'):
+        st.session_state.training_date_form_key = date.today()
+        st.session_state.training_place_form_key = ""
+        st.session_state.training_desc_form_key = ""
+        st.session_state.clear_training_form = False
+
+    if st.session_state.get('clear_perf_form'):
+        st.session_state.log_perf_input_form_widget_key = ""
+        st.session_state.log_perf_comment_widget_key = ""
+        st.session_state.clear_perf_form = False
+
+    if st.session_state.get('clear_feedback_form'):
+        if 'feedback_for_user_selectbox_key_in_form' in st.session_state:
+            st.session_state.feedback_for_user_selectbox_key_in_form = _("select_freediver_prompt", 'fr')
+        if 'feedback_training_session_selectbox_key_in_form' in st.session_state:
+            st.session_state.feedback_training_session_selectbox_key_in_form = _("select_training_prompt", 'fr')
+        st.session_state.feedback_text_area_key_in_form = ""
+        st.session_state.clear_feedback_form = False
+
+    if st.session_state.get('clear_wish_form'):
+        st.session_state.wish_description_form_key = ""
+        st.session_state.clear_wish_form = False
+
+    if st.session_state.get('clear_new_club_form'):
+        st.session_state.new_club_name_input = ""
+        st.session_state.clear_new_club_form = False
+
+    # Initialize session state for forms
+    if 'training_date_form_key' not in st.session_state:
+        st.session_state.training_date_form_key = date.today()
+    if 'training_place_form_key' not in st.session_state:
+        st.session_state.training_place_form_key = ""
+    if 'training_desc_form_key' not in st.session_state:
+        st.session_state.training_desc_form_key = ""
+    
+    if 'log_perf_input_form_widget_key' not in st.session_state:
+        st.session_state.log_perf_input_form_widget_key = ""
+    if 'log_perf_comment_widget_key' not in st.session_state:
+        st.session_state.log_perf_comment_widget_key = ""
+
+    if 'feedback_text_area_key_in_form' not in st.session_state:
+        st.session_state.feedback_text_area_key_in_form = ""
+
+    if 'wish_description_form_key' not in st.session_state:
+        st.session_state.wish_description_form_key = ""
+
+    if 'new_club_name_input' not in st.session_state:
+        st.session_state.new_club_name_input = ""
+    if 'new_freediver_full_name_input' not in st.session_state:
+        st.session_state.new_freediver_full_name_input = ""
 
     if 'language' not in st.session_state:
         st.session_state.language = 'fr'
@@ -2800,27 +2836,10 @@ def main():
     if 'selected_wishes_sub_tab_label' not in st.session_state:
         st.session_state.selected_wishes_sub_tab_label = TRANSLATIONS['fr']['wishes_log_sub_tab_label']
 
-    if 'training_place_buffer' not in st.session_state:
-        st.session_state.training_place_buffer = ""
-    if 'training_desc_buffer' not in st.session_state:
-        st.session_state.training_desc_buffer = ""
-    
-    if 'feedback_for_user_buffer' not in st.session_state:
-        st.session_state.feedback_for_user_buffer = ""
-    if 'feedback_training_session_buffer' not in st.session_state:
-        st.session_state.feedback_training_session_buffer = ""
-    if 'feedback_text_buffer' not in st.session_state:
-        st.session_state.feedback_text_buffer = ""
     if 'feedback_summary' not in st.session_state:
         st.session_state.feedback_summary = None
     if 'wishes_summary' not in st.session_state:
         st.session_state.wishes_summary = None
-    if 'clear_perf_inputs' not in st.session_state:
-        st.session_state.clear_perf_inputs = False
-    if 'new_club_name_buffer' not in st.session_state:
-        st.session_state.new_club_name_buffer = ""
-    if 'new_freediver_full_name_buffer' not in st.session_state:
-        st.session_state.new_freediver_full_name_buffer = ""
 
     st.set_page_config(page_title=_("page_title", st.session_state.language), layout="centered", initial_sidebar_state="expanded", page_icon="📒",)
 
