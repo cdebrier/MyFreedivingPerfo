@@ -1069,6 +1069,8 @@ def display_feedbacks_by_apneist_chart(instructor_feedback_data, user_profiles, 
 # --- Main Application Logic ---
 def main_app():
     lang = st.session_state.language
+
+    
     
     # Load all raw data at the very beginning
     training_log_all = load_training_log()
@@ -1270,10 +1272,10 @@ def main_app():
                 del st.session_state['training_place_buffer']
             if 'training_desc_buffer' in st.session_state:
                 del st.session_state['training_desc_buffer']
-            if 'log_perf_input_buffer' in st.session_state:
-                del st.session_state['log_perf_input_buffer']
-            if 'log_perf_comment_buffer' in st.session_state:
-                del st.session_state['log_perf_comment_buffer']
+            if 'log_perf_input_form_widget_key' in st.session_state:
+                del st.session_state['log_perf_input_form_widget_key']
+            if 'log_perf_comment_widget_key' in st.session_state:
+                del st.session_state['log_perf_comment_widget_key']
             if 'feedback_for_user_buffer' in st.session_state:
                 del st.session_state['feedback_for_user_buffer']
             if 'feedback_training_session_buffer' in st.session_state:
@@ -1331,12 +1333,11 @@ def main_app():
                 log_discipline_original_key_perf_form = [k for k, v in TRANSLATIONS[lang]['disciplines'].items() if v == selected_translated_discipline][0]
                 performance_help_text_perf_form = _("sta_help", lang) if is_time_based_discipline(log_discipline_original_key_perf_form) else _("dyn_depth_help", lang)
                 st.text_input(
-                    _("performance_value_label", lang), value=st.session_state.log_perf_input_buffer,
+                    _("performance_value_label", lang),
                     help=performance_help_text_perf_form, key="log_perf_input_form_widget_key", placeholder=_("performance_value", lang)
                 )
                 st.text_area(
                     _("performance_comment_label", lang),
-                    value=st.session_state.log_perf_comment_buffer,
                     key="log_perf_comment_widget_key",
                     placeholder=_("performance_comment_placeholder", lang)
                 )
@@ -1359,8 +1360,7 @@ def main_app():
                             all_records_all.append(new_record)
                             save_records(all_records_all)
                             st.success(_("performance_saved_success", lang, user=current_user))
-                            st.session_state.log_perf_input_buffer = ""
-                            st.session_state.log_perf_comment_buffer = ""
+                            st.session_state.clear_perf_inputs = True
                             st.rerun()
 
         if is_sidebar_instructor_section_visible:
@@ -2763,6 +2763,14 @@ def main_app():
 # --- Main Execution ---
 def main():
     """Main function to run the Streamlit app."""
+
+    if st.session_state.get("clear_perf_inputs", False):
+        if 'log_perf_input_form_widget_key' in st.session_state:
+            st.session_state.log_perf_input_form_widget_key = ""
+        if 'log_perf_comment_widget_key' in st.session_state:
+            st.session_state.log_perf_comment_widget_key = ""
+        st.session_state.clear_perf_inputs = False
+
     if 'language' not in st.session_state:
         st.session_state.language = 'fr'
     if 'authentication_status' not in st.session_state:
@@ -2792,10 +2800,7 @@ def main():
         st.session_state.training_place_buffer = ""
     if 'training_desc_buffer' not in st.session_state:
         st.session_state.training_desc_buffer = ""
-    if 'log_perf_input_buffer' not in st.session_state:
-        st.session_state.log_perf_input_buffer = ""
-    if 'log_perf_comment_buffer' not in st.session_state:
-        st.session_state.log_perf_comment_buffer = ""
+    
     if 'feedback_for_user_buffer' not in st.session_state:
         st.session_state.feedback_for_user_buffer = ""
     if 'feedback_training_session_buffer' not in st.session_state:
@@ -2806,6 +2811,8 @@ def main():
         st.session_state.feedback_summary = None
     if 'wishes_summary' not in st.session_state:
         st.session_state.wishes_summary = None
+    if 'clear_perf_inputs' not in st.session_state:
+        st.session_state.clear_perf_inputs = False
     if 'new_club_name_buffer' not in st.session_state:
         st.session_state.new_club_name_buffer = ""
     if 'new_freediver_full_name_buffer' not in st.session_state:
