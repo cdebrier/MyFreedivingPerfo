@@ -1876,16 +1876,19 @@ def main_app():
                                     training_session_options[None] = _("no_specific_session_option", lang)
 
                                     session_display_to_id = {v: k for k, v in training_session_options.items()}
-                                    history_for_editor_display = [
-                                        {
+                                    history_for_editor_display = []
+                                    for rec in sorted(history_for_editor_raw, key=lambda x: get_training_session_details(x.get('linked_training_session_id'), training_log_all).get('event_date') or '1900-01-01', reverse=True):
+                                        perf_value = rec.get("original_performance_str", "")
+                                        if not is_time_based_discipline(disc_key_sub_tab_user):
+                                            perf_value = rec.get("parsed_value")
+                                        
+                                        history_for_editor_display.append({
                                             "id": rec.get("id"),
                                             _("link_training_session_label", lang): training_session_options.get(rec.get("linked_training_session_id"), _("no_specific_session_option", lang)),
-                                            _("history_performance_col", lang): rec.get("original_performance_str", ""),
+                                            _("history_performance_col", lang): perf_value,
                                             _("history_comment_col", lang): rec.get("comment", ""),
                                             _("history_delete_col_editor", lang): False
-                                        }
-                                        for rec in sorted(history_for_editor_raw, key=lambda x: get_training_session_details(x.get('linked_training_session_id'), training_log_all).get('event_date') or '1900-01-01', reverse=True)
-                                    ]
+                                        })
                                     with st.form(key=f"personal_history_form_{disc_key_sub_tab_user}", border=False):
                                         performance_column_config = {}
                                         if is_time_based_discipline(disc_key_sub_tab_user):
